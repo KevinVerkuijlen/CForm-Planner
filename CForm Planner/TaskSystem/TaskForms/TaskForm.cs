@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CForm_Planner
+namespace CForm_Planner.TaskSystem.TaskForms
 {
-    public partial class TaskFom : Form
+    public partial class TaskForm : Form
     {
-        public TaskFom()
+        public TaskForm()
         {
             InitializeComponent();
         }

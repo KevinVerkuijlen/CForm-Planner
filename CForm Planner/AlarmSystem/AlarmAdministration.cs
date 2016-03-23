@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AlarmSystem
 {
-    class AlarmAdministration
+    public class AlarmAdministration
     {
     }
 }

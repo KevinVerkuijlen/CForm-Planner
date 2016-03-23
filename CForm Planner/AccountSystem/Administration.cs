@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AccountSystem
 {
-    class Administration
+    public class Administration
     {
     }
 }

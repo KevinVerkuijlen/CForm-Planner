@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AlarmSystem
 {
-    class Alarm
+    public class Alarm
     {
+        public DateTime Alarmtime { get; set; }
+        public string AccountEmail { get; set; }
+
+        public Alarm(DateTime alarmtime, string accountemail)
+        {
+            if (alarmtime == null)
+            {
+                throw new ArgumentNullException("alarmtime", "alarmtime is empty");
+            }
+            this.Alarmtime = alarmtime;
+            this.AccountEmail = accountemail;
+        }
     }
 }

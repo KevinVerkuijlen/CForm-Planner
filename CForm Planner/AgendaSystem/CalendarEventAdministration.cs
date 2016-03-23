@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AgendaSystem
 {
-    class CalendarEventAdministration
+    public class CalendarEventAdministration
     {
     }
 }

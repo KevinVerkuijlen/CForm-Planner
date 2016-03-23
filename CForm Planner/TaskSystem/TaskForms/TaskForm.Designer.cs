@@ -1,6 +1,6 @@
-﻿namespace CForm_Planner
+﻿namespace CForm_Planner.TaskSystem.TaskForms
 {
-    partial class TaskFom
+    partial class TaskForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "ToDo";
+            this.Text = "TaskForm";
         }
 
         #endregion
