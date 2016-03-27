@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AgendaSystem
 {
-    public abstract class CalendarEvent
+    public class CalendarEvent
     {
-        public string Titel { get; set; }
-        public string Notes { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string AccountEmail { get; set; }
+        public string Titel { get; protected set; }
+        public string Notes { get; protected set; }
+        public DateTime StartDate { get; protected set; }
+        public DateTime EndDate { get; protected set; }
+        public string AccountEmail { get; protected set; }
 
         public CalendarEvent(string titel, string notes, DateTime startDate, DateTime endDate, string accountemail)
         {

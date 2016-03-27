@@ -19,7 +19,7 @@ namespace CForm_Planner.TaskSystem
             }
             else
             {
-
+                throw new PlannerExceptions("Task already exist in the ToDo list");
             }
         }
 
@@ -32,7 +32,7 @@ namespace CForm_Planner.TaskSystem
             }
             else
             {
-
+                throw new PlannerExceptions("Task doesn't exist in the ToDo list");
             }
         }
 
@@ -47,7 +47,7 @@ namespace CForm_Planner.TaskSystem
             }
             else
             {
-
+                throw new PlannerExceptions("The old Task doesn't exist in the ToDo list or the new Task already exist in the ToDo list");
             }
         }
 
@@ -61,13 +61,9 @@ namespace CForm_Planner.TaskSystem
             int check = -1;
             foreach(Task t in Todo)
             {
-                if (t.Titel == task.Titel && t.Notes == task.Notes)
+                if (t.Titel == task.Titel && t.Notes == task.Notes && t.Completed == task.Completed)
                 {
                     check = Todo.IndexOf(t);
-                }
-                else
-                {
-                    check = -1;
                 }
             }
             return check;

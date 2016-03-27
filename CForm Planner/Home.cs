@@ -17,6 +17,7 @@ namespace CForm_Planner
 {
     public partial class Home : Form
     {
+        TaskAdministration a = new TaskAdministration();
         public Home()
         {
             InitializeComponent();
@@ -25,31 +26,64 @@ namespace CForm_Planner
         private void Account_button_Click(object sender, EventArgs e)
         {
             LoginForm form = new LoginForm();
-            form.Show();
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                this.Visible = true;
+            }   
         }
 
         private void Note_button_Click(object sender, EventArgs e)
         {
             NoteForm form = new NoteForm();
-            form.Show();
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                this.Visible = true;
+            }   
         }
 
         private void Agenda_button_Click(object sender, EventArgs e)
         {
             AgendaForm form = new AgendaForm();
-            form.Show();
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                this.Visible = true;
+            }   
         }
 
         private void Alarm_button_Click(object sender, EventArgs e)
         {
             AlarmForm form = new AlarmForm();
-            form.Show();
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                this.Visible = true;
+            }   
         }
 
         private void ToDo_button_Click(object sender, EventArgs e)
         {
             CForm_Planner.TaskSystem.TaskForms.TaskForm form = new CForm_Planner.TaskSystem.TaskForms.TaskForm();
-            form.Show();
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                this.Visible = true;
+            }            
         }
+
+        /* try
+            {
+                CForm_Planner.TaskSystem.Task b = new TaskSystem.Task("", "", "");
+            }
+            catch(ArgumentNullException ex){
+                MessageBox.Show(ex.Message);
+            }*/
     }
 }

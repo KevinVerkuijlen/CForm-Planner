@@ -19,7 +19,7 @@ namespace CForm_Planner.NoteSystem
             }
             else
             {
-
+                throw new PlannerExceptions("Note already exist in the note list");
             }
         }
 
@@ -32,7 +32,7 @@ namespace CForm_Planner.NoteSystem
             }
             else
             {
-
+                throw new PlannerExceptions("Note doesn't exist in the note list");
             }
         }
 
@@ -47,7 +47,7 @@ namespace CForm_Planner.NoteSystem
             }
             else
             {
-
+                throw new PlannerExceptions("The old note doesn't exist in the note list or the new note already exist in the note list");
             }
         }
 
@@ -64,10 +64,6 @@ namespace CForm_Planner.NoteSystem
                 if (n.Information == note.Information)
                 {
                     check = Notes.IndexOf(n);
-                }
-                else
-                {
-                    check = -1;
                 }
             }
             return check;

@@ -12,9 +12,62 @@ namespace CForm_Planner.NoteSystem
 {
     public partial class NoteDetailForm : Form
     {
+        public NoteAdministration noteAdministration;
+        public Note details;
         public NoteDetailForm()
         {
             InitializeComponent();
+        }
+
+        private void ChangeNote_button_Click(object sender, EventArgs e)
+        {
+            if (NoteInfo_textBox.Text != "")
+            {
+                try
+                {
+                    Note changedNote = new Note(NoteInfo_textBox.Text, "");
+                    try
+                    {
+                        noteAdministration.ChangeNote(details, changedNote);
+                        this.DialogResult = DialogResult.OK;
+                    }
+                    catch (PlannerExceptions ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void RemoveNote_button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                noteAdministration.RemoveNote(details);
+                this.DialogResult = DialogResult.OK;
+            }
+            catch(PlannerExceptions ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void Detail_Refresh()
+        {
+            if (details != null)
+            {
+                NoteInfo_textBox.Text = details.Information;
+            }
+        }
+
+        private void NoteDetailForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
         }
     }
 }
