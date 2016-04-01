@@ -34,20 +34,12 @@ namespace CForm_Planner
                 }
                 try
                 {
-                    TaskSystem.Task changedTask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text,completed,"");
-                    try
-                    {
-                        taskAdministration.ChangeTask(details, changedTask);
-                        this.DialogResult = DialogResult.OK;
-                    }
-                    catch (PlannerExceptions ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        return;
-                    }
-
+                    TaskSystem.Task changedTask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed, "");
+                    taskAdministration.ChangeTask(details, changedTask);
+                    this.DialogResult = DialogResult.OK;
+                    return;
                 }
-                catch (PlannerExceptions ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return;
@@ -66,7 +58,7 @@ namespace CForm_Planner
                 taskAdministration.RemoveTask(details);
                 this.DialogResult = DialogResult.OK;
             }
-            catch (PlannerExceptions ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }

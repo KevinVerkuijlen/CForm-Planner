@@ -26,18 +26,10 @@ namespace CForm_Planner.NoteSystem
                 try
                 {
                     Note changedNote = new Note(NoteInfo_textBox.Text, "");
-                    try
-                    {
-                        noteAdministration.ChangeNote(details, changedNote);
-                        this.DialogResult = DialogResult.OK;
-                    }
-                    catch (PlannerExceptions ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        return;
-                    }
+                    noteAdministration.ChangeNote(details, changedNote);
+                    this.DialogResult = DialogResult.OK;
                 }
-                catch (ArgumentException ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -51,7 +43,7 @@ namespace CForm_Planner.NoteSystem
                 noteAdministration.RemoveNote(details);
                 this.DialogResult = DialogResult.OK;
             }
-            catch(PlannerExceptions ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }

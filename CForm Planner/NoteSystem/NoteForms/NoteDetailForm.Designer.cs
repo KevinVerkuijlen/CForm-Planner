@@ -36,9 +36,9 @@
             // 
             // RemoveNote_button
             // 
-            this.RemoveNote_button.Location = new System.Drawing.Point(12, 12);
+            this.RemoveNote_button.Location = new System.Drawing.Point(12, 7);
             this.RemoveNote_button.Name = "RemoveNote_button";
-            this.RemoveNote_button.Size = new System.Drawing.Size(192, 31);
+            this.RemoveNote_button.Size = new System.Drawing.Size(192, 36);
             this.RemoveNote_button.TabIndex = 3;
             this.RemoveNote_button.Text = "Remove Note";
             this.RemoveNote_button.UseVisualStyleBackColor = true;

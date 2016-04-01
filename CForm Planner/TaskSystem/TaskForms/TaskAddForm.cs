@@ -28,17 +28,9 @@ namespace CForm_Planner
                 try
                 {
                     TaskSystem.Task newtask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, "");
-                    try
-                    {
-                        taskAdministration.AddTask(newtask);
-                    }
-                    catch (PlannerExceptions er)
-                    {
-                        MessageBox.Show(er.Message);
-                        return;
-                    }
+                    taskAdministration.AddTask(newtask);
                 }
-                catch (ArgumentException ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return;

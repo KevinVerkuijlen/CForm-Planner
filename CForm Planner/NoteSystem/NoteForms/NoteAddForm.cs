@@ -25,17 +25,9 @@ namespace CForm_Planner.NoteSystem
                 try
                 {
                     Note newNote = new Note(NoteInfo_textBox.Text, "");
-                    try
-                    {
-                        noteAdministration.AddNote(newNote);
-                    }
-                    catch (PlannerExceptions ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        return;
-                    }
+                    noteAdministration.AddNote(newNote);
                 }
-                catch (ArgumentNullException ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                     return;

@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ToDo_button = new System.Windows.Forms.Button();
             this.Alarm_button = new System.Windows.Forms.Button();
             this.Agenda_button = new System.Windows.Forms.Button();
             this.Note_button = new System.Windows.Forms.Button();
             this.Account_button = new System.Windows.Forms.Button();
+            this.Alarm_timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // ToDo_button
@@ -90,6 +92,10 @@
             this.Account_button.UseVisualStyleBackColor = true;
             this.Account_button.Click += new System.EventHandler(this.Account_button_Click);
             // 
+            // Alarm_timer
+            // 
+            this.Alarm_timer.Tick += new System.EventHandler(this.Alarm_timer_Tick);
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -113,6 +119,7 @@
         private System.Windows.Forms.Button Agenda_button;
         private System.Windows.Forms.Button Alarm_button;
         private System.Windows.Forms.Button ToDo_button;
+        private System.Windows.Forms.Timer Alarm_timer;
     }
 }
 

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CForm_Planner.AccountSystem.AccountForms;
 using CForm_Planner.AgendaSystem.AgendaForms;
 using CForm_Planner.AlarmSystem.AlarmForms;
+using CForm_Planner.AlarmSystem;
 using CForm_Planner.NoteSystem;
 using CForm_Planner.TaskSystem;
 
@@ -17,7 +18,8 @@ namespace CForm_Planner
 {
     public partial class Home : Form
     {
-        TaskAdministration a = new TaskAdministration();
+        TaskAdministration taskAdministration = new TaskAdministration();
+        public AlarmAdministration alarmAdministration = new AlarmAdministration();
         public Home()
         {
             InitializeComponent();
@@ -78,12 +80,16 @@ namespace CForm_Planner
             }            
         }
 
-        /* try
+        private void Alarm_timer_Tick(object sender, EventArgs e)
+        {
+            foreach(Alarm a in alarmAdministration.Alarm_list)
             {
-                CForm_Planner.TaskSystem.Task b = new TaskSystem.Task("", "", "");
+                if (Convert.ToInt16(DateTime.Now.ToString("HH")) == a.Alarmtime.Hour && Convert.ToInt32(DateTime.Now.ToString("mm")) == a.Alarmtime.Minute)
+                {
+                    MessageBox.Show("lolololol");
+                }
             }
-            catch(ArgumentNullException ex){
-                MessageBox.Show(ex.Message);
-            }*/
+        }
+
     }
 }

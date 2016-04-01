@@ -59,11 +59,19 @@ namespace CForm_Planner.TaskSystem
         public int CheckForTask(Task task)
         {
             int check = -1;
-            foreach(Task t in Todo)
+            foreach (Task t in Todo)
             {
+
                 if (t.Titel == task.Titel && t.Notes == task.Notes && t.Completed == task.Completed)
                 {
                     check = Todo.IndexOf(t);
+                }
+                else
+                {
+                    if (t.Titel == task.Titel && t.Notes == task.Notes && t.Completed != task.Completed)
+                    {
+                        return check;
+                    }
                 }
             }
             return check;

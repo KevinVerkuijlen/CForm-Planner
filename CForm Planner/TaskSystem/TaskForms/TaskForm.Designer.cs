@@ -49,6 +49,7 @@
             this.ToDo_checkedListBox.Name = "ToDo_checkedListBox";
             this.ToDo_checkedListBox.Size = new System.Drawing.Size(439, 446);
             this.ToDo_checkedListBox.TabIndex = 2;
+            this.ToDo_checkedListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ToDo_checkedListBox_ItemCheck);
             this.ToDo_checkedListBox.SelectedIndexChanged += new System.EventHandler(this.ToDo_checkedListBox_SelectedIndexChanged);
             // 
             // TaskForm

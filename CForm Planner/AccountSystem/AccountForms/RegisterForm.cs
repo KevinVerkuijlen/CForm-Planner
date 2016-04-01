@@ -16,5 +16,15 @@ namespace CForm_Planner.AccountSystem.AccountForms
         {
             InitializeComponent();
         }
+
+        private void CompRegister_button_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+        }
+
+        private void RegisterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+        }
     }
 }

@@ -33,9 +33,6 @@ namespace CForm_Planner.TaskSystem.TaskForms
             }
         }
 
-
-
-
         private void ToDo_checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ToDo_checkedListBox.SelectedItem != null)
@@ -68,7 +65,7 @@ namespace CForm_Planner.TaskSystem.TaskForms
         {
             ToDo_checkedListBox.Items.Clear();
             foreach (Task t in taskAdministration.Todo)
-
+            {
                 if (t.Completed == true)
                 {
                     ToDo_checkedListBox.Items.Add(t.Titel, true);
@@ -77,11 +74,17 @@ namespace CForm_Planner.TaskSystem.TaskForms
                 {
                     ToDo_checkedListBox.Items.Add(t.Titel, false);
                 }
+            }
         }
 
         private void TaskForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void ToDo_checkedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+
         }
 
     }
