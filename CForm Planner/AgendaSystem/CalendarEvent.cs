@@ -13,6 +13,7 @@ namespace CForm_Planner.AgendaSystem
         public DateTime StartDate { get; protected set; }
         public DateTime EndDate { get; protected set; }
         public string AccountEmail { get; protected set; }
+        public string AgendaDisplay { get; protected set; }
 
         public CalendarEvent(string titel, string notes, DateTime startDate, DateTime endDate, string accountemail)
         {
@@ -37,6 +38,7 @@ namespace CForm_Planner.AgendaSystem
             this.StartDate = startDate;
             this.EndDate = endDate;
             this.AccountEmail = accountemail;
+            this.AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
         }
 
     }

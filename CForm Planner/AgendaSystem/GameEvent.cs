@@ -11,7 +11,7 @@ namespace CForm_Planner.AgendaSystem
         public string GameName { get; set; }
 
         public GameEvent(string titel, string notes, DateTime startDate, DateTime endDate, string gameName, string accountemail)
-            : base(titel, notes, startDate, endDate, accountemail)
+            : base(titel,notes,startDate,endDate,accountemail)
         {
             if (titel == null)
             {

@@ -10,23 +10,18 @@ using System.Windows.Forms;
 
 namespace CForm_Planner.AgendaSystem.AgendaForms
 {
-    public partial class AgendaAddForm : Form
+    public partial class AgendaDetailsForm : Form
     {
         public CalendarEventAdministration calendarEventAdministration;
         public CalendarEvent details;
 
-        public AgendaAddForm()
+        public AgendaDetailsForm()
         {
             InitializeComponent();
-            Normal_radioButton.Checked = true;
-        }
-
-        private void Normal_radioButton_CheckedChanged(object sender, EventArgs e)
-        {
             NormalAppointment();
         }
 
-        private void Add_button_Click(object sender, EventArgs e)
+        private void Change_button_Click(object sender, EventArgs e)
         {
             if (Titel_textBox.Text != "")
             {
@@ -34,24 +29,11 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                 {
                     DateTime start = Start_datePicker.Value.Date.Add(Start_TimePicker.Value.TimeOfDay);
                     DateTime end = End_datePicker.Value.Date.Add(End_TimePicker.Value.TimeOfDay);
-                    if (start.ToString() == end.ToString() || start < end)
+                    if (start <= end)
                     {
                         string titel = Titel_textBox.Text;
                         string notes = Note_textBox.Text;
-                        if (Normal_radioButton.Checked == true)
-                        {
-                            try
-                            {
-                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, "");
-                                calendarEventAdministration.AddCalendarEvent(appiontment);
-                                this.DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
-                        if (School_radioButton.Checked == true)
+                        if (details.GetType() == typeof(SchoolEvent))
                         {
                             if (Subject_textBox.Text != null)
                             {
@@ -60,10 +42,10 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                     try
                                     {
                                         SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, "");
-                                        calendarEventAdministration.AddCalendarEvent(schoolAppiontment);
+                                        calendarEventAdministration.ChangeCalendarEvent(details, schoolAppiontment);
                                         this.DialogResult = DialogResult.OK;
                                     }
-                                    catch(Exception ex)
+                                    catch (Exception ex)
                                     {
                                         MessageBox.Show(ex.Message);
                                     }
@@ -78,15 +60,28 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                 MessageBox.Show("Please fill in a subject for the appointment");
                             }
                         }
-                        if (Game_radioButton.Checked == true)
+                        if (details.GetType() == typeof(GameEvent))
                         {
                             try
                             {
                                 GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, "");
-                                calendarEventAdministration.AddCalendarEvent(gameAppiontment);
+                                calendarEventAdministration.ChangeCalendarEvent(details, gameAppiontment);
                                 this.DialogResult = DialogResult.OK;
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        }
+                        if (details.GetType() == typeof(CalendarEvent))
+                        {
+                            try
+                            {
+                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, "");
+                                calendarEventAdministration.ChangeCalendarEvent(details, appiontment);
+                                this.DialogResult = DialogResult.OK;
+                            }
+                            catch (Exception ex)
                             {
                                 MessageBox.Show(ex.Message);
                             }
@@ -108,22 +103,48 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             }
         }
 
-        private void School_radioButton_CheckedChanged(object sender, EventArgs e)
+        private void Remove_button_Click(object sender, EventArgs e)
         {
-            NormalAppointment();
-            Subject_label.Visible = true;
-            Subject_textBox.Visible = true;
-            Assignment_label.Visible = true;
-            Assignment_textBox.Visible = true;
+            try
+            {
+                calendarEventAdministration.RemoveCalendarEvent(details);
+                this.DialogResult = DialogResult.OK;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        private void Game_radioButton_CheckedChanged(object sender, EventArgs e)
+        public void Detail_Refresh()
         {
-            NormalAppointment();
-            Game_label.Visible = true;
-            Game_textBox.Visible = true;
+            if (details != null)
+            {
+                Titel_textBox.Text = details.Titel;
+                Note_textBox.Text = details.Notes;
+                Start_datePicker.Value = details.StartDate.Date;
+                Start_TimePicker.Value = details.StartDate.Date;
+                End_datePicker.Value = details.EndDate.Date;
+                End_TimePicker.Value = details.EndDate.Date;
+                if (details.GetType() == typeof(SchoolEvent))
+                {
+                    SchoolEvent schoolDetails = (SchoolEvent)details;
+                    Subject_label.Visible = true;
+                    Subject_textBox.Visible = true;
+                    Subject_textBox.Text = schoolDetails.Subject;
+                    Assignment_label.Visible = true;
+                    Assignment_textBox.Visible = true;
+                    Assignment_textBox.Text = schoolDetails.Assignment;
+                }
+                if (details.GetType() == typeof(GameEvent))
+                {
+                    GameEvent gameDetails = (GameEvent)details;
+                    Game_label.Visible = true;
+                    Game_textBox.Visible = true;
+                    Game_textBox.Text = gameDetails.GameName;
+                }
+            }
         }
-
         private void NormalAppointment()
         {
             Subject_label.Visible = false;
@@ -134,7 +155,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             Game_textBox.Visible = false;
         }
 
-        private void AgendaAddForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void AgendaDetailsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.DialogResult = DialogResult.OK;
         }

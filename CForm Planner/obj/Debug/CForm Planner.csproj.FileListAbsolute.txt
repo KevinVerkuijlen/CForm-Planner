@@ -19,3 +19,5 @@ C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Pl
 C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AlarmSystem.AlarmForms.AlarmForm.resources
 C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AlarmSystem.AlarmForms.AlarmDetailForm.resources
 C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AgendaSystem.AgendaForms.AgendaForm.resources
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AgendaSystem.AgendaForms.AgendaAddForm.resources
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AgendaSystem.AgendaForms.AgendaDetailsForm.resources

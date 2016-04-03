@@ -64,6 +64,12 @@
     <Compile Include="AgendaSystem\AgendaForms\AgendaAddForm.Designer.cs">
       <DependentUpon>AgendaAddForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AgendaSystem\AgendaForms\AgendaDetailsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AgendaSystem\AgendaForms\AgendaDetailsForm.Designer.cs">
+      <DependentUpon>AgendaDetailsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AgendaSystem\AgendaForms\AgendaForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,6 +154,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AccountSystem\AccountForms\RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AgendaSystem\AgendaForms\AgendaAddForm.resx">
+      <DependentUpon>AgendaAddForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AgendaSystem\AgendaForms\AgendaDetailsForm.resx">
+      <DependentUpon>AgendaDetailsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AgendaSystem\AgendaForms\AgendaForm.resx">
       <DependentUpon>AgendaForm.cs</DependentUpon>

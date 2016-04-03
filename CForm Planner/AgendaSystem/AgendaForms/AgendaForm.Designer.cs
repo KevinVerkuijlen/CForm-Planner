@@ -31,8 +31,8 @@
             this.Agenda_monthCalendar = new System.Windows.Forms.MonthCalendar();
             this.SelectedDate_label = new System.Windows.Forms.Label();
             this.EndDate_label = new System.Windows.Forms.Label();
-            this.Apiontment_listBox = new System.Windows.Forms.ListBox();
             this.Appiontment_button = new System.Windows.Forms.Button();
+            this.Appointment_listBox = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // Agenda_monthCalendar
@@ -60,16 +60,6 @@
             this.EndDate_label.TabIndex = 2;
             this.EndDate_label.Text = "To: ";
             // 
-            // Apiontment_listBox
-            // 
-            this.Apiontment_listBox.FormattingEnabled = true;
-            this.Apiontment_listBox.ItemHeight = 25;
-            this.Apiontment_listBox.Location = new System.Drawing.Point(18, 346);
-            this.Apiontment_listBox.Name = "Apiontment_listBox";
-            this.Apiontment_listBox.Size = new System.Drawing.Size(686, 304);
-            this.Apiontment_listBox.TabIndex = 3;
-            this.Apiontment_listBox.SelectedIndexChanged += new System.EventHandler(this.Apiontment_listBox_SelectedIndexChanged);
-            // 
             // Appiontment_button
             // 
             this.Appiontment_button.Location = new System.Drawing.Point(439, 97);
@@ -78,14 +68,25 @@
             this.Appiontment_button.TabIndex = 4;
             this.Appiontment_button.Text = "Make new appiontment";
             this.Appiontment_button.UseVisualStyleBackColor = true;
+            this.Appiontment_button.Click += new System.EventHandler(this.Appiontment_button_Click);
+            // 
+            // Appointment_listBox
+            // 
+            this.Appointment_listBox.FormattingEnabled = true;
+            this.Appointment_listBox.ItemHeight = 25;
+            this.Appointment_listBox.Location = new System.Drawing.Point(18, 346);
+            this.Appointment_listBox.Name = "Appointment_listBox";
+            this.Appointment_listBox.Size = new System.Drawing.Size(686, 304);
+            this.Appointment_listBox.TabIndex = 5;
+            this.Appointment_listBox.SelectedIndexChanged += new System.EventHandler(this.Appointment_listBox_SelectedIndexChanged);
             // 
             // AgendaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(716, 655);
+            this.Controls.Add(this.Appointment_listBox);
             this.Controls.Add(this.Appiontment_button);
-            this.Controls.Add(this.Apiontment_listBox);
             this.Controls.Add(this.EndDate_label);
             this.Controls.Add(this.SelectedDate_label);
             this.Controls.Add(this.Agenda_monthCalendar);
@@ -102,7 +103,7 @@
         private System.Windows.Forms.MonthCalendar Agenda_monthCalendar;
         private System.Windows.Forms.Label SelectedDate_label;
         private System.Windows.Forms.Label EndDate_label;
-        private System.Windows.Forms.ListBox Apiontment_listBox;
         private System.Windows.Forms.Button Appiontment_button;
+        private System.Windows.Forms.ListBox Appointment_listBox;
     }
 }
