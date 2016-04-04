@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.NoteSystem
 {
+    [Serializable]
     public class Note
     {
         public string Information { get; set; }

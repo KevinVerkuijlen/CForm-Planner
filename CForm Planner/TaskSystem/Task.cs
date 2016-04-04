@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.TaskSystem
 {
+    [Serializable]
     public class Task
     {
         public string Titel { get; protected set; }

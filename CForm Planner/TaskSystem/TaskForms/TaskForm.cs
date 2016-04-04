@@ -12,11 +12,10 @@ namespace CForm_Planner.TaskSystem.TaskForms
 {
     public partial class TaskForm : Form
     {
-        public TaskAdministration taskAdministration = new TaskAdministration();
+        public TaskAdministration taskAdministration;
         public TaskForm()
         {
             InitializeComponent();
-            ToDo_Refresh();
         }
 
         private void AddTask_button_Click(object sender, EventArgs e)

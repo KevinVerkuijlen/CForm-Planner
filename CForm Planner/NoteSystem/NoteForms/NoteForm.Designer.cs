@@ -28,18 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Notes_checkedListBox = new System.Windows.Forms.CheckedListBox();
             this.NewNote_button = new System.Windows.Forms.Button();
+            this.Note_listBox = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
-            // 
-            // Notes_checkedListBox
-            // 
-            this.Notes_checkedListBox.FormattingEnabled = true;
-            this.Notes_checkedListBox.Location = new System.Drawing.Point(12, 61);
-            this.Notes_checkedListBox.Name = "Notes_checkedListBox";
-            this.Notes_checkedListBox.Size = new System.Drawing.Size(439, 446);
-            this.Notes_checkedListBox.TabIndex = 0;
-            this.Notes_checkedListBox.SelectedIndexChanged += new System.EventHandler(this.Notes_checkedListBox_SelectedIndexChanged);
             // 
             // NewNote_button
             // 
@@ -51,13 +42,23 @@
             this.NewNote_button.UseVisualStyleBackColor = true;
             this.NewNote_button.Click += new System.EventHandler(this.NewNote_button_Click);
             // 
+            // Note_listBox
+            // 
+            this.Note_listBox.FormattingEnabled = true;
+            this.Note_listBox.ItemHeight = 25;
+            this.Note_listBox.Location = new System.Drawing.Point(12, 61);
+            this.Note_listBox.Name = "Note_listBox";
+            this.Note_listBox.Size = new System.Drawing.Size(429, 429);
+            this.Note_listBox.TabIndex = 3;
+            this.Note_listBox.SelectedIndexChanged += new System.EventHandler(this.Note_listBox_SelectedIndexChanged);
+            // 
             // NoteForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(464, 523);
+            this.ClientSize = new System.Drawing.Size(454, 499);
+            this.Controls.Add(this.Note_listBox);
             this.Controls.Add(this.NewNote_button);
-            this.Controls.Add(this.Notes_checkedListBox);
             this.Name = "NoteForm";
             this.Text = "NoteForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NoteForm_FormClosing);
@@ -67,7 +68,7 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckedListBox Notes_checkedListBox;
         private System.Windows.Forms.Button NewNote_button;
+        private System.Windows.Forms.ListBox Note_listBox;
     }
 }

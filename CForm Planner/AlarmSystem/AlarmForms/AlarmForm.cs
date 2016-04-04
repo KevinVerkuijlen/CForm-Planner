@@ -14,7 +14,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
 {
     public partial class AlarmForm : Form
     {
-        public AlarmAdministration alarmAdministration = new AlarmAdministration();
+        public AlarmAdministration alarmAdministration;
         private int on = 0;
         public AlarmForm()
         {
@@ -67,7 +67,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
             this.DialogResult = DialogResult.OK;
         }
 
-        private void Alarm_Refresh()
+        public void Alarm_Refresh()
         {
             Alarm_checkedListBox.Items.Clear();
             foreach (Alarm a in alarmAdministration.Alarm_list)

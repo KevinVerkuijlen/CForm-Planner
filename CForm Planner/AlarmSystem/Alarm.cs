@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AlarmSystem
 {
+    [Serializable]
     public class Alarm
     {
         public DateTime Alarmtime { get; set; }

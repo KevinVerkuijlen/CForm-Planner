@@ -12,7 +12,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 {
     public partial class AgendaForm : Form
     {
-        public CalendarEventAdministration calendarEventAdministration = new CalendarEventAdministration();
+        public CalendarEventAdministration calendarEventAdministration;
         public AgendaForm()
         {
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             this.DialogResult = DialogResult.OK;
         }
 
-        private void Agenda_monthCalendar_DateChanged(object sender, DateRangeEventArgs e)
+        public void Agenda_monthCalendar_DateChanged(object sender, DateRangeEventArgs e)
         {
             Appointment_listBox.DataBindings.Clear();
             List<CalendarEvent> appiontments = new List<CalendarEvent>();

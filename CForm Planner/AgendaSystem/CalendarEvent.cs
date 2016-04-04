@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AgendaSystem
 {
+    [Serializable]
     public class CalendarEvent
     {
         public string Titel { get; protected set; }

@@ -12,7 +12,7 @@ namespace CForm_Planner.NoteSystem
 {
     public partial class NoteForm : Form
     {
-        public NoteAdministration noteAdministration = new NoteAdministration();
+        public NoteAdministration noteAdministration;
         public NoteForm()
         {
             InitializeComponent();
@@ -32,15 +32,30 @@ namespace CForm_Planner.NoteSystem
             }
         }
 
-        private void Notes_checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
+
+        public void Note_Refresh()
         {
-            if (Notes_checkedListBox.SelectedItem != null)
+            Note_listBox.Items.Clear();
+            foreach (Note n in noteAdministration.Notes)
+            {
+                Note_listBox.Items.Add(n.Information);
+            }
+        }
+
+        private void NoteForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+        }
+
+        private void Note_listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Note_listBox.SelectedItem != null)
             {
                 NoteDetailForm form = new NoteDetailForm();
                 form.noteAdministration = this.noteAdministration;
                 foreach (Note note in noteAdministration.Notes)
-                { 
-                    if(note.Information == Notes_checkedListBox.SelectedItem.ToString())
+                {
+                    if (note.Information == Note_listBox.SelectedItem.ToString())
                     {
                         this.Visible = false;
                         form.details = note;
@@ -57,20 +72,6 @@ namespace CForm_Planner.NoteSystem
                     }
                 }
             }
-        }
-
-        public void Note_Refresh()
-        {
-            Notes_checkedListBox.Items.Clear();
-            foreach (Note n in noteAdministration.Notes)
-            {
-                Notes_checkedListBox.Items.Add(n.Information);
-            }
-        }
-
-        private void NoteForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            this.DialogResult = DialogResult.OK;
         }
     }
 }
