@@ -25,7 +25,7 @@ namespace CForm_Planner.NoteSystem
             {
                 try
                 {
-                    Note changedNote = new Note(NoteInfo_textBox.Text, "");
+                    Note changedNote = new Note(NoteInfo_textBox.Text, details.Accountemail);
                     noteAdministration.ChangeNote(details, changedNote);
                     this.DialogResult = DialogResult.OK;
                 }

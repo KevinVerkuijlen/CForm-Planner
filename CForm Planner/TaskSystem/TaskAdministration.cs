@@ -8,6 +8,7 @@ namespace CForm_Planner.TaskSystem
 {
     public class TaskAdministration
     {
+        private TaskDatabase taskDatabase = new TaskDatabase();
         public List<Task> Todo = new List<Task>();
 
         public void AddTask(Task task)
@@ -16,6 +17,10 @@ namespace CForm_Planner.TaskSystem
             if (check == -1)
             {
                 Todo.Add(task);
+                if (task.Accountemail != "")
+                {
+                    taskDatabase.InsertTask(task);
+                }
             }
             else
             {
@@ -29,6 +34,10 @@ namespace CForm_Planner.TaskSystem
             if (check >= 0)
             {
                 Todo.Remove(task);
+                if (task.Accountemail != "")
+                {
+                    taskDatabase.DeleteTask(task);
+                }
             }
             else
             {
@@ -44,6 +53,10 @@ namespace CForm_Planner.TaskSystem
             {
                 Todo.RemoveAt(oldCheck);
                 Todo.Insert(oldCheck, newTask);
+                if (oldTask.Accountemail != "" && newTask.Accountemail != "")
+                {
+                    taskDatabase.UpdateTask(oldTask, newTask);
+                }
             }
             else
             {

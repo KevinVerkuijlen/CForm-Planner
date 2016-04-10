@@ -41,7 +41,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                 }
                 try
                 {
-                    Alarm changedAlarm = new Alarm(alarmTime, set, "");
+                    Alarm changedAlarm = new Alarm(alarmTime, set, details.AccountEmail);
                     alarmAdministration.ChangeAlarm(details, changedAlarm);
                     this.DialogResult = DialogResult.OK;
                 }

@@ -8,6 +8,7 @@ namespace CForm_Planner.NoteSystem
 {
     public class NoteAdministration
     {
+        private NoteDatabase noteDatabase = new NoteDatabase();
         public List<Note> Notes = new List<Note>();
 
         public void AddNote(Note note)
@@ -16,6 +17,10 @@ namespace CForm_Planner.NoteSystem
             if (check == -1)
             {
                 Notes.Add(note);
+                if (note.Accountemail != "")
+                {
+                    noteDatabase.InsertNote(note);
+                }
             }
             else
             {
@@ -29,6 +34,10 @@ namespace CForm_Planner.NoteSystem
             if (check >= 0)
             {
                 Notes.Remove(note);
+                if (note.Accountemail != "")
+                {
+                    noteDatabase.DeleteNote(note);
+                }
             }
             else
             {
@@ -44,6 +53,10 @@ namespace CForm_Planner.NoteSystem
             {
                 Notes.RemoveAt(oldCheck);
                 Notes.Insert(oldCheck, newNote);
+                if (oldNote.Accountemail !="" && newNote.Accountemail != "")
+                {
+                    noteDatabase.UpdateNote(oldNote, newNote);
+                }
             }
             else
             {

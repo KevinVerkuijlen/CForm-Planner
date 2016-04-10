@@ -8,12 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CForm_Planner.TaskSystem;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner
 {
     public partial class TaskAddForm : Form
     {
         public TaskAdministration taskAdministration;
+        public Account user;
 
         public TaskAddForm()
         {
@@ -23,11 +25,16 @@ namespace CForm_Planner
 
         private void AddTask_button_Click(object sender, EventArgs e)
         {
+            string userEmail = "";
+            if (user != null)
+            {
+                userEmail = user.EmailAdress;
+            }
             if (TaskTitel_textBox.Text != "" && TaskNotes_textBox.Text != "")
             {
                 try
                 {
-                    TaskSystem.Task newtask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, "");
+                    TaskSystem.Task newtask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, userEmail);
                     taskAdministration.AddTask(newtask);
                 }
                 catch (Exception ex)

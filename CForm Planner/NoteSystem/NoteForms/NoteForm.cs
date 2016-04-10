@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.NoteSystem
 {
     public partial class NoteForm : Form
     {
         public NoteAdministration noteAdministration;
+        public Account user;
+
         public NoteForm()
         {
             InitializeComponent();
@@ -22,6 +25,7 @@ namespace CForm_Planner.NoteSystem
         {
             NoteAddForm form = new NoteAddForm();
             form.noteAdministration = this.noteAdministration;
+            form.user = this.user;
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)

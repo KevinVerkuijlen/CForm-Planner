@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.TaskSystem.TaskForms
 {
     public partial class TaskForm : Form
     {
         public TaskAdministration taskAdministration;
+        public Account user;
+
         public TaskForm()
         {
             InitializeComponent();
@@ -22,6 +25,7 @@ namespace CForm_Planner.TaskSystem.TaskForms
         {
             TaskAddForm form = new TaskAddForm();
             form.taskAdministration = this.taskAdministration;
+            form.user = this.user;
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
@@ -81,10 +85,6 @@ namespace CForm_Planner.TaskSystem.TaskForms
             this.DialogResult = DialogResult.OK;
         }
 
-        private void ToDo_checkedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-
-        }
 
     }
 }

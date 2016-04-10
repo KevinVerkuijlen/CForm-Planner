@@ -105,9 +105,9 @@
             // 
             // CompRegister_button
             // 
-            this.CompRegister_button.Location = new System.Drawing.Point(78, 233);
+            this.CompRegister_button.Location = new System.Drawing.Point(78, 223);
             this.CompRegister_button.Name = "CompRegister_button";
-            this.CompRegister_button.Size = new System.Drawing.Size(341, 35);
+            this.CompRegister_button.Size = new System.Drawing.Size(349, 45);
             this.CompRegister_button.TabIndex = 13;
             this.CompRegister_button.Text = "Complete registration";
             this.CompRegister_button.UseVisualStyleBackColor = true;

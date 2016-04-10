@@ -9,13 +9,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CForm_Planner.AlarmSystem;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.AlarmSystem.AlarmForms
 {
     public partial class AlarmForm : Form
     {
         public AlarmAdministration alarmAdministration;
+        public Account user;
         private int on = 0;
+
         public AlarmForm()
         {
             InitializeComponent();    
@@ -25,6 +28,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
         {
             AlarmAddForm form = new AlarmAddForm();
             form.alarmAdministration = this.alarmAdministration;
+            form.user = this.user;
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)

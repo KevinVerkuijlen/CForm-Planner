@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.NoteSystem
 {
     public partial class NoteAddForm : Form
     {
         public NoteAdministration noteAdministration;
+        public Account user;
+
         public NoteAddForm()
         {
             InitializeComponent();
@@ -20,11 +23,16 @@ namespace CForm_Planner.NoteSystem
 
         private void AddNote_button_Click(object sender, EventArgs e)
         {
+            string userEmail = "";
+            if (user != null)
+            {
+                userEmail = user.EmailAdress;
+            }
             if (NoteInfo_textBox.Text != "")
             {
                 try
                 {
-                    Note newNote = new Note(NoteInfo_textBox.Text, "");
+                    Note newNote = new Note(NoteInfo_textBox.Text, userEmail);
                     noteAdministration.AddNote(newNote);
                 }
                 catch (Exception ex)

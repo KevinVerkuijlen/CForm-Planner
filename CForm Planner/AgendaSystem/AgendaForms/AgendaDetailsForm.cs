@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.AgendaSystem.AgendaForms
 {
@@ -41,7 +42,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                 {
                                     try
                                     {
-                                        SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, "");
+                                        SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, details.AccountEmail);
                                         calendarEventAdministration.ChangeCalendarEvent(details, schoolAppiontment);
                                         this.DialogResult = DialogResult.OK;
                                     }
@@ -64,7 +65,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, "");
+                                GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, details.AccountEmail);
                                 calendarEventAdministration.ChangeCalendarEvent(details, gameAppiontment);
                                 this.DialogResult = DialogResult.OK;
                             }
@@ -77,7 +78,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, "");
+                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, details.AccountEmail);
                                 calendarEventAdministration.ChangeCalendarEvent(details, appiontment);
                                 this.DialogResult = DialogResult.OK;
                             }

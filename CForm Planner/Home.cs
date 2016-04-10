@@ -13,6 +13,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using CForm_Planner.AccountSystem.AccountForms;
 using CForm_Planner.AgendaSystem.AgendaForms;
 using CForm_Planner.AlarmSystem.AlarmForms;
+using CForm_Planner.AccountSystem;
 using CForm_Planner.AlarmSystem;
 using CForm_Planner.NoteSystem;
 using CForm_Planner.TaskSystem;
@@ -22,6 +23,7 @@ namespace CForm_Planner
 {
     public partial class Home : Form
     {
+        private Administration administration = new Administration();
         private NoteAdministration noteAdministration = new NoteAdministration();
         private TaskAdministration taskAdministration = new TaskAdministration();
         private AlarmAdministration alarmAdministration = new AlarmAdministration();
@@ -30,25 +32,52 @@ namespace CForm_Planner
         public Home()
         {
             InitializeComponent();
+            UserRefresh();
+
+            noteAdministration.Notes = ReadFromBinaryFile<List<Note>>(@"notes.bin");
+            calendarEventAdministration.Agenda = ReadFromBinaryFile<List<CalendarEvent>>(@"Agenda.bin");
+            alarmAdministration.Alarm_list = ReadFromBinaryFile<List<Alarm>>(@"Alarm.bin");
+            taskAdministration.Todo = ReadFromBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin");
+
             MessageBox.Show("Alarm en Agenda sorteren (task prioriteit)");
         }
 
         private void Account_button_Click(object sender, EventArgs e)
         {
-            LoginForm form = new LoginForm();
-            this.Visible = false;
-            var closing = form.ShowDialog();
-            if (closing == DialogResult.OK)
+            if (administration.user == null)
             {
-                this.Visible = true;
+                LoginForm form = new LoginForm();
+                form.administration = this.administration;
+                this.Visible = false;
+                var closing = form.ShowDialog();
+                if (closing == DialogResult.OK)
+                {
+                    this.administration = form.administration;
+                    UserRefresh();
+                    this.Visible = true;
+                }
+            }
+            else
+            {
+                AccountDetailsForm form = new AccountDetailsForm();
+                form.administration = this.administration;
+                form.refresh();
+                this.Visible = false;
+                var closing = form.ShowDialog();
+                if (closing == DialogResult.OK)
+                {
+                    this.administration = form.administration;
+                    UserRefresh();
+                    this.Visible = true;
+                }
             }
         }
 
         private void Note_button_Click(object sender, EventArgs e)
         {
-            noteAdministration.Notes = ReadFromBinaryFile<List<Note>>(@"notes.bin");
             NoteForm form = new NoteForm();
             form.noteAdministration = noteAdministration;
+            form.user = administration.user;
             form.Note_Refresh();
             this.Visible = false;
             var closing = form.ShowDialog();
@@ -62,9 +91,9 @@ namespace CForm_Planner
 
         private void Agenda_button_Click(object sender, EventArgs e)
         {
-            calendarEventAdministration.Agenda = ReadFromBinaryFile<List<CalendarEvent>>(@"Agenda.bin");
             AgendaForm form = new AgendaForm();
             form.calendarEventAdministration = this.calendarEventAdministration;
+            form.user = administration.user;
             form.Agenda_monthCalendar_DateChanged(null, null);
             this.Visible = false;
             var closing = form.ShowDialog();
@@ -78,9 +107,9 @@ namespace CForm_Planner
 
         private void Alarm_button_Click(object sender, EventArgs e)
         {
-            alarmAdministration.Alarm_list = ReadFromBinaryFile<List<Alarm>>(@"Alarm.bin");
             AlarmForm form = new AlarmForm();
             form.alarmAdministration = this.alarmAdministration;
+            form.user = administration.user;
             form.Alarm_Refresh();
             this.Visible = false;
             var closing = form.ShowDialog();
@@ -94,9 +123,9 @@ namespace CForm_Planner
 
         private void ToDo_button_Click(object sender, EventArgs e)
         {
-            taskAdministration.Todo = ReadFromBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin");
             CForm_Planner.TaskSystem.TaskForms.TaskForm form = new CForm_Planner.TaskSystem.TaskForms.TaskForm();
             form.taskAdministration = this.taskAdministration;
+            form.user = administration.user;
             form.ToDo_Refresh();
             this.Visible = false;
             var closing = form.ShowDialog();
@@ -135,6 +164,31 @@ namespace CForm_Planner
             {
                 var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
                 return (T)binaryFormatter.Deserialize(stream);
+            }
+        }
+
+        public void UserRefresh()
+        {
+            if (administration.user != null)
+            {
+                Name_label.Visible = true;
+                UName_label.Visible = true;
+                UName_label.Text = administration.user.Name;
+                LastName_label.Visible = true;
+                ULastName_label.Visible = true;
+                ULastName_label.Text = administration.user.LastName;
+                email_label.Visible = true;
+                UEmail_label.Visible = true;
+                UEmail_label.Text = administration.user.EmailAdress;
+            }
+            else
+            {
+                Name_label.Visible = false;
+                UName_label.Visible = false;
+                LastName_label.Visible = false;
+                ULastName_label.Visible = false;
+                email_label.Visible = false;
+                UEmail_label.Visible = false;
             }
         }
     }

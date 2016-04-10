@@ -12,6 +12,7 @@ namespace CForm_Planner.AccountSystem.AccountForms
 {
     public partial class RegisterForm : Form
     {
+        public Administration administration;
         public RegisterForm()
         {
             InitializeComponent();
@@ -19,7 +20,44 @@ namespace CForm_Planner.AccountSystem.AccountForms
 
         private void CompRegister_button_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
+            if(FirstName_textBox.Text != "")
+            {
+                if(LastName_textBox.Text != "")
+                {
+                    if(Email_textBox.Text != "")
+                    {
+                        if (Password_textBox.Text != "")
+                        {
+                            Account newAccount = new Account(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
+                            try
+                            {
+                                administration.Register(newAccount);
+                                this.DialogResult = DialogResult.OK;
+                            }
+                            catch(Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }               
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please fill in a Password");
+                        } 
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please fill in a email adress");
+                    } 
+                }
+                else
+                {
+                    MessageBox.Show("Please fill in a last name");
+                } 
+            }
+            else
+            {
+                MessageBox.Show("Please fill in a firstname");
+            }        
         }
 
         private void RegisterForm_FormClosing(object sender, FormClosingEventArgs e)

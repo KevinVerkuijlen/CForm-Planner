@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CForm_Planner.AgendaSystem
 {
     public class CalendarEventAdministration
     {
+        public CalendarDatabase calendarDatabase = new CalendarDatabase();
         public List<CalendarEvent> Agenda = new List<CalendarEvent>();
 
         public void AddCalendarEvent(CalendarEvent calendarEvent)
@@ -16,6 +18,10 @@ namespace CForm_Planner.AgendaSystem
             if (check == -1)
             {
                 Agenda.Add(calendarEvent);
+                if (calendarEvent.AccountEmail != "")
+                {
+                    calendarDatabase.InsertCalendarEvent(calendarEvent);
+                }
             }
             else
             {
@@ -29,6 +35,10 @@ namespace CForm_Planner.AgendaSystem
             if (check >= 0)
             {
                 Agenda.Remove(calendarEvent);
+                if (calendarEvent.AccountEmail != "")
+                {
+                    calendarDatabase.DeleteCalendarEvent(calendarEvent);
+                }
             }
             else
             {
@@ -44,6 +54,10 @@ namespace CForm_Planner.AgendaSystem
             {
                 Agenda.RemoveAt(oldCheck);
                 Agenda.Insert(oldCheck, newCalendarEvent);
+                if (oldCalendarEvent.AccountEmail!=""&& newCalendarEvent.AccountEmail != "")
+                {
+                    calendarDatabase.UpdateCalendarEvent(oldCalendarEvent, newCalendarEvent);
+                }
             }
             else
             {

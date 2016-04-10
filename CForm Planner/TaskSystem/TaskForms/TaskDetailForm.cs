@@ -34,7 +34,7 @@ namespace CForm_Planner
                 }
                 try
                 {
-                    TaskSystem.Task changedTask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed, "");
+                    TaskSystem.Task changedTask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed, details.Accountemail);
                     taskAdministration.ChangeTask(details, changedTask);
                     this.DialogResult = DialogResult.OK;
                     return;

@@ -8,6 +8,7 @@ namespace CForm_Planner.AlarmSystem
 {
     public class AlarmAdministration
     {
+        private AlarmDatabase alarmDatabase = new AlarmDatabase();
         public List<Alarm> Alarm_list = new List<Alarm>();
 
         public void AddAlarm(Alarm alarm)
@@ -16,6 +17,10 @@ namespace CForm_Planner.AlarmSystem
             if (check == -1)
             {
                 Alarm_list.Add(alarm);
+                if (alarm.AccountEmail != "")
+                {
+                    alarmDatabase.InsertAlarm(alarm);
+                }
             }
             else
             {
@@ -29,6 +34,10 @@ namespace CForm_Planner.AlarmSystem
             if (check >= 0)
             {
                 Alarm_list.Remove(alarm);
+                if (alarm.AccountEmail != "")
+                {
+                    alarmDatabase.DeleteAlarm(alarm);
+                }
             }
             else
             {
@@ -44,6 +53,10 @@ namespace CForm_Planner.AlarmSystem
             {
                 Alarm_list.RemoveAt(oldCheck);
                 Alarm_list.Insert(oldCheck, newAlarm);
+                if (oldAlarm.AccountEmail !="" && newAlarm.AccountEmail != "")
+                {
+                    alarmDatabase.UpdateAlarm(oldAlarm,newAlarm);
+                }
             }
             else
             {

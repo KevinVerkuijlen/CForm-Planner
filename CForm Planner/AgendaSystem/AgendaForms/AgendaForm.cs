@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.AgendaSystem.AgendaForms
 {
     public partial class AgendaForm : Form
     {
         public CalendarEventAdministration calendarEventAdministration;
+        public Account user;
+
         public AgendaForm()
         {
             InitializeComponent();
@@ -63,6 +66,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             AgendaAddForm form = new AgendaAddForm();
             this.Visible = false;
             form.calendarEventAdministration = this.calendarEventAdministration;
+            form.user = this.user;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {

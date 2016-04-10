@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.AgendaSystem.AgendaForms
 {
     public partial class AgendaAddForm : Form
     {
         public CalendarEventAdministration calendarEventAdministration;
-        public CalendarEvent details;
-
+        public Account user;
+        
         public AgendaAddForm()
         {
             InitializeComponent();
@@ -28,6 +29,11 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         private void Add_button_Click(object sender, EventArgs e)
         {
+            string userEmail = "";
+            if (user != null)
+            {
+                userEmail = user.EmailAdress;
+            }
             if (Titel_textBox.Text != "")
             {
                 if (Note_textBox.Text != "")
@@ -42,7 +48,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, "");
+                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, userEmail);
                                 calendarEventAdministration.AddCalendarEvent(appiontment);
                                 this.DialogResult = DialogResult.OK;
                             }
@@ -59,7 +65,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                 {
                                     try
                                     {
-                                        SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, "");
+                                        SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
                                         calendarEventAdministration.AddCalendarEvent(schoolAppiontment);
                                         this.DialogResult = DialogResult.OK;
                                     }
@@ -82,7 +88,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, "");
+                                GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, userEmail);
                                 calendarEventAdministration.AddCalendarEvent(gameAppiontment);
                                 this.DialogResult = DialogResult.OK;
                             }
