@@ -29,5 +29,25 @@ namespace CForm_Planner.TaskSystem
             this.Completed = completed;
             this.Accountemail = accountEmail;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Task)
+            {
+                Task other = ((Task)obj);
+                return this.Titel == other.Titel
+                    && this.Notes == other.Notes
+                    && this.Accountemail == other.Accountemail;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Titel.GetHashCode() ^ Notes.GetHashCode() ^ Accountemail.GetHashCode();
+        }
     }
 }

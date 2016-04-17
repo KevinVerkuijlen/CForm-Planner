@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CForm_Planner.AccountSystem
 {
+    [Serializable]
     public class Account
     {
         public string Name { get; set; }

@@ -36,5 +36,28 @@ namespace CForm_Planner.AgendaSystem
             }
             this.GameName = gameName;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is GameEvent)
+            {
+                GameEvent other = ((GameEvent)obj);
+                return this.Titel == other.Titel
+                    && this.StartDate == other.StartDate
+                    && this.EndDate == other.EndDate
+                    && this.Notes == other.Notes
+                    && this.GameName == other.GameName
+                    && this.AccountEmail == other.AccountEmail;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Titel.GetHashCode() ^ StartDate.GetHashCode() ^ EndDate.GetHashCode() ^ Notes.GetHashCode() ^ GameName.GetHashCode() ^ AccountEmail.GetHashCode();
+        }
     }
 }

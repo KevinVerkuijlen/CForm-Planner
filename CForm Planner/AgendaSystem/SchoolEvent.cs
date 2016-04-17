@@ -42,5 +42,29 @@ namespace CForm_Planner.AgendaSystem
             this.Subject = subject;
             this.Assignment = assignment;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is SchoolEvent)
+            {
+                SchoolEvent other = ((SchoolEvent)obj);
+                return this.Titel == other.Titel
+                    && this.StartDate == other.StartDate
+                    && this.EndDate == other.EndDate
+                    && this.Notes == other.Notes
+                    && this.Subject ==  other.Subject
+                    && this.Assignment == other.Assignment
+                    && this.AccountEmail == other.AccountEmail;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Titel.GetHashCode() ^ StartDate.GetHashCode() ^ EndDate.GetHashCode() ^ Notes.GetHashCode() ^ Subject.GetHashCode() ^ Assignment.GetHashCode() ^ AccountEmail.GetHashCode();
+        }
     }
 }

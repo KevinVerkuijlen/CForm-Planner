@@ -27,11 +27,10 @@ namespace CForm_Planner.AccountSystem.AccountForms
                     if(Email_textBox.Text != "")
                     {
                         if (Password_textBox.Text != "")
-                        {
-                            Account newAccount = new Account(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
+                        {                  
                             try
                             {
-                                administration.Register(newAccount);
+                                administration.Register(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
                                 this.DialogResult = DialogResult.OK;
                             }
                             catch(Exception ex)

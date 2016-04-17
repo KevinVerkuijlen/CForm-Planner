@@ -15,6 +15,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
     {
         public CalendarEventAdministration calendarEventAdministration;
         public Account user;
+        public CalendarEvent task;
         
         public AgendaAddForm()
         {
@@ -48,9 +49,8 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, userEmail);
-                                calendarEventAdministration.AddCalendarEvent(appiontment);
-                                this.DialogResult = DialogResult.OK;
+                                calendarEventAdministration.AddCalendarEvent(titel, notes, start, end, userEmail);
+                                AgendaAddForm_FormClosing(null, null);
                             }
                             catch (Exception ex)
                             {
@@ -65,9 +65,8 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                 {
                                     try
                                     {
-                                        SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
-                                        calendarEventAdministration.AddCalendarEvent(schoolAppiontment);
-                                        this.DialogResult = DialogResult.OK;
+                                        calendarEventAdministration.AddCalendarEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
+                                        AgendaAddForm_FormClosing(null, null);
                                     }
                                     catch(Exception ex)
                                     {
@@ -88,9 +87,8 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, userEmail);
-                                calendarEventAdministration.AddCalendarEvent(gameAppiontment);
-                                this.DialogResult = DialogResult.OK;
+                                calendarEventAdministration.AddCalendarEvent(titel, notes, start, end, Game_textBox.Text, userEmail);
+                                AgendaAddForm_FormClosing(null, null);
                             }
                             catch(Exception ex)
                             {
@@ -142,7 +140,27 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         private void AgendaAddForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
+            if (task != null)
+            {
+                this.DialogResult = DialogResult.Yes;
+            }
+            else
+            {
+                this.DialogResult = DialogResult.OK;
+            }
+        }
+
+        public void Detail_Refresh()
+        {
+            if (task != null)
+            {
+                Titel_textBox.Text = task.Titel;
+                Note_textBox.Text = task.Notes;
+                Start_datePicker.Value = task.StartDate.Date;
+                Start_TimePicker.Value = task.StartDate;
+                End_datePicker.Value = task.EndDate.Date;
+                End_TimePicker.Value = task.EndDate;
+            }
         }
     }
 }

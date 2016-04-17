@@ -20,7 +20,6 @@ namespace CForm_Planner
         public TaskAddForm()
         {
             InitializeComponent();
-            
         }
 
         private void AddTask_button_Click(object sender, EventArgs e)
@@ -34,8 +33,7 @@ namespace CForm_Planner
             {
                 try
                 {
-                    TaskSystem.Task newtask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, userEmail);
-                    taskAdministration.AddTask(newtask);
+                    taskAdministration.AddTask(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, userEmail);
                 }
                 catch (Exception ex)
                 {

@@ -36,6 +36,7 @@
             this.TaskTitel_label = new System.Windows.Forms.Label();
             this.Completed_label = new System.Windows.Forms.Label();
             this.Completed_radioButton = new System.Windows.Forms.RadioButton();
+            this.TaskToAppointment_button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ChangeTask_button
@@ -111,11 +112,22 @@
             this.Completed_radioButton.Text = "completed";
             this.Completed_radioButton.UseVisualStyleBackColor = true;
             // 
+            // TaskToAppointment_button
+            // 
+            this.TaskToAppointment_button.Location = new System.Drawing.Point(12, 518);
+            this.TaskToAppointment_button.Name = "TaskToAppointment_button";
+            this.TaskToAppointment_button.Size = new System.Drawing.Size(414, 43);
+            this.TaskToAppointment_button.TabIndex = 10;
+            this.TaskToAppointment_button.Text = "Make an appointment of task";
+            this.TaskToAppointment_button.UseVisualStyleBackColor = true;
+            this.TaskToAppointment_button.Click += new System.EventHandler(this.TaskToAppointment_button_Click);
+            // 
             // TaskDetailForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(438, 523);
+            this.ClientSize = new System.Drawing.Size(438, 569);
+            this.Controls.Add(this.TaskToAppointment_button);
             this.Controls.Add(this.Completed_radioButton);
             this.Controls.Add(this.Completed_label);
             this.Controls.Add(this.TaskNotes_textBox);
@@ -142,5 +154,6 @@
         private System.Windows.Forms.Label TaskTitel_label;
         private System.Windows.Forms.Label Completed_label;
         private System.Windows.Forms.RadioButton Completed_radioButton;
+        private System.Windows.Forms.Button TaskToAppointment_button;
     }
 }

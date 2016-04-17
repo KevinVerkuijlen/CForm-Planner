@@ -43,6 +43,9 @@
             this.Agenda_button = new System.Windows.Forms.Button();
             this.Note_button = new System.Windows.Forms.Button();
             this.Account_button = new System.Windows.Forms.Button();
+            this.Today_label = new System.Windows.Forms.Label();
+            this.TaskP1_label = new System.Windows.Forms.Label();
+            this.TaskP2_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Alarm_timer
@@ -109,6 +112,7 @@
             this.upload_button.Size = new System.Drawing.Size(92, 86);
             this.upload_button.TabIndex = 12;
             this.upload_button.UseVisualStyleBackColor = true;
+            this.upload_button.Click += new System.EventHandler(this.upload_button_Click);
             // 
             // download_button
             // 
@@ -119,6 +123,7 @@
             this.download_button.Size = new System.Drawing.Size(93, 86);
             this.download_button.TabIndex = 11;
             this.download_button.UseVisualStyleBackColor = true;
+            this.download_button.Click += new System.EventHandler(this.download_button_Click);
             // 
             // ToDo_button
             // 
@@ -175,11 +180,42 @@
             this.Account_button.UseVisualStyleBackColor = true;
             this.Account_button.Click += new System.EventHandler(this.Account_button_Click);
             // 
+            // Today_label
+            // 
+            this.Today_label.AutoSize = true;
+            this.Today_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Today_label.Location = new System.Drawing.Point(107, 287);
+            this.Today_label.Name = "Today_label";
+            this.Today_label.Size = new System.Drawing.Size(115, 37);
+            this.Today_label.TabIndex = 13;
+            this.Today_label.Text = "Today:";
+            // 
+            // TaskP1_label
+            // 
+            this.TaskP1_label.AutoSize = true;
+            this.TaskP1_label.Location = new System.Drawing.Point(501, 287);
+            this.TaskP1_label.Name = "TaskP1_label";
+            this.TaskP1_label.Size = new System.Drawing.Size(114, 25);
+            this.TaskP1_label.TabIndex = 14;
+            this.TaskP1_label.Text = "Unfinished";
+            // 
+            // TaskP2_label
+            // 
+            this.TaskP2_label.AutoSize = true;
+            this.TaskP2_label.Location = new System.Drawing.Point(501, 312);
+            this.TaskP2_label.Name = "TaskP2_label";
+            this.TaskP2_label.Size = new System.Drawing.Size(78, 25);
+            this.TaskP2_label.TabIndex = 15;
+            this.TaskP2_label.Text = ".Text =";
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(612, 499);
+            this.ClientSize = new System.Drawing.Size(642, 499);
+            this.Controls.Add(this.TaskP2_label);
+            this.Controls.Add(this.TaskP1_label);
+            this.Controls.Add(this.Today_label);
             this.Controls.Add(this.upload_button);
             this.Controls.Add(this.download_button);
             this.Controls.Add(this.UEmail_label);
@@ -195,6 +231,7 @@
             this.Controls.Add(this.Account_button);
             this.Name = "Home";
             this.Text = "Planner";
+            this.Load += new System.EventHandler(this.Home_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -216,6 +253,9 @@
         private System.Windows.Forms.Label UEmail_label;
         private System.Windows.Forms.Button download_button;
         private System.Windows.Forms.Button upload_button;
+        private System.Windows.Forms.Label Today_label;
+        private System.Windows.Forms.Label TaskP1_label;
+        private System.Windows.Forms.Label TaskP2_label;
     }
 }
 

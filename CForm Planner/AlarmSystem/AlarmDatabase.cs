@@ -117,9 +117,46 @@ namespace CForm_Planner.AlarmSystem
             }
         }
 
-        public Alarm GetAlarm()
+        public Alarm GetAlarm(Alarm check)
         {
-            return null;
+            Alarm alarm = null;
+            try
+            {
+                this.db.OpenConnection();
+                this.db.Query = "SELECT * FROM ALARM WHERE TIME = :TIME AND EMAILADDRESS = :MAIL";
+                this.db.Command.Parameters.Add(":TIME", OracleDbType.Date).Value = check.Alarmtime;
+                this.db.Command.Parameters.Add(":MAIL", OracleDbType.Varchar2).Value = check.AccountEmail;
+
+                OracleDataReader reader = this.db.Command.ExecuteReader();
+                while (reader.Read())
+                {
+                    DateTime time = (DateTime)reader["TIME"];
+                    int set = Convert.ToInt32(reader["ALARMSET"]);
+                    bool alarmset = false;
+                    if (set == 1)
+                    {
+                        alarmset = true;
+                    }
+                    else
+                    {
+                        if (set == 0)
+                        {
+                            alarmset = false;
+                        }
+                    }
+                    string email = (String)reader["EMAILADDRESS"];
+                    alarm = new Alarm(time, alarmset, email);
+                }
+            }
+            catch (OracleException)
+            {
+                throw;
+            }
+            finally
+            {
+                this.db.CloseConnection();
+            }
+            return alarm;
         }
 
         public List<Alarm> GetAllAlarms(Account account)
@@ -135,7 +172,7 @@ namespace CForm_Planner.AlarmSystem
                 while (reader.Read())
                 {
                     DateTime time = (DateTime)reader["TIME"];
-                    int set = (Int32)reader["ALARMSET"];
+                    int set = Convert.ToInt32(reader["ALARMSET"]);
                     bool alarmset = false;
                     if (set == 1)
                     {

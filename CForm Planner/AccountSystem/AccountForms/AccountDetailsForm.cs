@@ -29,10 +29,9 @@ namespace CForm_Planner.AccountSystem.AccountForms
                     {
                         if (Password_textBox.Text != "")
                         {
-                            Account changedAccount = new Account(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
                             try
                             {
-                                administration.UpdateAccount(changedAccount);
+                                administration.UpdateAccount(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
                                 this.DialogResult = DialogResult.OK;
                             }
                             catch (Exception ex)
@@ -76,8 +75,7 @@ namespace CForm_Planner.AccountSystem.AccountForms
 
         private void Logout_button_Click(object sender, EventArgs e)
         {
-            administration.user = null;
-            this.DialogResult = DialogResult.OK;
+            administration.LogoutAccount();
         }
     }
 }

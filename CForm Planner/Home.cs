@@ -32,13 +32,27 @@ namespace CForm_Planner
         public Home()
         {
             InitializeComponent();
-            UserRefresh();
-
+            
+        }
+        private void Home_Load(object sender, EventArgs e)
+        {
+            //administration.user = ReadFromBinaryFile<Account>(@"User.bin");
             noteAdministration.Notes = ReadFromBinaryFile<List<Note>>(@"notes.bin");
             calendarEventAdministration.Agenda = ReadFromBinaryFile<List<CalendarEvent>>(@"Agenda.bin");
             alarmAdministration.Alarm_list = ReadFromBinaryFile<List<Alarm>>(@"Alarm.bin");
             taskAdministration.Todo = ReadFromBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin");
+            UserRefresh();
 
+            Reminders form = new Reminders();
+            form.calendarEventAdministration = this.calendarEventAdministration;
+            form.taskAdministration = this.taskAdministration;
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                UserRefresh();
+                this.Visible = true;
+            }
             MessageBox.Show("Alarm en Agenda sorteren (task prioriteit)");
         }
 
@@ -53,6 +67,7 @@ namespace CForm_Planner
                 if (closing == DialogResult.OK)
                 {
                     this.administration = form.administration;
+                  //  WriteToBinaryFile<Account>(@"User.bin", administration.user);
                     UserRefresh();
                     this.Visible = true;
                 }
@@ -101,6 +116,7 @@ namespace CForm_Planner
             {
                 this.calendarEventAdministration = form.calendarEventAdministration;
                 WriteToBinaryFile<List<CalendarEvent>>(@"Agenda.bin", calendarEventAdministration.Agenda);
+                UserRefresh();
                 this.Visible = true;
             }
         }
@@ -125,6 +141,7 @@ namespace CForm_Planner
         {
             CForm_Planner.TaskSystem.TaskForms.TaskForm form = new CForm_Planner.TaskSystem.TaskForms.TaskForm();
             form.taskAdministration = this.taskAdministration;
+            form.calendarEventAdministration = this.calendarEventAdministration;
             form.user = administration.user;
             form.ToDo_Refresh();
             this.Visible = false;
@@ -133,6 +150,7 @@ namespace CForm_Planner
             {
                 this.taskAdministration = form.taskAdministration;
                 WriteToBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin", taskAdministration.Todo);
+                UserRefresh();
                 this.Visible = true;
             }
         }
@@ -147,7 +165,6 @@ namespace CForm_Planner
                 }
             }
         }
-
 
         public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
@@ -180,6 +197,8 @@ namespace CForm_Planner
                 email_label.Visible = true;
                 UEmail_label.Visible = true;
                 UEmail_label.Text = administration.user.EmailAdress;
+                download_button.Enabled = true;
+                upload_button.Enabled = true;
             }
             else
             {
@@ -189,8 +208,67 @@ namespace CForm_Planner
                 ULastName_label.Visible = false;
                 email_label.Visible = false;
                 UEmail_label.Visible = false;
+                download_button.Enabled = false;
+                upload_button.Enabled = false;
+            }
+            int todayAppointment = 0;
+            foreach (CalendarEvent appointment in calendarEventAdministration.Agenda)
+            {
+                if (appointment.StartDate.Date == DateTime.Now.Date || appointment.EndDate.Date == DateTime.Now.Date || (appointment.StartDate.Date <= DateTime.Now.Date && appointment.EndDate.Date >= DateTime.Now.Date))
+                {
+                    todayAppointment += 1;
+                }
+            }
+            Today_label.Text = "Today: " + todayAppointment.ToString();
+
+            int tasks = 0;
+            foreach (CForm_Planner.TaskSystem.Task task in taskAdministration.Todo)
+            {
+                if (task.Completed == false)
+                {
+                    tasks += 1;
+                }
+            }
+            TaskP2_label.Text = "Tasks = " + tasks.ToString();
+        }
+
+        private void download_button_Click(object sender, EventArgs e)
+        {
+            if (administration.user != null)
+            {
+                try
+                {
+                    noteAdministration.MergeNotes(administration.user);
+                    taskAdministration.MergeTask(administration.user);
+                    alarmAdministration.MergeAlarms(administration.user);
+                    calendarEventAdministration.MergeCalendar(administration.user);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
+
+        private void upload_button_Click(object sender, EventArgs e)
+        {
+            if (administration.user != null)
+            {
+                try
+                {
+                    noteAdministration.UploadTasks(administration.user);
+                    taskAdministration.UploadTasks(administration.user);
+                    alarmAdministration.UploadAlarms(administration.user);
+                    calendarEventAdministration.UploadCalendar(administration.user);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+
     }
 
 }

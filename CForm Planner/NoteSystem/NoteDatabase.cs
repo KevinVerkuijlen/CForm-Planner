@@ -82,9 +82,33 @@ namespace CForm_Planner.NoteSystem
             }
         }
 
-        public Note GetNote()
+        public Note GetNote(Note check)
         {
-            return null;
+            Note note = null;
+            try
+            {
+                this.db.OpenConnection();
+                this.db.Query = "SELECT * FROM NOTES WHERE INFORMATION = :NOTE AND EMAILADDRESS = :MAIL";
+                this.db.Command.Parameters.Add(":NOTE", OracleDbType.Varchar2).Value = check.Information;
+                this.db.Command.Parameters.Add(":MAIL", OracleDbType.Varchar2).Value = check.Accountemail;
+
+                OracleDataReader reader = this.db.Command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string information = (String)reader["INFORMATION"];
+                    string email = (String)reader["EMAILADDRESS"];
+                    note = new Note(information, email);
+                }
+            }
+            catch (OracleException)
+            {
+                throw;
+            }
+            finally
+            {
+                this.db.CloseConnection();
+            }
+            return note;
         }
 
         public List<Note> GetAllNotes(Account account)

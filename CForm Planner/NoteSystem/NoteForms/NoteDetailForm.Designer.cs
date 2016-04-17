@@ -75,7 +75,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 469);
+            this.ClientSize = new System.Drawing.Size(462, 551);
             this.Controls.Add(this.NoteInfor_label);
             this.Controls.Add(this.NoteInfo_textBox);
             this.Controls.Add(this.RemoveNote_button);

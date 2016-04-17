@@ -37,8 +37,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                 DateTime alarmTime = new DateTime(1, 1, 1, Convert.ToInt32(Hour_numericUpDown.Value), Convert.ToInt32(Min_numericUpDown.Value), 0);
                 try
                 {
-                    Alarm newAlarm = new Alarm(alarmTime, false, userEmail);
-                    alarmAdministration.AddAlarm(newAlarm);
+                    alarmAdministration.AddAlarm(alarmTime, false, userEmail);
                 }
                 catch (Exception ex)
                 {

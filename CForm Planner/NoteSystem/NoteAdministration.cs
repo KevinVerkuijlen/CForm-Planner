@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.NoteSystem
 {
@@ -11,15 +12,28 @@ namespace CForm_Planner.NoteSystem
         private NoteDatabase noteDatabase = new NoteDatabase();
         public List<Note> Notes = new List<Note>();
 
-        public void AddNote(Note note)
+        public void AddNote(string information, string accountemail)
         {
+            Note note = new Note(information, accountemail);
             int check = CheckForNote(note);
             if (check == -1)
             {
-                Notes.Add(note);
                 if (note.Accountemail != "")
                 {
-                    noteDatabase.InsertNote(note);
+                    Note databaseCheck = noteDatabase.GetNote(note);
+                    if (databaseCheck == null)
+                    {
+                        Notes.Add(note);
+                        noteDatabase.InsertNote(note);
+                    }
+                    else
+                    {
+                        throw new PlannerExceptions("Note already exist, please reload your data");
+                    }
+                }
+                else
+                {
+                    Notes.Add(note);
                 }
             }
             else
@@ -45,8 +59,9 @@ namespace CForm_Planner.NoteSystem
             }
         }
 
-        public void ChangeNote(Note oldNote, Note newNote)
+        public void ChangeNote(Note oldNote, string information, string accountemail)
         {
+            Note newNote = new Note(information, accountemail);
             int oldCheck = CheckForNote(oldNote);
             int newCheck = CheckForNote(newNote);
             if (oldCheck >= 0 && newCheck == -1)
@@ -80,6 +95,40 @@ namespace CForm_Planner.NoteSystem
                 }
             }
             return check;
+        }
+
+        public void MergeNotes(Account user)
+        {
+            if (user != null)
+            {
+                List<Note> loaded = noteDatabase.GetAllNotes(user);
+                this.Notes = Notes.Union(loaded).Distinct().ToList();
+            }
+        }
+
+        public void UploadTasks(Account user)
+        {
+            if (user != null)
+            {
+                foreach (Note n in Notes)
+                {
+                    if (n.Accountemail != "")
+                    {
+                        Note databaseCheck = noteDatabase.GetNote(n);
+                        if (databaseCheck == null)
+                        {
+                            noteDatabase.InsertNote(n);
+                        }
+                        else
+                        {
+                            if (databaseCheck != n)
+                            {
+                                noteDatabase.UpdateNote(databaseCheck, n);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.TaskSystem
 {
@@ -11,15 +12,28 @@ namespace CForm_Planner.TaskSystem
         private TaskDatabase taskDatabase = new TaskDatabase();
         public List<Task> Todo = new List<Task>();
 
-        public void AddTask(Task task)
+        public void AddTask(string titel, string notes, bool completed, string email)
         {
+            Task task = new Task(titel, notes, completed, email);
             int check = CheckForTask(task);
             if (check == -1)
-            {
-                Todo.Add(task);
+            {                
                 if (task.Accountemail != "")
                 {
-                    taskDatabase.InsertTask(task);
+                    Task databaseCheck = taskDatabase.GetTask(task);
+                    if (databaseCheck != null)
+                    {
+                        Todo.Add(task);
+                        taskDatabase.InsertTask(task);
+                    }
+                    else
+                    {
+                        throw new PlannerExceptions("Task already exist, please reload your data");
+                    }
+                }
+                else
+                {
+                    Todo.Add(task);
                 }
             }
             else
@@ -45,8 +59,9 @@ namespace CForm_Planner.TaskSystem
             }
         }
 
-        public void ChangeTask(Task oldTask, Task newTask)
+        public void ChangeTask(Task oldTask, string titel, string notes, bool completed, string email)
         {
+            Task newTask = new Task(titel, notes, completed, email);
             int oldCheck = CheckForTask(oldTask);
             int newCheck = CheckForTask(newTask);
             if (oldCheck >= 0 && newCheck == -1)
@@ -88,6 +103,40 @@ namespace CForm_Planner.TaskSystem
                 }
             }
             return check;
+        }
+
+        public void MergeTask(Account user)
+        {
+            if (user != null)
+            {
+                List<Task> loaded = taskDatabase.GetAllTasks(user);
+                this.Todo = Todo.Union(loaded).Distinct().ToList();
+            }
+        }
+
+        public void UploadTasks(Account user)
+        {
+            if (user != null)
+            {
+                foreach (Task t in Todo)
+                {
+                    if (t.Accountemail != "")
+                    {
+                        Task databaseCheck = taskDatabase.GetTask(t);
+                        if (databaseCheck == null)
+                        {
+                            taskDatabase.InsertTask(t);
+                        }
+                        else
+                        {
+                            if(databaseCheck != t)
+                            {
+                                taskDatabase.UpdateTask(databaseCheck, t);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

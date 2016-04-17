@@ -74,7 +74,8 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
         public void Alarm_Refresh()
         {
             Alarm_checkedListBox.Items.Clear();
-            foreach (Alarm a in alarmAdministration.Alarm_list)
+            alarmAdministration.Alarm_list.Sort();
+                foreach (Alarm a in alarmAdministration.Alarm_list)
             {
                 if (a.AlarmSet == true)
                 {
@@ -99,8 +100,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                         {
                             try
                             {
-                                Alarm changedAlarm = new Alarm(a.Alarmtime, true, "");
-                                alarmAdministration.ChangeAlarm(a, changedAlarm);
+                                alarmAdministration.ChangeAlarm(a, a.Alarmtime, true, a.AccountEmail);
                                 Alarm_Refresh();
                             }
                             catch (Exception ex)
@@ -120,10 +120,9 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                     {
                         if (a.Alarmtime.ToString("HH:mm") == Alarm_checkedListBox.Items[e.Index].ToString())
                         {
-                            Alarm changedAlarm = new Alarm(a.Alarmtime, false, "");
                             try
                             {
-                                alarmAdministration.ChangeAlarm(a, changedAlarm);
+                                alarmAdministration.ChangeAlarm(a, a.Alarmtime, false, a.AccountEmail);
                                 Alarm_Refresh();
                                 return;
                             }
@@ -149,8 +148,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                         on = 0;
                         if (MessageBox.Show("Snooze", "Confirm", MessageBoxButtons.OKCancel) == DialogResult.OK)
                         {
-                            Alarm offAlarm = new Alarm(a.Alarmtime, false, a.AccountEmail);
-                            alarmAdministration.ChangeAlarm(a, offAlarm);
+                            alarmAdministration.ChangeAlarm(a, a.Alarmtime, false, a.AccountEmail);
                             Alarm_Refresh();
                             on = 1;
                             return;

@@ -32,8 +32,7 @@ namespace CForm_Planner.NoteSystem
             {
                 try
                 {
-                    Note newNote = new Note(NoteInfo_textBox.Text, userEmail);
-                    noteAdministration.AddNote(newNote);
+                    noteAdministration.AddNote(NoteInfo_textBox.Text, userEmail);
                 }
                 catch (Exception ex)
                 {

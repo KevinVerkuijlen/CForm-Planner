@@ -8,12 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CForm_Planner.TaskSystem;
+using CForm_Planner.AgendaSystem;
+using CForm_Planner.AgendaSystem.AgendaForms;
 
 namespace CForm_Planner
 {
     public partial class TaskDetailForm : Form
     {
         public TaskAdministration taskAdministration;
+        public CalendarEventAdministration calendarEventAdministration;
         public TaskSystem.Task details;
 
         public TaskDetailForm()
@@ -34,8 +37,7 @@ namespace CForm_Planner
                 }
                 try
                 {
-                    TaskSystem.Task changedTask = new TaskSystem.Task(TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed, details.Accountemail);
-                    taskAdministration.ChangeTask(details, changedTask);
+                    taskAdministration.ChangeTask(details, TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed, details.Accountemail);
                     this.DialogResult = DialogResult.OK;
                     return;
                 }
@@ -85,6 +87,28 @@ namespace CForm_Planner
         private void TaskDetailForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void TaskToAppointment_button_Click(object sender, EventArgs e)
+        {
+            AgendaAddForm form = new AgendaAddForm();
+            this.Visible = false;
+            form.calendarEventAdministration = this.calendarEventAdministration;
+            CalendarEvent calendarTask = new CalendarEvent(details.Titel, details.Notes, DateTime.Now, DateTime.Now, details.Accountemail);
+            form.task = calendarTask;
+            form.Detail_Refresh();
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.Yes)
+            {
+                this.calendarEventAdministration = form.calendarEventAdministration;
+                taskAdministration.RemoveTask(details);
+                this.DialogResult = DialogResult.OK;
+            }
+            else if (closing == DialogResult.OK)
+            {
+                this.calendarEventAdministration = form.calendarEventAdministration;
+                this.Visible = true;
+            }
         }
     }
 }

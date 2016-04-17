@@ -11,8 +11,9 @@ namespace CForm_Planner.AccountSystem
         private AccountDatabase accountDatabase = new AccountDatabase();
         public Account user = null;
 
-        public void Register(Account newAccount)
+        public void Register(string name, string lastname, string email, string password)
         {
+            Account newAccount = new Account(name, lastname, email, password); 
             Account check = accountDatabase.GetAccount(newAccount.EmailAdress);
             if (check == null)
             {
@@ -33,16 +34,17 @@ namespace CForm_Planner.AccountSystem
             }
         }   
 
-        public void LogoutAccount(Account account)
+        public void LogoutAccount()
         {
-            if (user != null && account != null && user == account)
+            if (user != null)
             {
                 this.user = null;
             }
         }
 
-        public void UpdateAccount(Account account)
+        public void UpdateAccount(string name, string lastname, string email, string password)
         {
+            Account account = new Account(name, lastname, email, password); 
             if (user != null && account != null)
             {
                 accountDatabase.UpdateAccount(user, account);

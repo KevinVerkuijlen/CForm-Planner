@@ -112,9 +112,48 @@ namespace CForm_Planner.TaskSystem
             }
         }
 
-        public Task GetTask()
+        public Task GetTask(Task check)
         {
-            return null;
+            Task task = null;
+            try
+            {
+                this.db.OpenConnection();
+                this.db.Query = "SELECT * FROM TASK WHERE TITEL = :TITEL AND NOTE = :NOTE AND EMAILADDRESS = :MAIL";
+                this.db.Command.Parameters.Add(":TITEL", OracleDbType.Varchar2).Value = check.Titel;
+                this.db.Command.Parameters.Add(":NOTE", OracleDbType.Varchar2).Value = check.Notes;
+                this.db.Command.Parameters.Add(":MAIL", OracleDbType.Varchar2).Value = check.Accountemail;
+
+                OracleDataReader reader = this.db.Command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string titel = (String)reader["TITEL"];
+                    string note = (String)reader["NOTE"];
+                    int Rcompleted = Convert.ToInt32(reader["COMPLETED"]);
+                    bool completed = false;
+                    if (Rcompleted == 1)
+                    {
+                        completed = true;
+                    }
+                    else
+                    {
+                        if (Rcompleted == 0)
+                        {
+                            completed = false;
+                        }
+                    }
+                    string email = (String)reader["EMAILADDRESS"];
+                    task = new Task(titel, note, completed, email);
+                }
+            }
+            catch (OracleException)
+            {
+                throw;
+            }
+            finally
+            {
+                this.db.CloseConnection();
+            }
+            return task;
         }
 
         public List<Task> GetAllTasks(Account account)
@@ -131,7 +170,7 @@ namespace CForm_Planner.TaskSystem
                 {
                     string titel = (String)reader["TITEL"];
                     string note = (String)reader["NOTE"];
-                    int Rcompleted = (Int32)reader["COMPLETED"];
+                    int Rcompleted = Convert.ToInt32(reader["COMPLETED"]);
                     bool completed = false;
                     if(Rcompleted == 1)
                     {

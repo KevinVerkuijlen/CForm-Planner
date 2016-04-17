@@ -8,12 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CForm_Planner.AccountSystem;
+using CForm_Planner.AgendaSystem;
 
 namespace CForm_Planner.TaskSystem.TaskForms
 {
     public partial class TaskForm : Form
     {
         public TaskAdministration taskAdministration;
+        public CalendarEventAdministration calendarEventAdministration;
         public Account user;
 
         public TaskForm()
@@ -42,6 +44,7 @@ namespace CForm_Planner.TaskSystem.TaskForms
             {
                 TaskDetailForm form = new TaskDetailForm();
                 form.taskAdministration = this.taskAdministration;
+                form.calendarEventAdministration = this.calendarEventAdministration;
 
                 foreach (TaskSystem.Task task in taskAdministration.Todo)
                 {

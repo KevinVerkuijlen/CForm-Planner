@@ -188,9 +188,57 @@ namespace CForm_Planner.AgendaSystem
             }
         }
 
-        public CalendarEvent GetCalendarEvent()
+        public CalendarEvent GetCalendarEvent(CalendarEvent check)
         {
-            return null;
+            CalendarEvent calendarEvent = null;
+            try
+            {
+                this.db.OpenConnection();
+                this.db.Query = "SELECT C.*, S.SUBJECT, S.ASSIGNMENT, G.GAMENAME " +
+                                  "FROM CALENDAREVENT C " +
+                                  "left join SCHOOLEVENT S on C.TITEL = S.TITEL AND C.NOTE = S.NOTE AND C.STARTDATE = S.STARTDATE AND C.ENDDATE = S.ENDDATE AND C.EMAILADDRESS = S.EMAILADDRESS " +
+                                  "left join GAMEEVENT G on C.TITEL = G.TITEL AND C.NOTE = G.NOTE AND C.STARTDATE = G.STARTDATE AND C.ENDDATE = G.ENDDATE AND C.EMAILADDRESS = G.EMAILADDRESS " +
+                                  "WHERE C.TITEL = :TITEL AND C.NOTE = :NOTE AND C.STARTDATE = :STARTDATE AND C.ENDDATE = :ENDDATE AND C.EMAILADDRESS = :MAIL";
+                this.db.Command.Parameters.Add(":TITEL", OracleDbType.Varchar2).Value = check.Titel;
+                this.db.Command.Parameters.Add(":NOTE", OracleDbType.Varchar2).Value = check.Notes;
+                this.db.Command.Parameters.Add(":STARTDATE", OracleDbType.Date).Value = check.StartDate;
+                this.db.Command.Parameters.Add(":ENDDATE", OracleDbType.Date).Value = check.EndDate;
+                this.db.Command.Parameters.Add(":MAIL", OracleDbType.Varchar2).Value = check.AccountEmail;
+
+                OracleDataReader reader = this.db.Command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string titel = (String)reader["TITEL"];
+                    string notes = (String)reader["NOTE"];
+                    DateTime startDate = (DateTime)reader["STARTDATE"];
+                    DateTime endDate = (DateTime)reader["ENDDATE"];
+                    string email = (String)reader["EMAILADDRESS"];
+                    if (reader["SUBJECT"] != DBNull.Value && reader["ASSIGNMENT"] != DBNull.Value)
+                    {
+                        string subject = (String)reader["SUBJECT"];
+                        string assignment = (String)reader["ASSIGNMENT"];
+                        calendarEvent = new SchoolEvent(titel, notes, startDate, endDate, subject, assignment, email);
+                    }
+                    else if (reader["GAMENAME"] != DBNull.Value)
+                    {
+                        string gameName = (String)reader["GAMENAME"];
+                        calendarEvent = new GameEvent(titel, notes, startDate, endDate, gameName, email);
+                    }
+                    else
+                    {
+                        calendarEvent = new CalendarEvent(titel, notes, startDate, endDate, email);
+                    }
+                }
+            }
+            catch (OracleException)
+            {
+                throw;
+            }
+            finally
+            {
+                this.db.CloseConnection();
+            }
+            return calendarEvent;
         }
 
         public List<CalendarEvent> GetAllCalendarEvent(Account account)
@@ -199,39 +247,36 @@ namespace CForm_Planner.AgendaSystem
             try
             {
                 this.db.OpenConnection();
-                this.db.Query = "SELECT C.*, S.SUBJECT, S.ASSIGNMENT, G.GAMENAME "+
-                                  "FROM CALENDAREVENT C "+
-                                  "left join SCHOOLEVENT S on C.TITEL = S.TITEL AND C.NOTE = S.NOTE AND C.STARTDATE = S.STARTDATE AND C.ENDDATE = S.ENDDATE AND C.EMAILADDRESS = S.EMAILADDRESS "+
-                                  "left join GAMEEVENT G on C.TITEL = G.TITEL AND C.NOTE = G.NOTE AND C.STARTDATE = G.STARTDATE AND C.ENDDATE = G.ENDDATE AND C.EMAILADDRESS = G.EMAILADDRESS "+
+                this.db.Query = "SELECT C.*, S.SUBJECT, S.ASSIGNMENT, G.GAMENAME " +
+                                  "FROM CALENDAREVENT C " +
+                                  "left join SCHOOLEVENT S on C.TITEL = S.TITEL AND C.NOTE = S.NOTE AND C.STARTDATE = S.STARTDATE AND C.ENDDATE = S.ENDDATE AND C.EMAILADDRESS = S.EMAILADDRESS " +
+                                  "left join GAMEEVENT G on C.TITEL = G.TITEL AND C.NOTE = G.NOTE AND C.STARTDATE = G.STARTDATE AND C.ENDDATE = G.ENDDATE AND C.EMAILADDRESS = G.EMAILADDRESS " +
                                   "WHERE C.EMAILADDRESS = :mail";
                 this.db.Command.Parameters.Add(new OracleParameter(":mail", account.EmailAdress));
 
                 OracleDataReader reader = this.db.Command.ExecuteReader();
                 while (reader.Read())
                 {
-                    string titel =(String)reader["TITEL"];
+                    string titel = (String)reader["TITEL"];
                     string notes = (String)reader["NOTE"];
                     DateTime startDate = (DateTime)reader["STARTDATE"];
                     DateTime endDate = (DateTime)reader["ENDDATE"];
                     string email = (String)reader["EMAILADDRESS"];
-                    string subject = (String)reader["SUBJECT"];
-                    string assignment = (String)reader["ASSIGNMENT"];
-                    string gameName = (String)reader["GAMENAME"];
-                    if (subject != "" && assignment != "")
+                    if (reader["SUBJECT"] != DBNull.Value && reader["ASSIGNMENT"] != DBNull.Value)
                     {
+                        string subject = (String)reader["SUBJECT"];
+                        string assignment = (String)reader["ASSIGNMENT"];
                         agenda.Add(new SchoolEvent(titel, notes, startDate, endDate, subject, assignment, email));
+                    }
+                    else if (reader["GAMENAME"] != DBNull.Value)
+                    {
+                        string gameName = (String)reader["GAMENAME"];
+                        agenda.Add(new GameEvent(titel, notes, startDate, endDate, gameName, email));
                     }
                     else
                     {
-                        if (gameName != "")
-                        {
-                            agenda.Add(new GameEvent(titel, notes, startDate, endDate, gameName, email));
-                        }
-                        else
-                        {
-                            agenda.Add(new CalendarEvent(titel, notes, startDate, endDate, email));
-                        }
-                    }                 
+                        agenda.Add(new CalendarEvent(titel, notes, startDate, endDate, email));
+                    }
                 }
             }
             catch (OracleException)

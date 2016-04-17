@@ -38,7 +38,9 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                 EndDate_label.Text = "To: " + Agenda_monthCalendar.SelectionRange.End.Date.ToString();
                 foreach (CalendarEvent c in calendarEventAdministration.Agenda)
                 {
-                    if (c.StartDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date && c.StartDate.Date <= Agenda_monthCalendar.SelectionRange.End.Date || c.EndDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate.Date <= Agenda_monthCalendar.SelectionRange.End.Date ||(c.StartDate <= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate >= Agenda_monthCalendar.SelectionRange.End.Date))
+                    if (c.StartDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date && c.StartDate.Date <= Agenda_monthCalendar.SelectionRange.End.Date 
+                        || c.EndDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate.Date <= Agenda_monthCalendar.SelectionRange.End.Date 
+                        ||(c.StartDate.Date <= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate.Date >= Agenda_monthCalendar.SelectionRange.End.Date))
                     {
                         appiontments.Add(c);
                     }
@@ -48,7 +50,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             {
                 foreach (CalendarEvent c in calendarEventAdministration.Agenda)
                 {
-                    if (c.StartDate.Date == Agenda_monthCalendar.SelectionRange.Start.Date || c.EndDate.Date == Agenda_monthCalendar.SelectionRange.Start.Date || (c.StartDate <= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate >= Agenda_monthCalendar.SelectionRange.Start.Date))
+                    if (c.StartDate.Date == Agenda_monthCalendar.SelectionRange.Start.Date || c.EndDate.Date == Agenda_monthCalendar.SelectionRange.Start.Date || (c.StartDate.Date <= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date))
                     {
                         appiontments.Add(c);
                     } 
@@ -56,6 +58,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             }
             SelectionMode selectionMode = Appointment_listBox.SelectionMode;
             Appointment_listBox.SelectionMode = SelectionMode.None;
+            appiontments.Sort();
             Appointment_listBox.DataSource = appiontments;
             Appointment_listBox.DisplayMember = "AgendaDisplay";
             Appointment_listBox.SelectionMode = selectionMode;           

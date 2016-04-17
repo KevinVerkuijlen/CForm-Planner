@@ -30,7 +30,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                 {
                     DateTime start = Start_datePicker.Value.Date.Add(Start_TimePicker.Value.TimeOfDay);
                     DateTime end = End_datePicker.Value.Date.Add(End_TimePicker.Value.TimeOfDay);
-                    if (start <= end)
+                    if (start.ToString() == end.ToString() || start < end)
                     {
                         string titel = Titel_textBox.Text;
                         string notes = Note_textBox.Text;
@@ -42,8 +42,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                 {
                                     try
                                     {
-                                        SchoolEvent schoolAppiontment = new SchoolEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, details.AccountEmail);
-                                        calendarEventAdministration.ChangeCalendarEvent(details, schoolAppiontment);
+                                        calendarEventAdministration.ChangeCalendarEvent(details, titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, details.AccountEmail);
                                         this.DialogResult = DialogResult.OK;
                                     }
                                     catch (Exception ex)
@@ -65,8 +64,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                GameEvent gameAppiontment = new GameEvent(titel, notes, start, end, Game_textBox.Text, details.AccountEmail);
-                                calendarEventAdministration.ChangeCalendarEvent(details, gameAppiontment);
+                                calendarEventAdministration.ChangeCalendarEvent(details, titel, notes, start, end, Game_textBox.Text, details.AccountEmail);
                                 this.DialogResult = DialogResult.OK;
                             }
                             catch (Exception ex)
@@ -78,8 +76,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                         {
                             try
                             {
-                                CalendarEvent appiontment = new CalendarEvent(titel, notes, start, end, details.AccountEmail);
-                                calendarEventAdministration.ChangeCalendarEvent(details, appiontment);
+                                calendarEventAdministration.ChangeCalendarEvent(details, titel, notes, start, end, details.AccountEmail);
                                 this.DialogResult = DialogResult.OK;
                             }
                             catch (Exception ex)
@@ -124,9 +121,9 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                 Titel_textBox.Text = details.Titel;
                 Note_textBox.Text = details.Notes;
                 Start_datePicker.Value = details.StartDate.Date;
-                Start_TimePicker.Value = details.StartDate.Date;
+                Start_TimePicker.Value = details.StartDate;
                 End_datePicker.Value = details.EndDate.Date;
-                End_TimePicker.Value = details.EndDate.Date;
+                End_TimePicker.Value = details.EndDate;
                 if (details.GetType() == typeof(SchoolEvent))
                 {
                     SchoolEvent schoolDetails = (SchoolEvent)details;

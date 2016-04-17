@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CForm_Planner.AlarmSystem
 {
     [Serializable]
-    public class Alarm
+    public class Alarm : IComparable<Alarm>
     {
         public DateTime Alarmtime { get; set; }
         public bool AlarmSet { get; set; }
@@ -22,6 +22,41 @@ namespace CForm_Planner.AlarmSystem
             this.Alarmtime = alarmtime;
             this.AlarmSet = alarmSet;
             this.AccountEmail = accountemail;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Alarm)
+            {
+                Alarm other = ((Alarm)obj);
+                return this.Alarmtime == other.Alarmtime
+                    && this.AccountEmail == other.AccountEmail;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Alarmtime.GetHashCode() ^ AccountEmail.GetHashCode();
+        }
+
+        public int CompareTo(Alarm other)
+        {
+            if (this.Alarmtime < other.Alarmtime)
+            {
+                return -1;
+            }
+            else if(this.Alarmtime > other.Alarmtime)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

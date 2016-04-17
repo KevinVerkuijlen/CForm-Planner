@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CForm_Planner.AccountSystem;
 
 namespace CForm_Planner.AlarmSystem
 {
@@ -11,15 +12,28 @@ namespace CForm_Planner.AlarmSystem
         private AlarmDatabase alarmDatabase = new AlarmDatabase();
         public List<Alarm> Alarm_list = new List<Alarm>();
 
-        public void AddAlarm(Alarm alarm)
+        public void AddAlarm(DateTime alarmtime, bool alarmset, string email)
         {
+            Alarm alarm = new Alarm(alarmtime, alarmset, email);
             int check = CheckForAlarm(alarm);
             if (check == -1)
             {
-                Alarm_list.Add(alarm);
                 if (alarm.AccountEmail != "")
                 {
-                    alarmDatabase.InsertAlarm(alarm);
+                    Alarm databaseCheck = alarmDatabase.GetAlarm(alarm);
+                    if (databaseCheck == null)
+                    {
+                        Alarm_list.Add(alarm);
+                        alarmDatabase.InsertAlarm(alarm);
+                    }
+                    else
+                    {
+                        throw new PlannerExceptions("Alarm already exist, please reload your data");
+                    }
+                }
+                else
+                {
+                    Alarm_list.Add(alarm);
                 }
             }
             else
@@ -45,8 +59,9 @@ namespace CForm_Planner.AlarmSystem
             }
         }
 
-        public void ChangeAlarm(Alarm oldAlarm, Alarm newAlarm)
+        public void ChangeAlarm(Alarm oldAlarm, DateTime alarmtime, bool alarmset, string email)
         {
+            Alarm newAlarm = new Alarm(alarmtime, alarmset, email);
             int oldCheck = CheckForAlarm(oldAlarm);
             int newCheck = CheckForAlarm(newAlarm);
             if (oldCheck >= 0 && newCheck == -1)
@@ -76,6 +91,39 @@ namespace CForm_Planner.AlarmSystem
             }
             return check;
         }
-        
+
+        public void MergeAlarms(Account user)
+        {
+            if (user != null)
+            {
+                List<Alarm> loaded = alarmDatabase.GetAllAlarms(user);
+                this.Alarm_list = Alarm_list.Union(loaded).Distinct().ToList();
+            }
+        }
+
+        public void UploadAlarms(Account user)
+        {
+            if (user != null)
+            {
+                foreach (Alarm a in Alarm_list)
+                {
+                    if (a.AccountEmail != "")
+                    {
+                        Alarm databaseCheck = alarmDatabase.GetAlarm(a);
+                        if (databaseCheck == null)
+                        {
+                            alarmDatabase.InsertAlarm(a);
+                        }
+                        else
+                        {
+                            if (databaseCheck != a)
+                            {
+                                alarmDatabase.UpdateAlarm(databaseCheck, a);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
