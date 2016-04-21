@@ -51,7 +51,12 @@
             this.Assignment_label = new System.Windows.Forms.Label();
             this.Assignment_textBox = new System.Windows.Forms.TextBox();
             this.Add_button = new System.Windows.Forms.Button();
+            this.Repeat_comboBox = new System.Windows.Forms.ComboBox();
+            this.Repeat_label = new System.Windows.Forms.Label();
+            this.Repeat_numericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.Repeat_checkBox = new System.Windows.Forms.CheckBox();
             this.TypeOfAppiontmentgroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Repeat_numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // Start_TimePicker
@@ -253,7 +258,7 @@
             // 
             // Add_button
             // 
-            this.Add_button.Location = new System.Drawing.Point(19, 607);
+            this.Add_button.Location = new System.Drawing.Point(12, 661);
             this.Add_button.Name = "Add_button";
             this.Add_button.Size = new System.Drawing.Size(677, 60);
             this.Add_button.TabIndex = 19;
@@ -261,11 +266,53 @@
             this.Add_button.UseVisualStyleBackColor = true;
             this.Add_button.Click += new System.EventHandler(this.Add_button_Click);
             // 
+            // Repeat_comboBox
+            // 
+            this.Repeat_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Repeat_comboBox.FormattingEnabled = true;
+            this.Repeat_comboBox.Items.AddRange(new object[] {
+            "days",
+            "work days",
+            "weeks"});
+            this.Repeat_comboBox.Location = new System.Drawing.Point(446, 606);
+            this.Repeat_comboBox.Name = "Repeat_comboBox";
+            this.Repeat_comboBox.Size = new System.Drawing.Size(219, 33);
+            this.Repeat_comboBox.TabIndex = 20;
+            // 
+            // Repeat_label
+            // 
+            this.Repeat_label.AutoSize = true;
+            this.Repeat_label.Location = new System.Drawing.Point(53, 606);
+            this.Repeat_label.Name = "Repeat_label";
+            this.Repeat_label.Size = new System.Drawing.Size(300, 25);
+            this.Repeat_label.TabIndex = 21;
+            this.Repeat_label.Text = "Repeat this event for the next:";
+            // 
+            // Repeat_numericUpDown
+            // 
+            this.Repeat_numericUpDown.Location = new System.Drawing.Point(359, 606);
+            this.Repeat_numericUpDown.Name = "Repeat_numericUpDown";
+            this.Repeat_numericUpDown.Size = new System.Drawing.Size(81, 31);
+            this.Repeat_numericUpDown.TabIndex = 22;
+            // 
+            // Repeat_checkBox
+            // 
+            this.Repeat_checkBox.AutoSize = true;
+            this.Repeat_checkBox.Location = new System.Drawing.Point(19, 606);
+            this.Repeat_checkBox.Name = "Repeat_checkBox";
+            this.Repeat_checkBox.Size = new System.Drawing.Size(28, 27);
+            this.Repeat_checkBox.TabIndex = 23;
+            this.Repeat_checkBox.UseVisualStyleBackColor = true;
+            // 
             // AgendaAddForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 679);
+            this.ClientSize = new System.Drawing.Size(714, 733);
+            this.Controls.Add(this.Repeat_checkBox);
+            this.Controls.Add(this.Repeat_numericUpDown);
+            this.Controls.Add(this.Repeat_label);
+            this.Controls.Add(this.Repeat_comboBox);
             this.Controls.Add(this.Add_button);
             this.Controls.Add(this.Assignment_textBox);
             this.Controls.Add(this.Assignment_label);
@@ -291,6 +338,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AgendaAddForm_FormClosing);
             this.TypeOfAppiontmentgroupBox.ResumeLayout(false);
             this.TypeOfAppiontmentgroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Repeat_numericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -321,5 +369,9 @@
         private System.Windows.Forms.Label Assignment_label;
         private System.Windows.Forms.TextBox Assignment_textBox;
         private System.Windows.Forms.Button Add_button;
+        private System.Windows.Forms.ComboBox Repeat_comboBox;
+        private System.Windows.Forms.Label Repeat_label;
+        private System.Windows.Forms.NumericUpDown Repeat_numericUpDown;
+        private System.Windows.Forms.CheckBox Repeat_checkBox;
     }
 }

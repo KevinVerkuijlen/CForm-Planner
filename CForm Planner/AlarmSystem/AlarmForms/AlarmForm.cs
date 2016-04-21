@@ -126,7 +126,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                                 Alarm_Refresh();
                                 return;
                             }
-                            catch (PlannerExceptions ex)
+                            catch (Exception ex)
                             {
                                 MessageBox.Show(ex.Message);
                                 return;

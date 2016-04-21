@@ -43,13 +43,42 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                     DateTime end = End_datePicker.Value.Date.Add(End_TimePicker.Value.TimeOfDay);
                     if (start.ToString() == end.ToString() || start < end)
                     {
-                        string titel = Titel_textBox.Text;
-                        string notes = Note_textBox.Text;
-                        if (Normal_radioButton.Checked == true)
+                        if (Repeat_checkBox.Checked)
+                        {
+                            if (start.Date == end.Date)
+                            {
+                                try
+                                {
+                                    calendarEventAdministration.AddCalendarEvent(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail);
+                                }
+                                catch(Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message);
+                                }
+                                    if (Repeat_comboBox.Text == "days")
+                                {
+                                    calendarEventAdministration.RepeatCalendarEventEachDay(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                }
+                                else if (Repeat_comboBox.Text == "work days") 
+                                {
+                                    calendarEventAdministration.RepeatCalendarEventEachWorkDay(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                }
+                                else if (Repeat_comboBox.Text == "weeks")
+                                {
+                                    calendarEventAdministration.RepeatCalendarEventEachDayInWeek(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                }
+                                AgendaAddForm_FormClosing(null, null);
+                            }
+                            else
+                            {
+                                MessageBox.Show("To repeat an event it needs to be on one day");
+                            }
+                        }
+                        else
                         {
                             try
                             {
-                                calendarEventAdministration.AddCalendarEvent(titel, notes, start, end, userEmail);
+                                calendarEventAdministration.AddCalendarEvent(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail);
                                 AgendaAddForm_FormClosing(null, null);
                             }
                             catch (Exception ex)
@@ -57,48 +86,6 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                 MessageBox.Show(ex.Message);
                             }
                         }
-                        if (School_radioButton.Checked == true)
-                        {
-                            if (Subject_textBox.Text != null)
-                            {
-                                if (Assignment_textBox.Text != null)
-                                {
-                                    try
-                                    {
-                                        calendarEventAdministration.AddCalendarEvent(titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
-                                        AgendaAddForm_FormClosing(null, null);
-                                    }
-                                    catch(Exception ex)
-                                    {
-                                        MessageBox.Show(ex.Message);
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Please fill in an assignment for the subject");
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Please fill in a subject for the appointment");
-                            }
-                        }
-                        if (Game_radioButton.Checked == true)
-                        {
-                            try
-                            {
-                                calendarEventAdministration.AddCalendarEvent(titel, notes, start, end, Game_textBox.Text, userEmail);
-                                AgendaAddForm_FormClosing(null, null);
-                            }
-                            catch(Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Your end date needs to be later or equal to your start date");
                     }
                 }
                 else

@@ -32,57 +32,14 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                     DateTime end = End_datePicker.Value.Date.Add(End_TimePicker.Value.TimeOfDay);
                     if (start.ToString() == end.ToString() || start < end)
                     {
-                        string titel = Titel_textBox.Text;
-                        string notes = Note_textBox.Text;
-                        if (details.GetType() == typeof(SchoolEvent))
+                        try
                         {
-                            if (Subject_textBox.Text != null)
-                            {
-                                if (Assignment_textBox.Text != null)
-                                {
-                                    try
-                                    {
-                                        calendarEventAdministration.ChangeCalendarEvent(details, titel, notes, start, end, Subject_textBox.Text, Assignment_textBox.Text, details.AccountEmail);
-                                        this.DialogResult = DialogResult.OK;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        MessageBox.Show(ex.Message);
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Please fill in an assignment for the subject");
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Please fill in a subject for the appointment");
-                            }
+                            calendarEventAdministration.ChangeCalendarEvent(details, Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, details.AccountEmail);
+                            this.DialogResult = DialogResult.OK;
                         }
-                        if (details.GetType() == typeof(GameEvent))
+                        catch (Exception ex)
                         {
-                            try
-                            {
-                                calendarEventAdministration.ChangeCalendarEvent(details, titel, notes, start, end, Game_textBox.Text, details.AccountEmail);
-                                this.DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
-                        if (details.GetType() == typeof(CalendarEvent))
-                        {
-                            try
-                            {
-                                calendarEventAdministration.ChangeCalendarEvent(details, titel, notes, start, end, details.AccountEmail);
-                                this.DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
+                            MessageBox.Show(ex.Message);
                         }
                     }
                     else

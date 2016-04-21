@@ -12,9 +12,17 @@ namespace CForm_Planner.AgendaSystem
         public CalendarDatabase calendarDatabase = new CalendarDatabase();
         public List<CalendarEvent> Agenda = new List<CalendarEvent>();
 
-        public void AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string email)
+        public bool AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename, string email)
         {
-            CalendarEvent calendarEvent = new CalendarEvent(titel, notes, startdate, enddate, email);
+           CalendarEvent calendarEvent = new CalendarEvent(titel, notes, startdate, enddate, email);
+           if (subject != "" && assignment != "")
+           {
+               calendarEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
+           }
+           else if (gamename != "")
+           {
+               calendarEvent = new GameEvent(titel, notes, startdate, enddate, gamename, email);
+           }
             int check = CheckForCalendarEvent(calendarEvent);
             if (check == -1)
             {
@@ -25,15 +33,17 @@ namespace CForm_Planner.AgendaSystem
                     {
                         Agenda.Add(calendarEvent);
                         calendarDatabase.InsertCalendarEvent(calendarEvent);
+                        return true;
                     }
                     else
                     {
-                        throw new PlannerExceptions("Appiontment already exist in agenda, please reload your data");
+                        throw new PlannerExceptions("the Appiontment "+titel +" already exist in agenda, please reload your data");
                     }
                 }
                 else
                 {
                     Agenda.Add(calendarEvent);
+                    return true;
                 }              
             }
             else
@@ -42,67 +52,7 @@ namespace CForm_Planner.AgendaSystem
             }
         }
 
-        public void AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string email)
-        {
-            SchoolEvent calendarEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
-            int check = CheckForCalendarEvent(calendarEvent);
-            if (check == -1)
-            {
-                if (calendarEvent.AccountEmail != "")
-                {
-                    CalendarEvent databaseCheck = calendarDatabase.GetCalendarEvent(calendarEvent);
-                    if (databaseCheck == null)
-                    {
-                        Agenda.Add(calendarEvent);
-                        calendarDatabase.InsertCalendarEvent(calendarEvent);
-                    }
-                    else
-                    {
-                        throw new PlannerExceptions("Appiontment already exist in agenda, please reload your data");
-                    }
-                }
-                else
-                {
-                    Agenda.Add(calendarEvent);
-                }
-            }
-            else
-            {
-                throw new PlannerExceptions("Appiontment already exist in agenda");
-            }
-        }
-
-        public void AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string gamename, string email)
-        {
-            GameEvent calendarEvent = new GameEvent(titel, notes, startdate, enddate, gamename, email);
-            int check = CheckForCalendarEvent(calendarEvent);
-            if (check == -1)
-            {
-                if (calendarEvent.AccountEmail != "")
-                {
-                    CalendarEvent databaseCheck = calendarDatabase.GetCalendarEvent(calendarEvent);
-                    if (databaseCheck == null)
-                    {
-                        Agenda.Add(calendarEvent);
-                        calendarDatabase.InsertCalendarEvent(calendarEvent);
-                    }
-                    else
-                    {
-                        throw new PlannerExceptions("Appiontment already exist in agenda, please reload your data");
-                    }
-                }
-                else
-                {
-                    Agenda.Add(calendarEvent);
-                }
-            }
-            else
-            {
-                throw new PlannerExceptions("Appiontment already exist in agenda");
-            }
-        }
-
-        public void RemoveCalendarEvent(CalendarEvent calendarEvent)
+        public bool RemoveCalendarEvent(CalendarEvent calendarEvent)
         {
             int check = CheckForCalendarEvent(calendarEvent);
             if (check >= 0)
@@ -112,6 +62,7 @@ namespace CForm_Planner.AgendaSystem
                 {
                     calendarDatabase.DeleteCalendarEvent(calendarEvent);
                 }
+                return true;
             }
             else
             {
@@ -119,9 +70,17 @@ namespace CForm_Planner.AgendaSystem
             }
         }
 
-        public void ChangeCalendarEvent(CalendarEvent oldCalendarEvent, string titel, string notes, DateTime startdate, DateTime enddate, string email)
+        public bool ChangeCalendarEvent(CalendarEvent oldCalendarEvent, string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename, string email)
         {
             CalendarEvent newCalendarEvent = new CalendarEvent(titel, notes, startdate, enddate, email);
+            if (subject != "" && assignment != "")
+            {
+                newCalendarEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
+            }
+            else if (gamename != "")
+            {
+                newCalendarEvent = new GameEvent(titel, notes, startdate, enddate, gamename, email);
+            }
             int oldCheck = CheckForCalendarEvent(oldCalendarEvent);
             int newCheck = CheckForCalendarEvent(newCalendarEvent);
             if (oldCheck >= 0 && newCheck == -1)
@@ -132,46 +91,7 @@ namespace CForm_Planner.AgendaSystem
                 {
                     calendarDatabase.UpdateCalendarEvent(oldCalendarEvent, newCalendarEvent);
                 }
-            }
-            else
-            {
-                throw new PlannerExceptions("The old appointment doesn't exist in the agenda or the new appiontment already exist in the agenda");
-            }
-        }
-
-        public void ChangeCalendarEvent(CalendarEvent oldCalendarEvent, string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string email)
-        {
-            SchoolEvent newCalendarEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
-            int oldCheck = CheckForCalendarEvent(oldCalendarEvent);
-            int newCheck = CheckForCalendarEvent(newCalendarEvent);
-            if (oldCheck >= 0 && newCheck == -1)
-            {
-                Agenda.RemoveAt(oldCheck);
-                Agenda.Insert(oldCheck, newCalendarEvent);
-                if (oldCalendarEvent.AccountEmail != "" && newCalendarEvent.AccountEmail != "")
-                {
-                    calendarDatabase.UpdateCalendarEvent(oldCalendarEvent, newCalendarEvent);
-                }
-            }
-            else
-            {
-                throw new PlannerExceptions("The old appointment doesn't exist in the agenda or the new appiontment already exist in the agenda");
-            }
-        }
-
-        public void ChangeCalendarEvent(CalendarEvent oldCalendarEvent, string titel, string notes, DateTime startdate, DateTime enddate, string gamename, string email)
-        {
-            GameEvent newCalendarEvent = new GameEvent(titel, notes, startdate, enddate, gamename, email);
-            int oldCheck = CheckForCalendarEvent(oldCalendarEvent);
-            int newCheck = CheckForCalendarEvent(newCalendarEvent);
-            if (oldCheck >= 0 && newCheck == -1)
-            {
-                Agenda.RemoveAt(oldCheck);
-                Agenda.Insert(oldCheck, newCalendarEvent);
-                if (oldCalendarEvent.AccountEmail != "" && newCalendarEvent.AccountEmail != "")
-                {
-                    calendarDatabase.UpdateCalendarEvent(oldCalendarEvent, newCalendarEvent);
-                }
+                return true;
             }
             else
             {
@@ -184,7 +104,6 @@ namespace CForm_Planner.AgendaSystem
             int check = -1;
             foreach (CalendarEvent c in Agenda)
             {
-
                 if (c.Titel == calendarEvent.Titel && c.Notes == calendarEvent.Notes && c.StartDate == calendarEvent.StartDate && c.EndDate == calendarEvent.EndDate)
                 {
                     check = Agenda.IndexOf(c);
@@ -224,6 +143,39 @@ namespace CForm_Planner.AgendaSystem
                         }
                     }
                 }
+            }
+        }
+
+
+        //om te laten herhalen moet de start en end op dezelfde dag staan
+        public void RepeatCalendarEventEachDay(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename, string email, int days)
+        {
+            for (int i = 1; i < days + 1; i++)
+            {
+                AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), subject, assignment, gamename, email);
+            }
+        }
+
+        public void RepeatCalendarEventEachWorkDay(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename, string email, int days)
+        {
+            for (int i = 1; i < days; i++)
+            {
+                DayOfWeek check = startdate.AddDays(i).DayOfWeek;
+                if (check != DayOfWeek.Saturday)
+                {
+                    if (check != DayOfWeek.Sunday)
+                    {
+                        AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), subject, assignment, gamename, email);
+                    }
+                }
+            }
+        }
+
+        public void RepeatCalendarEventEachDayInWeek(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename, string email, int weeks)
+        {
+            for (int i = 1; i < weeks; i++)
+            {
+                AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7), subject, assignment, gamename, email);
             }
         }
 

@@ -25,6 +25,7 @@ namespace CForm_Planner
         /// this is the string for the database connection
         /// </summary>
         private static readonly string ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id=Kevin;Password=Dragon2711";
+        //private static readonly string ConnectionString = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.19.115)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id=Planner;Password=Planner; persist security info=false;Connection Timeout=200;";
 
         /// <summary>
         /// Sets the queries in other classes
@@ -54,6 +55,7 @@ namespace CForm_Planner
         /// <returns>this returns the open database connection</returns>
         public OracleConnection OpenConnection()
         {
+            //System.Diagnostics.Process.Start("rasdial.exe", @"vpninfralab.fhict.nl I320427 Fvc0x\pD");
             this.connection = new OracleConnection(ConnectionString);
             try
             {
@@ -77,6 +79,7 @@ namespace CForm_Planner
             if (this.connection.State != System.Data.ConnectionState.Closed)
             {
                 this.connection.Close();
+               // System.Diagnostics.Process.Start("rasdial.exe", @"vpninfralab.fhict.nl /d");
             }
         }
 

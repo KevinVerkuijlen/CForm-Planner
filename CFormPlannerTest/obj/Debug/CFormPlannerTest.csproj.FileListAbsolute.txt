@@ -1,0 +1,8 @@
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\bin\Debug\CFormPlannerTest.dll
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\bin\Debug\CFormPlannerTest.pdb
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\bin\Debug\CForm Planner.exe
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\bin\Debug\Oracle.ManagedDataAccess.dll
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\bin\Debug\CForm Planner.pdb
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\obj\Debug\CFormPlannerTest.csprojResolveAssemblyReference.cache
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\obj\Debug\CFormPlannerTest.dll
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CFormPlannerTest\obj\Debug\CFormPlannerTest.pdb

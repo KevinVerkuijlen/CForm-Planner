@@ -12,7 +12,7 @@ namespace CForm_Planner.AlarmSystem
         private AlarmDatabase alarmDatabase = new AlarmDatabase();
         public List<Alarm> Alarm_list = new List<Alarm>();
 
-        public void AddAlarm(DateTime alarmtime, bool alarmset, string email)
+        public bool AddAlarm(DateTime alarmtime, bool alarmset, string email)
         {
             Alarm alarm = new Alarm(alarmtime, alarmset, email);
             int check = CheckForAlarm(alarm);
@@ -25,6 +25,7 @@ namespace CForm_Planner.AlarmSystem
                     {
                         Alarm_list.Add(alarm);
                         alarmDatabase.InsertAlarm(alarm);
+                        return true;
                     }
                     else
                     {
@@ -34,6 +35,7 @@ namespace CForm_Planner.AlarmSystem
                 else
                 {
                     Alarm_list.Add(alarm);
+                    return true;
                 }
             }
             else
