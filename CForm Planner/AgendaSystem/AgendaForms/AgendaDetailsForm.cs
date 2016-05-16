@@ -13,11 +13,13 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 {
     public partial class AgendaDetailsForm : Form
     {
-        public CalendarEventAdministration calendarEventAdministration;
-        public CalendarEvent details;
+        public CalendarEventAdministration CalendarEventAdministration { get; }
+        public CalendarEvent CalendarEvent { get; }
 
-        public AgendaDetailsForm()
+        public AgendaDetailsForm(CalendarEvent calendarEvent, CalendarEventAdministration calendarEventAdministration)
         {
+            CalendarEvent = calendarEvent;
+            CalendarEventAdministration = calendarEventAdministration;
             InitializeComponent();
             NormalAppointment();
         }
@@ -34,7 +36,22 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                     {
                         try
                         {
-                            calendarEventAdministration.ChangeCalendarEvent(details, Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, details.AccountEmail);
+                            switch (CalendarEvent.GetType().ToString())
+                            {
+                                case "CForm_Planner.AgendaSystem.SchoolEvent":
+                                    CalendarEventAdministration.ChangeCalendarEvent((SchoolEvent)CalendarEvent, Titel_textBox.Text,
+                                        Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text,
+                                        CalendarEvent.AccountEmail);
+                                    break;
+                                case "CForm_Planner.AgendaSystem.GameEvent":
+                                    CalendarEventAdministration.ChangeCalendarEvent((GameEvent)CalendarEvent, Titel_textBox.Text,
+                                        Note_textBox.Text, start, end, Game_textBox.Text, CalendarEvent.AccountEmail);
+                                    break;
+                                case "CForm_Planner.AgendaSystem.CalendarEvent":
+                                    CalendarEventAdministration.ChangeCalendarEvent(CalendarEvent, Titel_textBox.Text,
+                                        Note_textBox.Text, start, end, CalendarEvent.AccountEmail);
+                                    break;
+                            }
                             this.DialogResult = DialogResult.OK;
                         }
                         catch (Exception ex)
@@ -62,7 +79,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
         {
             try
             {
-                calendarEventAdministration.RemoveCalendarEvent(details);
+                CalendarEventAdministration.RemoveCalendarEvent(CalendarEvent);
                 this.DialogResult = DialogResult.OK;
             }
             catch(Exception ex)
@@ -73,17 +90,17 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         public void Detail_Refresh()
         {
-            if (details != null)
+            if (CalendarEvent != null)
             {
-                Titel_textBox.Text = details.Titel;
-                Note_textBox.Text = details.Notes;
-                Start_datePicker.Value = details.StartDate.Date;
-                Start_TimePicker.Value = details.StartDate;
-                End_datePicker.Value = details.EndDate.Date;
-                End_TimePicker.Value = details.EndDate;
-                if (details.GetType() == typeof(SchoolEvent))
+                Titel_textBox.Text = CalendarEvent.Titel;
+                Note_textBox.Text = CalendarEvent.Notes;
+                Start_datePicker.Value = CalendarEvent.StartDate.Date;
+                Start_TimePicker.Value = CalendarEvent.StartDate;
+                End_datePicker.Value = CalendarEvent.EndDate.Date;
+                End_TimePicker.Value = CalendarEvent.EndDate;
+                if (CalendarEvent.GetType() == typeof(SchoolEvent))
                 {
-                    SchoolEvent schoolDetails = (SchoolEvent)details;
+                    SchoolEvent schoolDetails = (SchoolEvent)CalendarEvent;
                     Subject_label.Visible = true;
                     Subject_textBox.Visible = true;
                     Subject_textBox.Text = schoolDetails.Subject;
@@ -91,15 +108,16 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                     Assignment_textBox.Visible = true;
                     Assignment_textBox.Text = schoolDetails.Assignment;
                 }
-                if (details.GetType() == typeof(GameEvent))
+                if (CalendarEvent.GetType() == typeof(GameEvent))
                 {
-                    GameEvent gameDetails = (GameEvent)details;
+                    GameEvent gameDetails = (GameEvent)CalendarEvent;
                     Game_label.Visible = true;
                     Game_textBox.Visible = true;
                     Game_textBox.Text = gameDetails.GameName;
                 }
             }
         }
+
         private void NormalAppointment()
         {
             Subject_label.Visible = false;

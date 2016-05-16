@@ -14,26 +14,28 @@ namespace CForm_Planner
 {
     public partial class TaskAddForm : Form
     {
-        public TaskAdministration taskAdministration;
-        public Account user;
+        public TaskAdministration TaskAdministration { get; }
+        public Account Account { get; }
 
-        public TaskAddForm()
+        public TaskAddForm(Account account, TaskAdministration taskAdministration)
         {
+            Account = account;
+            TaskAdministration = taskAdministration;
             InitializeComponent();
         }
 
         private void AddTask_button_Click(object sender, EventArgs e)
         {
             string userEmail = "";
-            if (user != null)
+            if (Account != null)
             {
-                userEmail = user.EmailAdress;
+                userEmail = Account.EmailAdress;
             }
             if (TaskTitel_textBox.Text != "" && TaskNotes_textBox.Text != "")
             {
                 try
                 {
-                    taskAdministration.AddTask(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, userEmail);
+                    TaskAdministration.AddTask(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, userEmail);
                 }
                 catch (Exception ex)
                 {

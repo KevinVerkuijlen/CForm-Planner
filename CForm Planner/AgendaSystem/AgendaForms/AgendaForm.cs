@@ -13,11 +13,13 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 {
     public partial class AgendaForm : Form
     {
-        public CalendarEventAdministration calendarEventAdministration;
-        public Account user;
+        public CalendarEventAdministration CalendarEventAdministration { get; private set; }
+        public Account Account { get; }
 
-        public AgendaForm()
+        public AgendaForm(Account account, CalendarEventAdministration calendarEventAdministration)
         {
+            Account = account;
+            CalendarEventAdministration = calendarEventAdministration;
             InitializeComponent();
             EndDate_label.Visible = false;
         }
@@ -36,7 +38,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             {
                 EndDate_label.Visible = true;
                 EndDate_label.Text = "To: " + Agenda_monthCalendar.SelectionRange.End.Date.ToString();
-                foreach (CalendarEvent c in calendarEventAdministration.Agenda)
+                foreach (CalendarEvent c in CalendarEventAdministration.Agenda)
                 {
                     if (c.StartDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date && c.StartDate.Date <= Agenda_monthCalendar.SelectionRange.End.Date 
                         || c.EndDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate.Date <= Agenda_monthCalendar.SelectionRange.End.Date 
@@ -48,7 +50,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             }
             else
             {
-                foreach (CalendarEvent c in calendarEventAdministration.Agenda)
+                foreach (CalendarEvent c in CalendarEventAdministration.Agenda)
                 {
                     if (c.StartDate.Date == Agenda_monthCalendar.SelectionRange.Start.Date || c.EndDate.Date == Agenda_monthCalendar.SelectionRange.Start.Date || (c.StartDate.Date <= Agenda_monthCalendar.SelectionRange.Start.Date && c.EndDate.Date >= Agenda_monthCalendar.SelectionRange.Start.Date))
                     {
@@ -66,14 +68,12 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         private void Appiontment_button_Click(object sender, EventArgs e)
         {
-            AgendaAddForm form = new AgendaAddForm();
+            AgendaAddForm form = new AgendaAddForm(Account, CalendarEventAdministration, null);
             this.Visible = false;
-            form.calendarEventAdministration = this.calendarEventAdministration;
-            form.user = this.user;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.calendarEventAdministration = form.calendarEventAdministration;
+                CalendarEventAdministration = form.CalendarEventAdministration;
                 this.Visible = true;
                 Agenda_monthCalendar_DateChanged(null, null);
             }
@@ -96,20 +96,17 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                 {
                      selected = (GameEvent)Appointment_listBox.SelectedValue;
                 }
-                AgendaDetailsForm form = new AgendaDetailsForm();
+                AgendaDetailsForm form = new AgendaDetailsForm(selected,CalendarEventAdministration);
                 this.Visible = false;
-                form.calendarEventAdministration = this.calendarEventAdministration;
-                form.details = selected;
                 form.Detail_Refresh();
                 var closing = form.ShowDialog();
                 if (closing == DialogResult.OK)
                 {
-                    this.calendarEventAdministration = form.calendarEventAdministration;
+                    CalendarEventAdministration = form.CalendarEventAdministration;
                     this.Visible = true;
                     Agenda_monthCalendar_DateChanged(null, null);
                 }
             }
         }
-
     }
 }

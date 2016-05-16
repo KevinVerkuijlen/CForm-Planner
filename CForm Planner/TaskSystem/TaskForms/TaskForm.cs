@@ -14,25 +14,26 @@ namespace CForm_Planner.TaskSystem.TaskForms
 {
     public partial class TaskForm : Form
     {
-        public TaskAdministration taskAdministration;
-        public CalendarEventAdministration calendarEventAdministration;
-        public Account user;
+        public TaskAdministration TaskAdministration { get; private set; }
+        public CalendarEventAdministration CalendarEventAdministration { get; private set; }
+        public Account Account { get; private set; }
 
-        public TaskForm()
+        public TaskForm(Account account, TaskAdministration taskAdministration, CalendarEventAdministration calendarEventAdministration)
         {
+            Account = account;
+            TaskAdministration = taskAdministration;
+            CalendarEventAdministration = calendarEventAdministration;
             InitializeComponent();
         }
 
         private void AddTask_button_Click(object sender, EventArgs e)
         {
-            TaskAddForm form = new TaskAddForm();
-            form.taskAdministration = this.taskAdministration;
-            form.user = this.user;
+            TaskAddForm form = new TaskAddForm(Account, TaskAdministration);
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.taskAdministration = form.taskAdministration;
+                TaskAdministration = form.TaskAdministration;
                 this.Visible = true;
                 ToDo_Refresh();
             }
@@ -42,22 +43,18 @@ namespace CForm_Planner.TaskSystem.TaskForms
         {
             if (ToDo_checkedListBox.SelectedItem != null)
             {
-                TaskDetailForm form = new TaskDetailForm();
-                form.taskAdministration = this.taskAdministration;
-                form.calendarEventAdministration = this.calendarEventAdministration;
-
-                foreach (TaskSystem.Task task in taskAdministration.Todo)
+                foreach (TaskSystem.Task task in TaskAdministration.Todo)
                 {
                     if (task.Titel == ToDo_checkedListBox.SelectedItem.ToString())
                     {
                         this.Visible = false;
-                        form.details = task;
+                        TaskDetailForm form = new TaskDetailForm(Account, task, TaskAdministration, CalendarEventAdministration);
                         form.Detail_Refresh();
                         var closing = form.ShowDialog();
 
                         if (closing == DialogResult.OK)
                         {
-                            this.taskAdministration = form.taskAdministration;
+                            TaskAdministration = form.TaskAdministration;
                             ToDo_Refresh();
                             this.Visible = true;
                             return;
@@ -70,7 +67,7 @@ namespace CForm_Planner.TaskSystem.TaskForms
         public void ToDo_Refresh()
         {
             ToDo_checkedListBox.Items.Clear();
-            foreach (Task t in taskAdministration.Todo)
+            foreach (Task t in TaskAdministration.Todo)
             {
                 if (t.Completed == true)
                 {

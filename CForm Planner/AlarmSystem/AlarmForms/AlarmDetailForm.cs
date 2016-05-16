@@ -12,10 +12,13 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
 {
     public partial class AlarmDetailForm : Form
     {
-        public AlarmAdministration alarmAdministration;
-        public Alarm details;
-        public AlarmDetailForm()
+        public AlarmAdministration AlarmAdministration { get; }
+        public Alarm Alarm { get; }
+
+        public AlarmDetailForm(Alarm alarm, AlarmAdministration alarmAdministration)
         {
+            Alarm = alarm;
+            AlarmAdministration = alarmAdministration;
             InitializeComponent();
         }
 
@@ -41,7 +44,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                 }
                 try
                 {
-                    alarmAdministration.ChangeAlarm(details, alarmTime, set, details.AccountEmail);
+                    AlarmAdministration.ChangeAlarm(Alarm, alarmTime, set);
                     this.DialogResult = DialogResult.OK;
                 }
                 catch (Exception ex)
@@ -56,7 +59,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
         {
             try
             {
-                alarmAdministration.RemoveAlarm(details);
+                AlarmAdministration.RemoveAlarm(Alarm);
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -67,18 +70,18 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
 
         public void Detail_Refresh()
         {
-            if (details != null)
+            if (Alarm != null)
             {
-                Hour_numericUpDown.Value = details.Alarmtime.Hour;
-                Min_numericUpDown.Value = details.Alarmtime.Minute;
-                if (details.AlarmSet == true)
+                Hour_numericUpDown.Value = Alarm.Alarmtime.Hour;
+                Min_numericUpDown.Value = Alarm.Alarmtime.Minute;
+                if (Alarm.AlarmSet == true)
                 {
                     On_radioButton.Checked = true;
                     Off_radioButton.Checked = false;
                 }
                 else
                 {
-                    if (details.AlarmSet == false)
+                    if (Alarm.AlarmSet == false)
                     {
                         On_radioButton.Checked = false;
                         Off_radioButton.Checked = true;
@@ -91,7 +94,5 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
         {
             this.DialogResult = DialogResult.OK;
         }
-
-
     }
 }

@@ -43,6 +43,22 @@ namespace CForm_Planner.AgendaSystem
             this.Assignment = assignment;
         }
 
+        public override bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string subject, string assignment,
+            string accountemail)
+        {
+            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
+                Subject != subject ||Assignment != assignment || AccountEmail != accountemail)
+            {
+                Subject = subject;
+                Assignment = assignment;
+                return base.Update(titel, notes, startDate, endDate, subject, assignment, accountemail);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is SchoolEvent)

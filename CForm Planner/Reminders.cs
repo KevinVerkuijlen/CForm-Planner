@@ -14,11 +14,13 @@ namespace CForm_Planner
 {
     public partial class Reminders : Form
     {
-        public CalendarEventAdministration calendarEventAdministration;
-        public TaskAdministration taskAdministration;
+        private CalendarEventAdministration CalendarEventAdministration { get; }
+        private TaskAdministration TaskAdministration { get; }
 
-        public Reminders()
+        public Reminders(CalendarEventAdministration calendarEventAdministration, TaskAdministration taskAdministration)
         {
+            CalendarEventAdministration = calendarEventAdministration;
+            TaskAdministration = taskAdministration;
             InitializeComponent();
         }
 
@@ -28,7 +30,7 @@ namespace CForm_Planner
             int normalAppointment = 0;
             int schoolAppointment = 0;
             int gameAppointment = 0;
-            foreach (CalendarEvent appointment in calendarEventAdministration.Agenda)
+            foreach (CalendarEvent appointment in CalendarEventAdministration.Agenda)
             {
                 if (appointment.StartDate.Date >= DateTime.Now.Date && appointment.StartDate.Date <= DateTime.Now.AddDays(7).Date
                     || appointment.EndDate.Date >= DateTime.Now.Date && appointment.EndDate.Date <= DateTime.Now.AddDays(7).Date
@@ -52,7 +54,7 @@ namespace CForm_Planner
             GameAppointments_label.Text = gameAppointment.ToString() + " appointments for games";
 
             int tasks = 0;
-            foreach (CForm_Planner.TaskSystem.Task task in taskAdministration.Todo)
+            foreach (CForm_Planner.TaskSystem.Task task in TaskAdministration.Todo)
             {
                 if (task.Completed == false)
                 {

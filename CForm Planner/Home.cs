@@ -23,29 +23,32 @@ namespace CForm_Planner
 {
     public partial class Home : Form
     {
-        private Administration administration = new Administration();
-        private NoteAdministration noteAdministration = new NoteAdministration();
-        private TaskAdministration taskAdministration = new TaskAdministration();
-        private AlarmAdministration alarmAdministration = new AlarmAdministration();
-        private CalendarEventAdministration calendarEventAdministration = new CalendarEventAdministration();
+        private Administration Administration { get; set; }
+        private NoteAdministration NoteAdministration { get; set; }
+        private TaskAdministration TaskAdministration { get; set; }
+        private AlarmAdministration AlarmAdministration { get; set; }
+        private CalendarEventAdministration CalendarEventAdministration { get; set; }
 
         public Home()
         {
+            Administration = new Administration();
+            NoteAdministration = new NoteAdministration();
+            TaskAdministration = new TaskAdministration();
+            AlarmAdministration = new AlarmAdministration();
+            CalendarEventAdministration = new CalendarEventAdministration();
             InitializeComponent();
-            
         }
+
         private void Home_Load(object sender, EventArgs e)
         {
             //administration.user = ReadFromBinaryFile<Account>(@"User.bin");
-            noteAdministration.Notes = ReadFromBinaryFile<List<Note>>(@"notes.bin");
-            calendarEventAdministration.Agenda = ReadFromBinaryFile<List<CalendarEvent>>(@"Agenda.bin");
-            alarmAdministration.Alarm_list = ReadFromBinaryFile<List<Alarm>>(@"Alarm.bin");
-            taskAdministration.Todo = ReadFromBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin");
+            NoteAdministration.Notes = ReadFromBinaryFile<List<Note>>(@"notes.bin");
+            CalendarEventAdministration.Agenda = ReadFromBinaryFile<List<CalendarEvent>>(@"Agenda.bin");
+            AlarmAdministration.Alarm_list = ReadFromBinaryFile<List<Alarm>>(@"Alarm.bin");
+            TaskAdministration.Todo = ReadFromBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin");
             UserRefresh();
 
-            Reminders form = new Reminders();
-            form.calendarEventAdministration = this.calendarEventAdministration;
-            form.taskAdministration = this.taskAdministration;
+            Reminders form = new Reminders(CalendarEventAdministration, TaskAdministration);
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
@@ -53,20 +56,18 @@ namespace CForm_Planner
                 UserRefresh();
                 this.Visible = true;
             }
-            MessageBox.Show("Alarm en Agenda sorteren (task prioriteit)");
         }
 
         private void Account_button_Click(object sender, EventArgs e)
         {
-            if (administration.user == null)
+            if (Administration.User == null)
             {
-                LoginForm form = new LoginForm();
-                form.administration = this.administration;
+                LoginForm form = new LoginForm(Administration);
                 this.Visible = false;
                 var closing = form.ShowDialog();
                 if (closing == DialogResult.OK)
                 {
-                    this.administration = form.administration;
+                    this.Administration = form.Administration;
                   //  WriteToBinaryFile<Account>(@"User.bin", administration.user);
                     UserRefresh();
                     this.Visible = true;
@@ -74,14 +75,13 @@ namespace CForm_Planner
             }
             else
             {
-                AccountDetailsForm form = new AccountDetailsForm();
-                form.administration = this.administration;
-                form.refresh();
+                AccountDetailsForm form = new AccountDetailsForm(Administration);
+                form.DetailRefresh();
                 this.Visible = false;
                 var closing = form.ShowDialog();
                 if (closing == DialogResult.OK)
                 {
-                    this.administration = form.administration;
+                    this.Administration = form.Administration;
                     UserRefresh();
                     this.Visible = true;
                 }
@@ -90,32 +90,28 @@ namespace CForm_Planner
 
         private void Note_button_Click(object sender, EventArgs e)
         {
-            NoteForm form = new NoteForm();
-            form.noteAdministration = noteAdministration;
-            form.user = administration.user;
+            NoteForm form = new NoteForm(Administration.User, NoteAdministration);
             form.Note_Refresh();
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.noteAdministration = form.noteAdministration;
-                WriteToBinaryFile<List<Note>>(@"notes.bin", noteAdministration.Notes);
+                NoteAdministration = form.NoteAdministration;
+                WriteToBinaryFile<List<Note>>(@"notes.bin", NoteAdministration.Notes);
                 this.Visible = true;
             }
         }
 
         private void Agenda_button_Click(object sender, EventArgs e)
         {
-            AgendaForm form = new AgendaForm();
-            form.calendarEventAdministration = this.calendarEventAdministration;
-            form.user = administration.user;
+            AgendaForm form = new AgendaForm(Administration.User, CalendarEventAdministration);
             form.Agenda_monthCalendar_DateChanged(null, null);
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.calendarEventAdministration = form.calendarEventAdministration;
-                WriteToBinaryFile<List<CalendarEvent>>(@"Agenda.bin", calendarEventAdministration.Agenda);
+                this.CalendarEventAdministration = form.CalendarEventAdministration;
+                WriteToBinaryFile<List<CalendarEvent>>(@"Agenda.bin", CalendarEventAdministration.Agenda);
                 UserRefresh();
                 this.Visible = true;
             }
@@ -123,33 +119,28 @@ namespace CForm_Planner
 
         private void Alarm_button_Click(object sender, EventArgs e)
         {
-            AlarmForm form = new AlarmForm();
-            form.alarmAdministration = this.alarmAdministration;
-            form.user = administration.user;
+            AlarmForm form = new AlarmForm(Administration.User, AlarmAdministration);
             form.Alarm_Refresh();
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.alarmAdministration = form.alarmAdministration;
-                WriteToBinaryFile<List<Alarm>>(@"Alarm.bin", alarmAdministration.Alarm_list);
-                this.Visible = true;
+                AlarmAdministration = form.AlarmAdministration;
+                WriteToBinaryFile<List<Alarm>>(@"Alarm.bin", AlarmAdministration.Alarm_list);
+                Visible = true;
             }
         }
 
         private void ToDo_button_Click(object sender, EventArgs e)
         {
-            CForm_Planner.TaskSystem.TaskForms.TaskForm form = new CForm_Planner.TaskSystem.TaskForms.TaskForm();
-            form.taskAdministration = this.taskAdministration;
-            form.calendarEventAdministration = this.calendarEventAdministration;
-            form.user = administration.user;
+            TaskSystem.TaskForms.TaskForm form = new TaskSystem.TaskForms.TaskForm(Administration.User, TaskAdministration, CalendarEventAdministration);
             form.ToDo_Refresh();
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.taskAdministration = form.taskAdministration;
-                WriteToBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin", taskAdministration.Todo);
+                TaskAdministration = form.TaskAdministration;
+                WriteToBinaryFile<List<CForm_Planner.TaskSystem.Task>>(@"Todo.bin", TaskAdministration.Todo);
                 UserRefresh();
                 this.Visible = true;
             }
@@ -157,7 +148,7 @@ namespace CForm_Planner
 
         private void Alarm_timer_Tick(object sender, EventArgs e)
         {
-            foreach (Alarm a in alarmAdministration.Alarm_list)
+            foreach (Alarm a in AlarmAdministration.Alarm_list)
             {
                 if (Convert.ToInt16(DateTime.Now.ToString("HH")) == a.Alarmtime.Hour && Convert.ToInt32(DateTime.Now.ToString("mm")) == a.Alarmtime.Minute)
                 {
@@ -186,19 +177,94 @@ namespace CForm_Planner
 
         public void UserRefresh()
         {
-            if (administration.user != null)
+            if (Administration.User != null)
             {
                 Name_label.Visible = true;
                 UName_label.Visible = true;
-                UName_label.Text = administration.user.Name;
+                UName_label.Text = Administration.User.Name;
                 LastName_label.Visible = true;
                 ULastName_label.Visible = true;
-                ULastName_label.Text = administration.user.LastName;
+                ULastName_label.Text = Administration.User.LastName;
                 email_label.Visible = true;
                 UEmail_label.Visible = true;
-                UEmail_label.Text = administration.user.EmailAdress;
+                UEmail_label.Text = Administration.User.EmailAdress;
                 download_button.Enabled = true;
                 upload_button.Enabled = true;
+                try
+                {
+                    if (CalendarEventAdministration.Agenda.Exists(x => x.AccountEmail == ""))
+                    {
+                        DialogResult result =
+                            MessageBox.Show(
+                                "Your agenda contains severall items which aren't linked to an account" +
+                                Environment.NewLine + " do you wish link these to you account?",
+                                "Confirm",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
+                        {
+                            CalendarEventAdministration.EmptyCalendarToUser(Administration.User);
+                        }
+                        else if (result == DialogResult.No)
+                        {
+                        }
+                    }
+                    CalendarEventAdministration.CleanCalendar(Administration.User);
+                    if (AlarmAdministration.Alarm_list.Exists(x => x.AccountEmail == ""))
+                    {
+                        DialogResult result =
+                            MessageBox.Show(
+                                "Your alarm list contains severall items which aren't linked to an account" +
+                                Environment.NewLine + " do you wish link these to you account?",
+                                "Confirm",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
+                        {
+                            AlarmAdministration.EmptyAlarmsToUser(Administration.User);
+                        }
+                        else if (result == DialogResult.No)
+                        {
+                        }
+                    }
+                    AlarmAdministration.CleanAlarms(Administration.User);
+                    if (NoteAdministration.Notes.Exists(x => x.Accountemail == ""))
+                    {
+                        DialogResult result =
+                            MessageBox.Show(
+                                "Your Notes contains severall items which aren't linked to an account" +
+                                Environment.NewLine + " do you wish link these to you account?",
+                                "Confirm",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
+                        {
+                            NoteAdministration.EmptyNotesToUser(Administration.User);
+                        }
+                        else if (result == DialogResult.No)
+                        {
+                        }
+                    }
+                    NoteAdministration.CleanNotes(Administration.User);
+                    if (TaskAdministration.Todo.Exists(x => x.Accountemail == ""))
+                    {
+                        DialogResult result =
+                            MessageBox.Show(
+                                "Your ToDo-list contains severall items which aren't linked to an account" +
+                                Environment.NewLine + " do you wish link these to you account?",
+                                "Confirm",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
+                        {
+                            TaskAdministration.EmptyTasksToUser(Administration.User);
+                        }
+                        else if (result == DialogResult.No)
+                        {
+                        }
+                    }
+                    TaskAdministration.CleanTasks(Administration.User);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
             else
             {
@@ -212,7 +278,7 @@ namespace CForm_Planner
                 upload_button.Enabled = false;
             }
             int todayAppointment = 0;
-            foreach (CalendarEvent appointment in calendarEventAdministration.Agenda)
+            foreach (CalendarEvent appointment in CalendarEventAdministration.Agenda)
             {
                 if (appointment.StartDate.Date == DateTime.Now.Date || appointment.EndDate.Date == DateTime.Now.Date || (appointment.StartDate.Date <= DateTime.Now.Date && appointment.EndDate.Date >= DateTime.Now.Date))
                 {
@@ -222,7 +288,7 @@ namespace CForm_Planner
             Today_label.Text = "Today: " + todayAppointment.ToString();
 
             int tasks = 0;
-            foreach (CForm_Planner.TaskSystem.Task task in taskAdministration.Todo)
+            foreach (CForm_Planner.TaskSystem.Task task in TaskAdministration.Todo)
             {
                 if (task.Completed == false)
                 {
@@ -234,14 +300,14 @@ namespace CForm_Planner
 
         private void download_button_Click(object sender, EventArgs e)
         {
-            if (administration.user != null)
+            if (Administration.User != null)
             {
                 try
                 {
-                    noteAdministration.MergeNotes(administration.user);
-                    taskAdministration.MergeTask(administration.user);
-                    alarmAdministration.MergeAlarms(administration.user);
-                    calendarEventAdministration.MergeCalendar(administration.user);
+                    NoteAdministration.MergeNotes(Administration.User);
+                    TaskAdministration.MergeTask(Administration.User);
+                    AlarmAdministration.MergeAlarms(Administration.User);
+                    CalendarEventAdministration.MergeCalendar(Administration.User);
                 }
                 catch (Exception ex)
                 {
@@ -252,14 +318,14 @@ namespace CForm_Planner
 
         private void upload_button_Click(object sender, EventArgs e)
         {
-            if (administration.user != null)
+            if (Administration.User != null)
             {
                 try
                 {
-                    noteAdministration.UploadTasks(administration.user);
-                    taskAdministration.UploadTasks(administration.user);
-                    alarmAdministration.UploadAlarms(administration.user);
-                    calendarEventAdministration.UploadCalendar(administration.user);
+                    NoteAdministration.UploadNotes(Administration.User);
+                    TaskAdministration.UploadTasks(Administration.User);
+                    AlarmAdministration.UploadAlarms(Administration.User);
+                    CalendarEventAdministration.UploadCalendar(Administration.User);
                 }
                 catch (Exception ex)
                 {

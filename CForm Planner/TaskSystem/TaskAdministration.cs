@@ -1,39 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 using CForm_Planner.AccountSystem;
+using Oracle.ManagedDataAccess.Client;
 
 namespace CForm_Planner.TaskSystem
 {
     public class TaskAdministration
     {
-        private TaskDatabase taskDatabase = new TaskDatabase();
         public List<Task> Todo = new List<Task>();
 
-        public void AddTask(string titel, string notes, bool completed, string email)
+        public bool AddTask(string titel, string notes, bool completed, string email)
         {
             Task task = new Task(titel, notes, completed, email);
-            int check = CheckForTask(task);
-            if (check == -1)
-            {                
+            if (Todo.Contains(task) == false)
+            {
                 if (task.Accountemail != "")
                 {
-                    Task databaseCheck = taskDatabase.GetTask(task);
-                    if (databaseCheck != null)
+                    try
                     {
-                        Todo.Add(task);
-                        taskDatabase.InsertTask(task);
+                        if (GetTask(task))
+                        {
+                            Todo.Add(task);
+                            InsertTask(titel, notes, completed, email);
+                            return true;
+                        }
+                        else
+                        {
+                            throw new PlannerExceptions("Task already exist in the database ToDo list");
+                        }
+
                     }
-                    else
+                    catch (Exception)
                     {
-                        throw new PlannerExceptions("Task already exist, please reload your data");
+                        throw;
                     }
                 }
                 else
                 {
                     Todo.Add(task);
+                    return true;
                 }
             }
             else
@@ -42,16 +49,29 @@ namespace CForm_Planner.TaskSystem
             }
         }
 
-        public void RemoveTask(Task task)
+        public bool RemoveTask(Task task)
         {
-            int check = CheckForTask(task);
-            if (check >= 0)
+            if (Todo.Contains(task))
             {
                 Todo.Remove(task);
                 if (task.Accountemail != "")
                 {
-                    taskDatabase.DeleteTask(task);
+                    try
+                    {
+                        OracleParameter[] deleteParameter =
+                        {
+                            new OracleParameter("iTITEL", task.Titel),
+                            new OracleParameter("iNOTE", task.Notes),
+                            new OracleParameter("iMAIL", task.Accountemail)
+                        };
+                        DatabaseManager.ExecuteDeleteQuery("DeleteTask", deleteParameter);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
+                return true;
             }
             else
             {
@@ -59,58 +79,115 @@ namespace CForm_Planner.TaskSystem
             }
         }
 
-        public void ChangeTask(Task oldTask, string titel, string notes, bool completed, string email)
+        public bool ChangeTask(Task oldTask, string titel, string notes, bool completed)
         {
-            Task newTask = new Task(titel, notes, completed, email);
-            int oldCheck = CheckForTask(oldTask);
-            int newCheck = CheckForTask(newTask);
-            if (oldCheck >= 0 && newCheck == -1)
+            if (Todo.Contains(oldTask))
             {
-                Todo.RemoveAt(oldCheck);
-                Todo.Insert(oldCheck, newTask);
-                if (oldTask.Accountemail != "" && newTask.Accountemail != "")
+                if (Todo.Contains(new Task(titel, notes, completed, oldTask.Accountemail)) == false)
                 {
-                    taskDatabase.UpdateTask(oldTask, newTask);
+                    if (oldTask.Accountemail != "")
+                    {
+                        try
+                        {
+                            UpdateTask(oldTask.Titel, oldTask.Notes, oldTask.Accountemail, titel, notes, completed,
+                                oldTask.Accountemail);
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                    }
+                    oldTask.Update(titel, notes, completed, oldTask.Accountemail);
+                    return true;
+                }
+                else
+                {
+                    throw new PlannerExceptions(
+                        "Thenew Task already exist in the ToDo list");
                 }
             }
             else
             {
-                throw new PlannerExceptions("The old Task doesn't exist in the ToDo list or the new Task already exist in the ToDo list");
+                throw new PlannerExceptions(
+                    "The old Task doesn't exist in the ToDo list");
             }
         }
 
-        public void TaskToCalendar()
+        public void InsertTask(string titel, string notes, bool completed, string email)
         {
-
-        }
-
-        public int CheckForTask(Task task)
-        {
-            int check = -1;
-            foreach (Task t in Todo)
+            OracleParameter[] insertParameter =
             {
-
-                if (t.Titel == task.Titel && t.Notes == task.Notes && t.Completed == task.Completed)
-                {
-                    check = Todo.IndexOf(t);
-                }
-                else
-                {
-                    if (t.Titel == task.Titel && t.Notes == task.Notes && t.Completed != task.Completed)
-                    {
-                        return check;
-                    }
-                }
-            }
-            return check;
+                new OracleParameter("iTITEL", titel),
+                new OracleParameter("iNOTE", notes),
+                new OracleParameter("iCOMPLETED", Convert.ToInt32(completed)),
+                new OracleParameter("iMAIL", email)
+            };
+            DatabaseManager.ExecuteInsertQuery("InsertTask", insertParameter);
         }
+
+        public void UpdateTask(string oldTitel, string oldNotes, string oldEmail, string newTitel, string newNotes,
+            bool completed, string newEmail)
+        {
+            OracleParameter[] updateParameter =
+            {
+                new OracleParameter("oTITEL", oldTitel),
+                new OracleParameter("oNOTE", oldNotes),
+                new OracleParameter("oMAIL", oldEmail),
+                new OracleParameter("nTITEL", newTitel),
+                new OracleParameter("nNOTE", newNotes),
+                new OracleParameter("nCOMPLETED", Convert.ToInt32(completed))
+            };
+            DatabaseManager.ExecuteInsertQuery("UpdateTask", updateParameter);
+        }
+
+        public bool GetTask(Task task)
+        {
+            OracleParameter[] checkParameter =
+            {
+                new OracleParameter("TITEL", task.Titel),
+                new OracleParameter("NOTE", task.Notes),
+                new OracleParameter("EMAILADDRESS", task.Accountemail)
+            };
+            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetTask"],
+                checkParameter);
+            if (dt.Rows.Count == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         public void MergeTask(Account user)
         {
             if (user != null)
             {
-                List<Task> loaded = taskDatabase.GetAllTasks(user);
-                this.Todo = Todo.Union(loaded).Distinct().ToList();
+                try
+                {
+                    List<Task> loaded = new List<Task>();
+                    OracleParameter[] checkParameter =
+                    {
+                        new OracleParameter("mail", user.EmailAdress)
+                    };
+                    DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllTasks"],
+                        checkParameter);
+                    foreach (DataRow reader in dt.Rows)
+                    {
+                        string titel = (String) reader["TITEL"];
+                        string note = (String) reader["NOTE"];
+                        bool completed = Convert.ToBoolean(reader["COMPLETED"]);
+                        string email = (String) reader["EMAILADDRESS"];
+                        loaded.Add(new Task(titel, note, completed, email));
+                    }
+                    this.Todo = Todo.Union(loaded).Distinct().ToList();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
         }
 
@@ -122,19 +199,58 @@ namespace CForm_Planner.TaskSystem
                 {
                     if (t.Accountemail != "")
                     {
-                        Task databaseCheck = taskDatabase.GetTask(t);
-                        if (databaseCheck == null)
+                        try
                         {
-                            taskDatabase.InsertTask(t);
-                        }
-                        else
-                        {
-                            if(databaseCheck != t)
+                            OracleParameter[] checkParameter =
                             {
-                                taskDatabase.UpdateTask(databaseCheck, t);
+                                new OracleParameter("TITEL", t.Titel),
+                                new OracleParameter("NOTE", t.Notes),
+                                new OracleParameter("EMAILADDRESS", t.Accountemail)
+                            };
+                            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetTask"],
+                                checkParameter);
+                            foreach (DataRow reader in dt.Rows)
+                            {
+                                if (reader["TITEL"] == DBNull.Value && reader["NOTE"] == DBNull.Value &&
+                                    reader["COMPLETED"] == DBNull.Value && reader["EMAILADDRESS"] == DBNull.Value)
+                                {
+                                    InsertTask(t.Titel, t.Notes, t.Completed, t.Accountemail);
+                                }
+                                else
+                                {
+                                    UpdateTask((string) reader["TITEL"], (string) reader["NOTE"],
+                                        (string) reader["EMAILADDRESS"], t.Titel, t.Notes, t.Completed, t.Accountemail);
+                                }
                             }
                         }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
                     }
+                }
+            }
+        }
+
+        public void CleanTasks(Account user)
+        {
+            foreach (Task task in Todo.ToList())
+            {
+                if (task.Accountemail == "" || task.Accountemail != user.EmailAdress)
+                {
+                    RemoveTask(task);
+                }
+            }
+        }
+
+        public void EmptyTasksToUser(Account user)
+        {
+            foreach (Task task in Todo.ToList())
+            {
+                if (task.Accountemail == "")
+                {
+                    task.Update(task.Titel, task.Notes, task.Completed, user.EmailAdress);
+                    InsertTask(task.Titel, task.Notes, task.Completed, user.EmailAdress);
                 }
             }
         }

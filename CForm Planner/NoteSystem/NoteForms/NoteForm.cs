@@ -13,24 +13,24 @@ namespace CForm_Planner.NoteSystem
 {
     public partial class NoteForm : Form
     {
-        public NoteAdministration noteAdministration;
-        public Account user;
+        public NoteAdministration NoteAdministration { get; private set; }
+        public Account Account { get; private set; }
 
-        public NoteForm()
+        public NoteForm(Account account, NoteAdministration noteAdministration)
         {
+            Account = account;
+            NoteAdministration = noteAdministration;
             InitializeComponent();
         }
 
         private void NewNote_button_Click(object sender, EventArgs e)
         {
-            NoteAddForm form = new NoteAddForm();
-            form.noteAdministration = this.noteAdministration;
-            form.user = this.user;
+            NoteAddForm form = new NoteAddForm(Account, NoteAdministration);
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.noteAdministration = form.noteAdministration;
+                NoteAdministration = form.NoteAdministration;
                 this.Visible = true;
                 Note_Refresh();
             }
@@ -40,7 +40,7 @@ namespace CForm_Planner.NoteSystem
         public void Note_Refresh()
         {
             Note_listBox.Items.Clear();
-            foreach (Note n in noteAdministration.Notes)
+            foreach (Note n in NoteAdministration.Notes)
             {
                 Note_listBox.Items.Add(n.Information);
             }
@@ -55,20 +55,18 @@ namespace CForm_Planner.NoteSystem
         {
             if (Note_listBox.SelectedItem != null)
             {
-                NoteDetailForm form = new NoteDetailForm();
-                form.noteAdministration = this.noteAdministration;
-                foreach (Note note in noteAdministration.Notes)
+                foreach (Note note in NoteAdministration.Notes)
                 {
                     if (note.Information == Note_listBox.SelectedItem.ToString())
                     {
                         this.Visible = false;
-                        form.details = note;
+                        NoteDetailForm form = new NoteDetailForm(note, NoteAdministration);
                         form.Detail_Refresh();
                         var closing = form.ShowDialog();
 
                         if (closing == DialogResult.OK)
                         {
-                            this.noteAdministration = form.noteAdministration;
+                            NoteAdministration = form.NoteAdministration;
                             Note_Refresh();
                             this.Visible = true;
                             return;

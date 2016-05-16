@@ -9,9 +9,9 @@ namespace CForm_Planner.AlarmSystem
     [Serializable]
     public class Alarm : IComparable<Alarm>
     {
-        public DateTime Alarmtime { get; set; }
-        public bool AlarmSet { get; set; }
-        public string AccountEmail { get; set; }
+        public DateTime Alarmtime { get; private set; }
+        public bool AlarmSet { get; private set; }
+        public string AccountEmail { get; private set; }
 
         public Alarm(DateTime alarmtime, bool alarmSet, string accountemail)
         {
@@ -19,9 +19,24 @@ namespace CForm_Planner.AlarmSystem
             {
                 throw new ArgumentNullException("alarmtime", "alarmtime is empty");
             }
-            this.Alarmtime = alarmtime;
-            this.AlarmSet = alarmSet;
-            this.AccountEmail = accountemail;
+            Alarmtime = alarmtime;
+            AlarmSet = alarmSet;
+            AccountEmail = accountemail;
+        }
+
+        public bool Update(DateTime alarmtime, bool alarmSet, string accountemail)
+        {
+            if (Alarmtime != alarmtime || AlarmSet != alarmSet || AccountEmail != accountemail)
+            {
+                Alarmtime = alarmtime;
+                AlarmSet = alarmSet;
+                AccountEmail = accountemail;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override bool Equals(object obj)

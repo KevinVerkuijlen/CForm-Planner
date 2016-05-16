@@ -12,10 +12,11 @@ namespace CForm_Planner.AccountSystem.AccountForms
 {
     public partial class LoginForm : Form
     {
-        public Administration administration;
-        public LoginForm()
+        public Administration Administration { get; private set; }
+        public LoginForm(Administration administration)
         {
             InitializeComponent();
+            Administration = administration;
         }
 
         private void Login_button_Click(object sender, EventArgs e)
@@ -24,8 +25,8 @@ namespace CForm_Planner.AccountSystem.AccountForms
             {
                 if (Password_textBox.Text != "")
                 {
-                    administration.LoginAccount(Email_textBox.Text, Password_textBox.Text);
-                    if (administration.user != null)
+                    Administration.LoginAccount(Email_textBox.Text, Password_textBox.Text);
+                    if (Administration.User != null)
                     {
                         this.DialogResult = DialogResult.OK;
                     }
@@ -49,14 +50,17 @@ namespace CForm_Planner.AccountSystem.AccountForms
 
         private void Register_button_Click(object sender, EventArgs e)
         {
-            RegisterForm form = new RegisterForm();
-            form.administration = this.administration;
+            RegisterForm form = new RegisterForm(Administration);
             this.Visible = false;
             var closing = form.ShowDialog();
             if (closing == DialogResult.OK)
             {
-                this.administration = form.administration;
-                this.Visible = true;
+                this.Administration = form.Administration;
+                Administration.LoginAccount(form.Email, form.Password);
+                if (Administration.User != null)
+                {
+                    this.DialogResult = DialogResult.OK;
+                }
             } 
         }
 

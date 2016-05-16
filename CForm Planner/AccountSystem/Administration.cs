@@ -1,55 +1,131 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using Oracle.ManagedDataAccess.Client;
 
 namespace CForm_Planner.AccountSystem
 {
     public class Administration
     {
-        private AccountDatabase accountDatabase = new AccountDatabase();
-        public Account user = null;
+        public Account User = null;
 
-        public void Register(string name, string lastname, string email, string password)
+        public bool Register(string name, string lastname, string email, string password)
         {
-            Account newAccount = new Account(name, lastname, email, password); 
-            Account check = accountDatabase.GetAccount(newAccount.EmailAdress);
-            if (check == null)
+            try
             {
-                accountDatabase.InsertAccount(newAccount);
+                OracleParameter[] loginParameter =
+                {
+                    new OracleParameter("mail", email)
+                };
+                DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAccount"],
+                    loginParameter);
+                if (dt.Rows.Count == 0)
+                {
+                    OracleParameter[] registerParameter =
+                    {
+                        new OracleParameter("iMAIL", email),
+                        new OracleParameter("iNAME", name),
+                        new OracleParameter("iLASTNAME", lastname),
+                        new OracleParameter("iPASS", password)
+                    };
+                    DatabaseManager.ExecuteInsertQuery(DatabaseQuerys.Query["InsertAccount"], registerParameter);
+                    return true;
+                }
+                else
+                {
+                    throw new PlannerExceptions("This email adress is already being used by an account");
+                }
             }
-            else
+            catch (Exception)
             {
-                throw new PlannerExceptions("This email adress is already being used by an account");
+                throw;
             }
         }
 
         public void LoginAccount(string email, string password)
         {
-            Account userAccount = accountDatabase.Login(email, password);
-            if (userAccount != null)
+            try
             {
-                this.user = userAccount;
+                OracleParameter[] loginParameter =
+                {
+                    new OracleParameter("mail", email),
+                    new OracleParameter("pass", password)
+                };
+                DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["Login"],
+                    loginParameter);
+                foreach (DataRow reader in dt.Rows)
+                {
+                    string name = (string) reader["NAME"];
+                    string lastname = (string) reader["LASTNAME"];
+                    string mail = (string) reader["EMAILADDRESS"];
+                    this.User = new Account(name, lastname, mail);
+                }
             }
-        }   
-
-        public void LogoutAccount()
-        {
-            if (user != null)
+            catch (Exception)
             {
-                this.user = null;
+                throw;
+            }
+        }
+
+        public bool LogoutAccount()
+        {
+            if (this.User != null)
+            {
+                this.User = null;
+                return true;
+            }
+            else
+            {
+                throw new PlannerExceptions("User is not logged in");
             }
         }
 
-        public void UpdateAccount(string name, string lastname, string email, string password)
+        public bool UpdateAccount(string name, string lastname, string password)
         {
-            Account account = new Account(name, lastname, email, password); 
-            if (user != null && account != null)
+            if (User != null)
             {
-                accountDatabase.UpdateAccount(user, account);
-                user = account;
+                User.UpdateUser(name, lastname);
+                try
+                {
+                    OracleParameter[] updateParameter =
+                    {
+                    new OracleParameter("iNAME", name),
+                    new OracleParameter("iLASTNAME", lastname),
+                    new OracleParameter("iPASS", password),
+                    new OracleParameter("OLDMAIL", User.EmailAdress)
+                };
+                    DatabaseManager.ExecuteInsertQuery(DatabaseQuerys.Query["UpdateAccount"], updateParameter);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                throw new PlannerExceptions("User is not logged in");
             }
         }
+
+        public void AddFriend()
+        {
+            
+        }
+
+        public void RemoveFriend()
+        {
+            
+        }
+
+        public void GetFriends()
+        {
+            
+        }
+
+        public void SearchFriends()
+        {
+            
+        }
+
     }
 }

@@ -9,10 +9,10 @@ namespace CForm_Planner.TaskSystem
     [Serializable]
     public class Task
     {
-        public string Titel { get; protected set; }
-        public string Notes { get; protected set; }
-        public bool Completed { get; protected set; }
-        public string Accountemail { get; set; }
+        public string Titel { get; private set; }
+        public string Notes { get; private set; }
+        public bool Completed { get; private set; }
+        public string Accountemail { get; private set; }
 
         public Task(string titel, string notes, bool completed, string accountEmail)
         {
@@ -24,10 +24,26 @@ namespace CForm_Planner.TaskSystem
             {
                 throw new ArgumentNullException("notes", "notes is empty");
             }
-            this.Titel = titel;
-            this.Notes = notes;
-            this.Completed = completed;
-            this.Accountemail = accountEmail;
+            Titel = titel;
+            Notes = notes;
+            Completed = completed;
+            Accountemail = accountEmail;
+        }
+
+        public bool Update(string titel, string notes, bool completed, string accountEmail)
+        {
+            if (Titel != titel || Notes != notes || Completed != completed || Accountemail != accountEmail)
+            {
+                Titel = titel;
+                Notes = notes;
+                Completed = completed;
+                Accountemail = accountEmail;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override bool Equals(object obj)

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CForm_Planner.AccountSystem;
 using CForm_Planner.TaskSystem;
 using CForm_Planner.AgendaSystem;
 using CForm_Planner.AgendaSystem.AgendaForms;
@@ -15,12 +16,17 @@ namespace CForm_Planner
 {
     public partial class TaskDetailForm : Form
     {
-        public TaskAdministration taskAdministration;
-        public CalendarEventAdministration calendarEventAdministration;
-        public TaskSystem.Task details;
+        public TaskAdministration TaskAdministration { get; }
+        public CalendarEventAdministration CalendarEventAdministration { get; private set; }
+        public Account Account { get; }
+        public TaskSystem.Task Task { get; }
 
-        public TaskDetailForm()
+        public TaskDetailForm(Account account, TaskSystem.Task task, TaskAdministration taskAdministration, CalendarEventAdministration calendarEventAdministration)
         {
+            Account = account;
+            Task = task;
+            TaskAdministration = taskAdministration;
+            CalendarEventAdministration = calendarEventAdministration;
             InitializeComponent();
         }
 
@@ -37,7 +43,7 @@ namespace CForm_Planner
                 }
                 try
                 {
-                    taskAdministration.ChangeTask(details, TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed, details.Accountemail);
+                    TaskAdministration.ChangeTask(Task, TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed);
                     this.DialogResult = DialogResult.OK;
                     return;
                 }
@@ -57,7 +63,7 @@ namespace CForm_Planner
         {
             try
             {
-                taskAdministration.RemoveTask(details);
+                TaskAdministration.RemoveTask(Task);
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -69,11 +75,11 @@ namespace CForm_Planner
 
         public void Detail_Refresh()
         {
-            if (details != null)
+            if (Task != null)
             {
-                TaskTitel_textBox.Text = details.Titel;
-                TaskNotes_textBox.Text = details.Notes;
-                if (details.Completed == true)
+                TaskTitel_textBox.Text = Task.Titel;
+                TaskNotes_textBox.Text = Task.Notes;
+                if (Task.Completed == true)
                 {
                     Completed_radioButton.Checked = true;
                 }
@@ -86,27 +92,25 @@ namespace CForm_Planner
 
         private void TaskDetailForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void TaskToAppointment_button_Click(object sender, EventArgs e)
         {
-            AgendaAddForm form = new AgendaAddForm();
+            CalendarEvent calendarTask = new CalendarEvent(Task.Titel, Task.Notes, DateTime.Now, DateTime.Now, Task.Accountemail);
+            AgendaAddForm form = new AgendaAddForm(Account,CalendarEventAdministration, calendarTask);
             this.Visible = false;
-            form.calendarEventAdministration = this.calendarEventAdministration;
-            CalendarEvent calendarTask = new CalendarEvent(details.Titel, details.Notes, DateTime.Now, DateTime.Now, details.Accountemail);
-            form.task = calendarTask;
             form.Detail_Refresh();
             var closing = form.ShowDialog();
             if (closing == DialogResult.Yes)
             {
-                this.calendarEventAdministration = form.calendarEventAdministration;
-                taskAdministration.RemoveTask(details);
+                CalendarEventAdministration = form.CalendarEventAdministration;
+                TaskAdministration.RemoveTask(Task);
                 this.DialogResult = DialogResult.OK;
             }
             else if (closing == DialogResult.OK)
             {
-                this.calendarEventAdministration = form.calendarEventAdministration;
+                CalendarEventAdministration = form.CalendarEventAdministration;
                 this.Visible = true;
             }
         }

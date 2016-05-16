@@ -13,20 +13,22 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
 {
     public partial class AlarmAddForm : Form
     {
-        public AlarmAdministration alarmAdministration;
-        public Account user;
+        public AlarmAdministration AlarmAdministration { get;}
+        public Account Account { get; }
 
-        public AlarmAddForm()
+        public AlarmAddForm(Account userAccount, AlarmAdministration alarmAdministration)
         {
             InitializeComponent();
+            Account = userAccount;
+            AlarmAdministration = alarmAdministration;
         }
 
         private void AddAlarm_button_Click(object sender, EventArgs e)
         {
             string userEmail = "";
-            if (user != null)
+            if (Account != null)
             {
-                userEmail = user.EmailAdress;
+                userEmail = Account.EmailAdress;
             }
             if (Hour_numericUpDown.Value == 24 && Min_numericUpDown.Value > 0)
             {
@@ -37,7 +39,7 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                 DateTime alarmTime = new DateTime(1, 1, 1, Convert.ToInt32(Hour_numericUpDown.Value), Convert.ToInt32(Min_numericUpDown.Value), 0);
                 try
                 {
-                    alarmAdministration.AddAlarm(alarmTime, false, userEmail);
+                    AlarmAdministration.AddAlarm(alarmTime, false, userEmail);
                 }
                 catch (Exception ex)
                 {

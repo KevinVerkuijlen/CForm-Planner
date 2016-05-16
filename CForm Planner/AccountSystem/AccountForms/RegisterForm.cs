@@ -12,9 +12,13 @@ namespace CForm_Planner.AccountSystem.AccountForms
 {
     public partial class RegisterForm : Form
     {
-        public Administration administration;
-        public RegisterForm()
+        public Administration Administration { get; private set; }
+        public string Email { get; private set; }
+        public string Password { get; private set; }
+
+        public RegisterForm(Administration administration)
         {
+            Administration = administration;
             InitializeComponent();
         }
 
@@ -30,7 +34,9 @@ namespace CForm_Planner.AccountSystem.AccountForms
                         {                  
                             try
                             {
-                                administration.Register(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
+                                Email = Email_textBox.Text;
+                                Password = Password_textBox.Text;
+                                Administration.Register(FirstName_textBox.Text, LastName_textBox.Text, Email, Password);
                                 this.DialogResult = DialogResult.OK;
                             }
                             catch(Exception ex)

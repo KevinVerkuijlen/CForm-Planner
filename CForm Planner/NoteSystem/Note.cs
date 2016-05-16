@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Oracle.ManagedDataAccess.Client;
 
 namespace CForm_Planner.NoteSystem
 {
     [Serializable]
     public class Note
     {
-        public string Information { get; set; }
-        public string Accountemail { get; set; }
+        public string Information { get; private set; }
+        public string Accountemail { get; private set; }
 
         public Note(string information, string accountemail)
         {
@@ -18,8 +19,22 @@ namespace CForm_Planner.NoteSystem
             {
                 throw new ArgumentNullException("information", "information is empty");
             }
-            this.Information = information;
-            this.Accountemail = accountemail;
+            Information = information;
+            Accountemail = accountemail;
+        }
+
+        public bool Update(string information, string accountemail)
+        {
+            if (Information != information || Accountemail != accountemail)
+            {
+                Information = information;
+                Accountemail = accountemail;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override bool Equals(object obj)

@@ -13,12 +13,16 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 {
     public partial class AgendaAddForm : Form
     {
-        public CalendarEventAdministration calendarEventAdministration;
-        public Account user;
-        public CalendarEvent task;
+        public CalendarEventAdministration CalendarEventAdministration { get; }
+        public Account Account { get; }
+        public CalendarEvent CalendarEvent { get; }
+        private RadioButton button = null;
         
-        public AgendaAddForm()
+        public AgendaAddForm(Account account, CalendarEventAdministration calendarEventAdministration, CalendarEvent calendarEvent)
         {
+            Account = account;
+            CalendarEventAdministration = calendarEventAdministration;
+            CalendarEvent = calendarEvent;
             InitializeComponent();
             Normal_radioButton.Checked = true;
         }
@@ -30,78 +34,117 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         private void Add_button_Click(object sender, EventArgs e)
         {
-            string userEmail = "";
-            if (user != null)
-            {
-                userEmail = user.EmailAdress;
-            }
-            if (Titel_textBox.Text != "")
-            {
-                if (Note_textBox.Text != "")
+            if (button != null && button.Checked)
+            { 
+                string userEmail = "";
+                if (Account != null)
                 {
-                    DateTime start = Start_datePicker.Value.Date.Add(Start_TimePicker.Value.TimeOfDay);
-                    DateTime end = End_datePicker.Value.Date.Add(End_TimePicker.Value.TimeOfDay);
-                    if (start.ToString() == end.ToString() || start < end)
+                    userEmail = Account.EmailAdress;
+                }
+                if (Titel_textBox.Text != "")
+                {
+                    if (Note_textBox.Text != "")
                     {
-                        if (Repeat_checkBox.Checked)
+                        DateTime start = Start_datePicker.Value.Date.Add(Start_TimePicker.Value.TimeOfDay);
+                        DateTime end = End_datePicker.Value.Date.Add(End_TimePicker.Value.TimeOfDay);
+                        if (start.ToString() == end.ToString() || start < end)
                         {
-                            if (start.Date == end.Date)
+                            if (Repeat_checkBox.Checked)
                             {
-                                try
+                                if (start.Date == end.Date)
                                 {
-                                    calendarEventAdministration.AddCalendarEvent(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail);
-                                }
-                                catch(Exception ex)
-                                {
-                                    MessageBox.Show(ex.Message);
-                                }
+                                    try
+                                    {
+                                        switch (button.Name)
+                                        {
+                                            case "Normal_radioButton":
+                                                CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
+                                                    Note_textBox.Text, start, end, userEmail);
+                                                break;
+                                            case "School_radioButton":
+                                                CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
+                                                    Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
+                                                break;
+                                            case "Game_radioButton":
+                                                CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
+                                                    Note_textBox.Text, start, end, Game_textBox.Text, userEmail);
+                                                break;
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        MessageBox.Show(ex.Message);
+                                    }
                                     if (Repeat_comboBox.Text == "days")
-                                {
-                                    calendarEventAdministration.RepeatCalendarEventEachDay(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                    {
+                                        CalendarEventAdministration.RepeatCalendarEventEachDay(Titel_textBox.Text,
+                                            Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text,
+                                            Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                    }
+                                    else if (Repeat_comboBox.Text == "work days")
+                                    {
+                                        CalendarEventAdministration.RepeatCalendarEventEachWorkDay(Titel_textBox.Text,
+                                            Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text,
+                                            Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                    }
+                                    else if (Repeat_comboBox.Text == "weeks")
+                                    {
+                                        CalendarEventAdministration.RepeatCalendarEventEachDayInWeek(
+                                            Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text,
+                                            Assignment_textBox.Text, Game_textBox.Text, userEmail,
+                                            Convert.ToInt32(Repeat_numericUpDown.Value));
+                                    }
+                                    AgendaAddForm_FormClosing(null, null);
                                 }
-                                else if (Repeat_comboBox.Text == "work days") 
+                                else
                                 {
-                                    calendarEventAdministration.RepeatCalendarEventEachWorkDay(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                    MessageBox.Show("To repeat an event it needs to be on one day");
                                 }
-                                else if (Repeat_comboBox.Text == "weeks")
-                                {
-                                    calendarEventAdministration.RepeatCalendarEventEachDayInWeek(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
-                                }
-                                AgendaAddForm_FormClosing(null, null);
                             }
                             else
                             {
-                                MessageBox.Show("To repeat an event it needs to be on one day");
+                                try
+                                {
+                                    switch (button.Name)
+                                    {
+                                        case "Normal_radioButton":
+                                            CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
+                                                Note_textBox.Text, start, end, userEmail);
+                                            break;
+                                        case "School_radioButton":
+                                            CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
+                                                Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
+                                            break;
+                                        case "Game_radioButton":
+                                            CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
+                                                Note_textBox.Text, start, end, Game_textBox.Text, userEmail);
+                                            break;
+                                    }
+                                    AgendaAddForm_FormClosing(null, null);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message);
+                                }
                             }
                         }
-                        else
-                        {
-                            try
-                            {
-                                calendarEventAdministration.AddCalendarEvent(Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, Game_textBox.Text, userEmail);
-                                AgendaAddForm_FormClosing(null, null);
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please fill in some notes for the appointment");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please fill in some notes for the appointment");
+                    MessageBox.Show("You need to fill in a titel for the appiontment");
                 }
-            }
-            else
-            {
-                MessageBox.Show("You need to fill in a titel for the appiontment");
             }
         }
 
         private void School_radioButton_CheckedChanged(object sender, EventArgs e)
         {
             NormalAppointment();
+            button = School_radioButton;
             Subject_label.Visible = true;
             Subject_textBox.Visible = true;
             Assignment_label.Visible = true;
@@ -111,12 +154,14 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
         private void Game_radioButton_CheckedChanged(object sender, EventArgs e)
         {
             NormalAppointment();
+            button = Game_radioButton;
             Game_label.Visible = true;
             Game_textBox.Visible = true;
         }
 
         private void NormalAppointment()
         {
+            button = Normal_radioButton;
             Subject_label.Visible = false;
             Subject_textBox.Visible = false;
             Assignment_label.Visible = false;
@@ -127,7 +172,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         private void AgendaAddForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (task != null)
+            if (CalendarEvent != null)
             {
                 this.DialogResult = DialogResult.Yes;
             }
@@ -139,15 +184,16 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
 
         public void Detail_Refresh()
         {
-            if (task != null)
+            if (CalendarEvent != null)
             {
-                Titel_textBox.Text = task.Titel;
-                Note_textBox.Text = task.Notes;
-                Start_datePicker.Value = task.StartDate.Date;
-                Start_TimePicker.Value = task.StartDate;
-                End_datePicker.Value = task.EndDate.Date;
-                End_TimePicker.Value = task.EndDate;
+                Titel_textBox.Text = CalendarEvent.Titel;
+                Note_textBox.Text = CalendarEvent.Notes;
+                Start_datePicker.Value = CalendarEvent.StartDate.Date;
+                Start_TimePicker.Value = CalendarEvent.StartDate;
+                End_datePicker.Value = CalendarEvent.EndDate.Date;
+                End_TimePicker.Value = CalendarEvent.EndDate;
             }
         }
+
     }
 }

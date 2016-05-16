@@ -9,12 +9,12 @@ namespace CForm_Planner.AgendaSystem
     [Serializable]
     public class CalendarEvent : IComparable<CalendarEvent>
     {
-        public string Titel { get; protected set; }
-        public string Notes { get; protected set; }
-        public DateTime StartDate { get; protected set; }
-        public DateTime EndDate { get; protected set; }
-        public string AccountEmail { get; protected set; }
-        public string AgendaDisplay { get; protected set; }
+        public string Titel { get; private set; }
+        public string Notes { get; private set; }
+        public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
+        public string AccountEmail { get; private set; }
+        public string AgendaDisplay { get; private set; }
 
         public CalendarEvent(string titel, string notes, DateTime startDate, DateTime endDate, string accountemail)
         {
@@ -34,14 +34,68 @@ namespace CForm_Planner.AgendaSystem
             {
                 throw new ArgumentNullException("enddate", "enddate is empty");
             }
-            this.Titel = titel;
-            this.Notes = notes;
-            this.StartDate = startDate;
-            this.EndDate = endDate;
-            this.AccountEmail = accountemail;
-            this.AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
+            Titel = titel;
+            Notes = notes;
+            StartDate = startDate;
+            EndDate = endDate;
+            AccountEmail = accountemail;
+            AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
         }
 
+        public virtual bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string accountemail)
+        {
+            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
+                AccountEmail != accountemail)
+            {
+                Titel = titel;
+                Notes = notes;
+                StartDate = startDate;
+                EndDate = endDate;
+                AccountEmail = accountemail;
+                AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public virtual bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string gamename, string accountemail)
+        {
+            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
+                AccountEmail != accountemail)
+            {
+                Titel = titel;
+                Notes = notes;
+                StartDate = startDate;
+                EndDate = endDate;
+                AccountEmail = accountemail;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public virtual bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string subject, string assignment, string accountemail)
+        {
+            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
+                AccountEmail != accountemail)
+            {
+                Titel = titel;
+                Notes = notes;
+                StartDate = startDate;
+                EndDate = endDate;
+                AccountEmail = accountemail;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public override bool Equals(object obj)
         {

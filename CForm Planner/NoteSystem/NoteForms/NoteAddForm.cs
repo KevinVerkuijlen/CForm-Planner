@@ -13,26 +13,28 @@ namespace CForm_Planner.NoteSystem
 {
     public partial class NoteAddForm : Form
     {
-        public NoteAdministration noteAdministration;
-        public Account user;
+        public NoteAdministration NoteAdministration { get; }
+        public Account Account { get; }
 
-        public NoteAddForm()
+        public NoteAddForm(Account account, NoteAdministration noteAdministration)
         {
+            Account = account;
+            NoteAdministration = noteAdministration;
             InitializeComponent();
         }
 
         private void AddNote_button_Click(object sender, EventArgs e)
         {
             string userEmail = "";
-            if (user != null)
+            if (Account != null)
             {
-                userEmail = user.EmailAdress;
+                userEmail = Account.EmailAdress;
             }
             if (NoteInfo_textBox.Text != "")
             {
                 try
                 {
-                    noteAdministration.AddNote(NoteInfo_textBox.Text, userEmail);
+                    NoteAdministration.AddNote(NoteInfo_textBox.Text, userEmail);
                 }
                 catch (Exception ex)
                 {

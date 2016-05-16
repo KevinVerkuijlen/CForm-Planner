@@ -37,6 +37,20 @@ namespace CForm_Planner.AgendaSystem
             this.GameName = gameName;
         }
 
+        public override bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string gamename, string accountemail)
+        {
+            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
+                GameName != gamename || AccountEmail != accountemail)
+            {
+                GameName = gamename;
+                return base.Update(titel, notes, startDate, endDate, gamename, accountemail);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is GameEvent)

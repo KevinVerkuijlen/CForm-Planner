@@ -12,10 +12,13 @@ namespace CForm_Planner.NoteSystem
 {
     public partial class NoteDetailForm : Form
     {
-        public NoteAdministration noteAdministration;
-        public Note details;
-        public NoteDetailForm()
+        public NoteAdministration NoteAdministration { get; }
+        public Note Note { get; }
+
+        public NoteDetailForm(Note note, NoteAdministration noteAdministration)
         {
+            Note = note;
+            NoteAdministration = noteAdministration;
             InitializeComponent();
         }
 
@@ -25,7 +28,7 @@ namespace CForm_Planner.NoteSystem
             {
                 try
                 {
-                    noteAdministration.ChangeNote(details, NoteInfo_textBox.Text, details.Accountemail);
+                    NoteAdministration.ChangeNote(Note, NoteInfo_textBox.Text);
                     this.DialogResult = DialogResult.OK;
                 }
                 catch (Exception ex)
@@ -39,7 +42,7 @@ namespace CForm_Planner.NoteSystem
         {
             try
             {
-                noteAdministration.RemoveNote(details);
+                NoteAdministration.RemoveNote(Note);
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
@@ -50,9 +53,9 @@ namespace CForm_Planner.NoteSystem
 
         public void Detail_Refresh()
         {
-            if (details != null)
+            if (Note != null)
             {
-                NoteInfo_textBox.Text = details.Information;
+                NoteInfo_textBox.Text = Note.Information;
             }
         }
 

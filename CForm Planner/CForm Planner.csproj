@@ -55,6 +55,12 @@
     <Compile Include="AccountSystem\AccountForms\AccountDetailsForm.Designer.cs">
       <DependentUpon>AccountDetailsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AccountSystem\AccountForms\FriendsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AccountSystem\AccountForms\FriendsForm.Designer.cs">
+      <DependentUpon>FriendsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AccountSystem\AccountForms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,7 +73,6 @@
     <Compile Include="AccountSystem\AccountForms\RegisterForm.Designer.cs">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AccountSystem\AccountDatabase.cs" />
     <Compile Include="AccountSystem\Administration.cs" />
     <Compile Include="AgendaSystem\AgendaForms\AgendaAddForm.cs">
       <SubType>Form</SubType>
@@ -87,14 +92,12 @@
     <Compile Include="AgendaSystem\AgendaForms\AgendaForm.Designer.cs">
       <DependentUpon>AgendaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AgendaSystem\CalendarDatabase.cs" />
     <Compile Include="AgendaSystem\CalendarEvent.cs" />
     <Compile Include="AgendaSystem\CalendarEventAdministration.cs" />
     <Compile Include="AgendaSystem\GameEvent.cs" />
     <Compile Include="AgendaSystem\SchoolEvent.cs" />
     <Compile Include="AlarmSystem\Alarm.cs" />
     <Compile Include="AlarmSystem\AlarmAdministration.cs" />
-    <Compile Include="AlarmSystem\AlarmDatabase.cs" />
     <Compile Include="AlarmSystem\AlarmForms\AlarmAddForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +117,8 @@
       <DependentUpon>AlarmForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Database.cs" />
+    <Compile Include="DatabaseManager.cs" />
+    <Compile Include="DatabaseQuerys.cs" />
     <Compile Include="Home.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,7 +126,6 @@
       <DependentUpon>Home.cs</DependentUpon>
     </Compile>
     <Compile Include="NoteSystem\Note.cs" />
-    <Compile Include="NoteSystem\NoteDatabase.cs" />
     <Compile Include="NoteSystem\NoteForms\NoteAddForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,7 +156,6 @@
     </Compile>
     <Compile Include="TaskSystem\Task.cs" />
     <Compile Include="TaskSystem\TaskAdministration.cs" />
-    <Compile Include="TaskSystem\TaskDatabase.cs" />
     <Compile Include="TaskSystem\TaskForms\TaskAddForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,6 +176,9 @@
     </Compile>
     <EmbeddedResource Include="AccountSystem\AccountForms\AccountDetailsForm.resx">
       <DependentUpon>AccountDetailsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AccountSystem\AccountForms\FriendsForm.resx">
+      <DependentUpon>FriendsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AccountSystem\AccountForms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>

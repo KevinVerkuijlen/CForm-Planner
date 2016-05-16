@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using Oracle.ManagedDataAccess.Client;
 
 namespace CForm_Planner.AccountSystem
 {
@@ -12,9 +11,9 @@ namespace CForm_Planner.AccountSystem
         public string Name { get; set; }
         public string LastName { get; set; }
         public string EmailAdress { get; set; }
-        public string Password { get; set; }
+        public List<Account>FriendsList { get; private set; }
 
-        public Account(string name, string lastname, string emailadress, string password)
+        public Account(string name, string lastname, string emailadress)
         {
             if (name == null)
             {
@@ -28,14 +27,15 @@ namespace CForm_Planner.AccountSystem
             {
                 throw new ArgumentNullException("emailadress","emailadress is empty");
             }
-            if (password == null)
-            {
-                throw new ArgumentNullException("password","password is empty");
-            }
             this.Name = name;
             this.LastName = lastname;
             this.EmailAdress = emailadress;
-            this.Password = password;
+        }
+
+        public void UpdateUser(string name, string lastname)
+        {
+            this.Name = name;
+            this.LastName = lastname;
         }
     }
 }

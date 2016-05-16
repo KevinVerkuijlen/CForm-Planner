@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CForm_Planner.AccountSystem.AccountForms
 {
     public partial class AccountDetailsForm : Form
     {
-        public Administration administration;
+        public Administration Administration { get; private set; }
 
-        public AccountDetailsForm()
+        public AccountDetailsForm(Administration administration)
         {
             InitializeComponent();
+            Administration = administration;
         }
 
         private void ChangeAccount_button_Click(object sender, EventArgs e)
@@ -25,28 +19,23 @@ namespace CForm_Planner.AccountSystem.AccountForms
             {
                 if (LastName_textBox.Text != "")
                 {
-                    if (Email_textBox.Text != "")
+                    if (Password_textBox.Text != "")
                     {
-                        if (Password_textBox.Text != "")
+                        try
                         {
-                            try
-                            {
-                                administration.UpdateAccount(FirstName_textBox.Text, LastName_textBox.Text, Email_textBox.Text, Password_textBox.Text);
-                                this.DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
+
+                            Administration.UpdateAccount(FirstName_textBox.Text, LastName_textBox.Text,
+                                Password_textBox.Text);
+                            this.DialogResult = DialogResult.OK;
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Please fill in a Password");
+                            MessageBox.Show(ex.Message);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Please fill in a email adress");
+                        MessageBox.Show("Please fill in a Password");
                     }
                 }
                 else
@@ -65,17 +54,17 @@ namespace CForm_Planner.AccountSystem.AccountForms
             this.DialogResult = DialogResult.OK;
         }
 
-        public void refresh()
+        public void DetailRefresh()
         {
-            FirstName_textBox.Text = administration.user.Name;
-            LastName_textBox.Text = administration.user.LastName;
-            Email_textBox.Text = administration.user.EmailAdress;
-            Password_textBox.Text = administration.user.Password;
+            FirstName_textBox.Text = Administration.User.Name;
+            LastName_textBox.Text = Administration.User.LastName;
+            Email_textBox.Text = Administration.User.EmailAdress;
         }
 
         private void Logout_button_Click(object sender, EventArgs e)
         {
-            administration.LogoutAccount();
+            Administration.LogoutAccount();
+            this.DialogResult = DialogResult.OK;
         }
     }
 }
