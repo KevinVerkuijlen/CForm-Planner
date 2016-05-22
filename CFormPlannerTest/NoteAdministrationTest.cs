@@ -114,7 +114,8 @@ namespace CFormPlannerTest
             //Database test 
             NoteAdministration.AddNote("tester", "Test@Unit.com");
             Assert.IsTrue(NoteAdministration.RemoveNote(new Note("tester", "Test@Unit.com")));
-            Assert.IsTrue(NoteAdministration.GetNote(new Note("tester", "Test@Unit.com")));
+            NoteDatabase noteDatabase = new NoteDatabase();
+            Assert.IsTrue(noteDatabase.GetNote(new Note("tester", "Test@Unit.com")));
 
         }
 

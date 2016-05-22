@@ -116,7 +116,8 @@ namespace CFormPlannerTest
             //Database test 
             AlarmAdministration.AddAlarm(test.Alarmtime.AddHours(1), false, "Test@Unit.com");
             Assert.IsTrue(AlarmAdministration.RemoveAlarm(new Alarm(test.Alarmtime.AddHours(1), false, "Test@Unit.com")));
-            Assert.IsTrue(AlarmAdministration.GetAlarm(new Alarm(test.Alarmtime.AddHours(1), false, "Test@Unit.com")));
+            AlarmDatabase alarmDatabase = new AlarmDatabase();
+            Assert.IsTrue(alarmDatabase.GetAlarm(new Alarm(test.Alarmtime.AddHours(1), false, "Test@Unit.com")));
             
         }
 

@@ -3,27 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using CForm_Planner.AccountSystem;
-using Oracle.ManagedDataAccess.Client;
+using CForm_Planner.TaskSystem.TaskForms;
 
 namespace CForm_Planner.TaskSystem
 {
     public class TaskAdministration
     {
         public List<Task> Todo = new List<Task>();
+        private TaskDatabase TaskDatabase { get; set; }
 
-        public bool AddTask(string titel, string notes, bool completed, string email)
+        public TaskAdministration()
         {
-            Task task = new Task(titel, notes, completed, email);
+            TaskDatabase = new TaskDatabase();   
+        }
+
+        public bool AddTask(string titel, string notes, int hourDuration, int minDuration, bool completed, string email)
+        {
+            Task task = new Task(titel, notes, hourDuration, minDuration, completed, email);
             if (Todo.Contains(task) == false)
             {
                 if (task.Accountemail != "")
                 {
                     try
                     {
-                        if (GetTask(task))
+                        if (TaskDatabase.GetTask(task))
                         {
                             Todo.Add(task);
-                            InsertTask(titel, notes, completed, email);
+                            TaskDatabase.InsertTask(titel, notes, hourDuration, minDuration, completed, email);
                             return true;
                         }
                         else
@@ -56,20 +62,7 @@ namespace CForm_Planner.TaskSystem
                 Todo.Remove(task);
                 if (task.Accountemail != "")
                 {
-                    try
-                    {
-                        OracleParameter[] deleteParameter =
-                        {
-                            new OracleParameter("iTITEL", task.Titel),
-                            new OracleParameter("iNOTE", task.Notes),
-                            new OracleParameter("iMAIL", task.Accountemail)
-                        };
-                        DatabaseManager.ExecuteDeleteQuery("DeleteTask", deleteParameter);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    TaskDatabase.DeleteTask(task);
                 }
                 return true;
             }
@@ -79,25 +72,24 @@ namespace CForm_Planner.TaskSystem
             }
         }
 
-        public bool ChangeTask(Task oldTask, string titel, string notes, bool completed)
+        public bool ChangeTask(Task oldTask, string titel, string notes, int hourDuration, int minDuration, bool completed)
         {
             if (Todo.Contains(oldTask))
             {
-                if (Todo.Contains(new Task(titel, notes, completed, oldTask.Accountemail)) == false)
+                if (Todo.Contains(new Task(titel, notes, hourDuration, minDuration,  completed, oldTask.Accountemail)) == false)
                 {
                     if (oldTask.Accountemail != "")
                     {
                         try
                         {
-                            UpdateTask(oldTask.Titel, oldTask.Notes, oldTask.Accountemail, titel, notes, completed,
-                                oldTask.Accountemail);
+                            TaskDatabase.UpdateTask(oldTask.Titel, oldTask.Notes, oldTask.Accountemail, titel, notes, hourDuration, minDuration, completed);
                         }
                         catch (Exception)
                         {
                             throw;
                         }
                     }
-                    oldTask.Update(titel, notes, completed, oldTask.Accountemail);
+                    oldTask.Update(titel, notes, hourDuration, minDuration, completed, oldTask.Accountemail);
                     return true;
                 }
                 else
@@ -113,53 +105,6 @@ namespace CForm_Planner.TaskSystem
             }
         }
 
-        public void InsertTask(string titel, string notes, bool completed, string email)
-        {
-            OracleParameter[] insertParameter =
-            {
-                new OracleParameter("iTITEL", titel),
-                new OracleParameter("iNOTE", notes),
-                new OracleParameter("iCOMPLETED", Convert.ToInt32(completed)),
-                new OracleParameter("iMAIL", email)
-            };
-            DatabaseManager.ExecuteInsertQuery("InsertTask", insertParameter);
-        }
-
-        public void UpdateTask(string oldTitel, string oldNotes, string oldEmail, string newTitel, string newNotes,
-            bool completed, string newEmail)
-        {
-            OracleParameter[] updateParameter =
-            {
-                new OracleParameter("oTITEL", oldTitel),
-                new OracleParameter("oNOTE", oldNotes),
-                new OracleParameter("oMAIL", oldEmail),
-                new OracleParameter("nTITEL", newTitel),
-                new OracleParameter("nNOTE", newNotes),
-                new OracleParameter("nCOMPLETED", Convert.ToInt32(completed))
-            };
-            DatabaseManager.ExecuteInsertQuery("UpdateTask", updateParameter);
-        }
-
-        public bool GetTask(Task task)
-        {
-            OracleParameter[] checkParameter =
-            {
-                new OracleParameter("TITEL", task.Titel),
-                new OracleParameter("NOTE", task.Notes),
-                new OracleParameter("EMAILADDRESS", task.Accountemail)
-            };
-            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetTask"],
-                checkParameter);
-            if (dt.Rows.Count == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
 
         public void MergeTask(Account user)
         {
@@ -167,21 +112,7 @@ namespace CForm_Planner.TaskSystem
             {
                 try
                 {
-                    List<Task> loaded = new List<Task>();
-                    OracleParameter[] checkParameter =
-                    {
-                        new OracleParameter("mail", user.EmailAdress)
-                    };
-                    DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllTasks"],
-                        checkParameter);
-                    foreach (DataRow reader in dt.Rows)
-                    {
-                        string titel = (String) reader["TITEL"];
-                        string note = (String) reader["NOTE"];
-                        bool completed = Convert.ToBoolean(reader["COMPLETED"]);
-                        string email = (String) reader["EMAILADDRESS"];
-                        loaded.Add(new Task(titel, note, completed, email));
-                    }
+                    List<Task> loaded = TaskDatabase.GetTasks(user.EmailAdress);
                     this.Todo = Todo.Union(loaded).Distinct().ToList();
                 }
                 catch (Exception)
@@ -201,26 +132,9 @@ namespace CForm_Planner.TaskSystem
                     {
                         try
                         {
-                            OracleParameter[] checkParameter =
+                            if (TaskDatabase.GetTask(t) == false)
                             {
-                                new OracleParameter("TITEL", t.Titel),
-                                new OracleParameter("NOTE", t.Notes),
-                                new OracleParameter("EMAILADDRESS", t.Accountemail)
-                            };
-                            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetTask"],
-                                checkParameter);
-                            foreach (DataRow reader in dt.Rows)
-                            {
-                                if (reader["TITEL"] == DBNull.Value && reader["NOTE"] == DBNull.Value &&
-                                    reader["COMPLETED"] == DBNull.Value && reader["EMAILADDRESS"] == DBNull.Value)
-                                {
-                                    InsertTask(t.Titel, t.Notes, t.Completed, t.Accountemail);
-                                }
-                                else
-                                {
-                                    UpdateTask((string) reader["TITEL"], (string) reader["NOTE"],
-                                        (string) reader["EMAILADDRESS"], t.Titel, t.Notes, t.Completed, t.Accountemail);
-                                }
+                                TaskDatabase.InsertTask(t.Titel, t.Notes, t.HourDuration, t.MinDuration, t.Completed, t.Accountemail);
                             }
                         }
                         catch (Exception)
@@ -249,8 +163,8 @@ namespace CForm_Planner.TaskSystem
             {
                 if (task.Accountemail == "")
                 {
-                    task.Update(task.Titel, task.Notes, task.Completed, user.EmailAdress);
-                    InsertTask(task.Titel, task.Notes, task.Completed, user.EmailAdress);
+                    task.Update(task.Titel, task.Notes, task.HourDuration, task.MinDuration, task.Completed, user.EmailAdress);
+                    TaskDatabase.InsertTask(task.Titel, task.Notes, task.HourDuration, task.MinDuration, task.Completed, user.EmailAdress);
                 }
             }
         }

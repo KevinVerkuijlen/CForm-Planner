@@ -74,6 +74,8 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
             {
                 Hour_numericUpDown.Value = Alarm.Alarmtime.Hour;
                 Min_numericUpDown.Value = Alarm.Alarmtime.Minute;
+                On_radioButton.CheckedChanged -= On_radioButton_CheckedChanged;
+                Off_radioButton.CheckedChanged -= Off_radioButton_CheckedChanged;
                 if (Alarm.AlarmSet == true)
                 {
                     On_radioButton.Checked = true;
@@ -87,12 +89,47 @@ namespace CForm_Planner.AlarmSystem.AlarmForms
                         Off_radioButton.Checked = true;
                     }
                 }
+                On_radioButton.CheckedChanged += On_radioButton_CheckedChanged;
+                Off_radioButton.CheckedChanged += Off_radioButton_CheckedChanged;
             }
         }
 
         private void AlarmDetailForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void On_radioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (On_radioButton.Checked)
+            {
+                try
+                {
+                    AlarmAdministration.AlarmOn(Alarm);
+                    AlarmDetailForm_FormClosing(null, null);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void Off_radioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Off_radioButton.Checked)
+            {
+                try
+                {
+                    AlarmAdministration.AlarmOff(Alarm);
+                    AlarmDetailForm_FormClosing(null, null);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
     }
 }

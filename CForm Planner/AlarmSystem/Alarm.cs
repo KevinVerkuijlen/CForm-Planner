@@ -39,6 +39,16 @@ namespace CForm_Planner.AlarmSystem
             }
         }
 
+        public void On()
+        {
+            AlarmSet = true;
+        }
+
+        public void Off()
+        {
+            AlarmSet = false;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is Alarm)
@@ -55,7 +65,7 @@ namespace CForm_Planner.AlarmSystem
 
         public override int GetHashCode()
         {
-            return Alarmtime.GetHashCode() ^ AccountEmail.GetHashCode();
+            return Alarmtime.GetHashCode() ^ AlarmSet.GetHashCode() ^ AccountEmail.GetHashCode();
         }
 
         public int CompareTo(Alarm other)

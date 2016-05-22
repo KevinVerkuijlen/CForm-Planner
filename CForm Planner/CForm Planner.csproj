@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountSystem\Account.cs" />
+    <Compile Include="AccountSystem\AccountDatabase.cs" />
     <Compile Include="AccountSystem\AccountForms\AccountDetailsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,10 +95,12 @@
     </Compile>
     <Compile Include="AgendaSystem\CalendarEvent.cs" />
     <Compile Include="AgendaSystem\CalendarEventAdministration.cs" />
+    <Compile Include="AgendaSystem\CalendarEventDatabase.cs" />
     <Compile Include="AgendaSystem\GameEvent.cs" />
     <Compile Include="AgendaSystem\SchoolEvent.cs" />
     <Compile Include="AlarmSystem\Alarm.cs" />
     <Compile Include="AlarmSystem\AlarmAdministration.cs" />
+    <Compile Include="AlarmSystem\AlarmDatabase.cs" />
     <Compile Include="AlarmSystem\AlarmForms\AlarmAddForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +129,7 @@
       <DependentUpon>Home.cs</DependentUpon>
     </Compile>
     <Compile Include="NoteSystem\Note.cs" />
+    <Compile Include="NoteSystem\NoteDatabase.cs" />
     <Compile Include="NoteSystem\NoteForms\NoteAddForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +166,7 @@
     <Compile Include="TaskSystem\TaskForms\TaskAddForm.Designer.cs">
       <DependentUpon>TaskAddForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TaskSystem\TaskDatabase.cs" />
     <Compile Include="TaskSystem\TaskForms\TaskDetailForm.cs">
       <SubType>Form</SubType>
     </Compile>

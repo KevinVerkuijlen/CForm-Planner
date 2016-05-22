@@ -110,6 +110,7 @@
             this.On_radioButton.TabStop = true;
             this.On_radioButton.Text = "On";
             this.On_radioButton.UseVisualStyleBackColor = true;
+            this.On_radioButton.CheckedChanged += new System.EventHandler(this.On_radioButton_CheckedChanged);
             // 
             // Off_radioButton
             // 
@@ -121,6 +122,7 @@
             this.Off_radioButton.TabStop = true;
             this.Off_radioButton.Text = "Off";
             this.Off_radioButton.UseVisualStyleBackColor = true;
+            this.Off_radioButton.CheckedChanged += new System.EventHandler(this.Off_radioButton_CheckedChanged);
             // 
             // RemoveAlarm_button
             // 

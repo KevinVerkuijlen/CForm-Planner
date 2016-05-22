@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CForm_Planner.AccountSystem;
-using Oracle.ManagedDataAccess.Client;
 
 
 namespace CForm_Planner.AlarmSystem
@@ -13,6 +12,12 @@ namespace CForm_Planner.AlarmSystem
     public class AlarmAdministration
     {
         public List<Alarm> Alarm_list = new List<Alarm>();
+        private AlarmDatabase AlarmDatabase { get; set; }
+
+        public AlarmAdministration()
+        {
+            AlarmDatabase = new AlarmDatabase();
+        }
 
         public bool AddAlarm(DateTime alarmtime, bool alarmset, string email)
         {
@@ -24,11 +29,11 @@ namespace CForm_Planner.AlarmSystem
 
                     try
                     {
-                        if (GetAlarm(alarm))
+                        if (AlarmDatabase.GetAlarm(alarm))
                         {
                             Alarm_list.Add(alarm);
-                            InsertAlarm(alarmtime, alarmset, email);
-                            return true;
+                            bool insert = AlarmDatabase.InsertAlarm(alarmtime, alarmset, email);
+                            return insert;
                         }
                         else
                         {
@@ -59,19 +64,7 @@ namespace CForm_Planner.AlarmSystem
                 Alarm_list.Remove(alarm);
                 if (alarm.AccountEmail != "")
                 {
-                    try
-                    {
-                        OracleParameter[] deleteParameter =
-                        {
-                            new OracleParameter("iTIME", alarm.Alarmtime),
-                            new OracleParameter("iMAIL", alarm.AccountEmail)
-                        };
-                        DatabaseManager.ExecuteInsertQuery("DeleteAlarm", deleteParameter);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    AlarmDatabase.DeleteAlarm(alarm);
                 }
                 return true;
             }
@@ -92,7 +85,7 @@ namespace CForm_Planner.AlarmSystem
                     {
                         try
                         {
-                            UpdateAlarm(oldAlarm.Alarmtime, oldAlarm.AccountEmail, alarmtime, alarmset);
+                            AlarmDatabase.UpdateAlarm(oldAlarm.Alarmtime, oldAlarm.AccountEmail, alarmtime, alarmset);
                         }
                         catch (Exception)
                         {
@@ -115,27 +108,38 @@ namespace CForm_Planner.AlarmSystem
             }
         }
 
-        public void InsertAlarm(DateTime time, bool set, string email)
+        public bool AlarmOn(Alarm alarm)
         {
-            OracleParameter[] insertParameter =
+            if (alarm.AlarmSet == false)
             {
-                new OracleParameter("iTIME", time),
-                new OracleParameter("iALARMSET", Convert.ToInt32(set)),
-                new OracleParameter("IMAIL", email)
-            };
-            DatabaseManager.ExecuteInsertQuery("InsertAlarm", insertParameter);
+                alarm.On();
+                if (alarm.AccountEmail != "")
+                {
+                    AlarmDatabase.UpdateAlarm(alarm.Alarmtime, alarm.AccountEmail, alarm.Alarmtime, true);
+                }
+                return true;
+            }
+            else
+            {
+                throw new ArgumentException("Alarm is already on");
+            }
         }
 
-        public void UpdateAlarm(DateTime oldTime, string oldEmail, DateTime newTime, bool set)
+        public bool AlarmOff(Alarm alarm)
         {
-            OracleParameter[] updateParameter =
+            if (alarm.AlarmSet)
             {
-                new OracleParameter("oTIME", oldTime),
-                new OracleParameter("oMAIL", oldEmail),
-                new OracleParameter("nTIME", newTime),
-                new OracleParameter("nALARMSET", Convert.ToInt32(set))
-            };
-            DatabaseManager.ExecuteInsertQuery("UpdateAlarm", updateParameter);
+                alarm.Off();
+                if (alarm.AccountEmail != "")
+                {
+                    AlarmDatabase.UpdateAlarm(alarm.Alarmtime, alarm.AccountEmail, alarm.Alarmtime, false);
+                }
+                return true;
+            }
+            else
+            {
+                throw new ArgumentException("Alarm is already off");
+            }
         }
 
         public void MergeAlarms(Account user)
@@ -144,20 +148,7 @@ namespace CForm_Planner.AlarmSystem
             {
                 try
                 {
-                    List<Alarm> loaded = new List<Alarm>();
-                    OracleParameter[] checkParameter =
-                    {
-                        new OracleParameter("mail", user.EmailAdress)
-                    };
-                    DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllAlarms"],
-                        checkParameter);
-                    foreach (DataRow reader in dt.Rows)
-                    {
-                        DateTime time = (DateTime) reader["TIME"];
-                        bool alarmset = Convert.ToBoolean(reader["ALARMSET"]);
-                        string email = (String) reader["EMAILADDRESS"];
-                        loaded.Add(new Alarm(time, alarmset, email));
-                    }
+                    List<Alarm> loaded = AlarmDatabase.GetAlarms(user.EmailAdress);
                     this.Alarm_list = Alarm_list.Union(loaded).Distinct().ToList();
                 }
                 catch (Exception)
@@ -167,31 +158,7 @@ namespace CForm_Planner.AlarmSystem
             }
         }
 
-        public bool GetAlarm(Alarm alarm)
-        {
-            try
-            {
-                OracleParameter[] checkParameter =
-                {
-                    new OracleParameter("TIME", alarm.Alarmtime),
-                    new OracleParameter("MAIL", alarm.AccountEmail)
-                };
-                DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAlarm"],
-                    checkParameter);
-                if (dt.Rows.Count == 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+       
 
         public void UploadAlarms(Account user)
         {
@@ -203,13 +170,13 @@ namespace CForm_Planner.AlarmSystem
                     {
                         try
                         {
-                            if (GetAlarm(a))
+                            if (AlarmDatabase.GetAlarm(a))
                             {
-                                InsertAlarm(a.Alarmtime, a.AlarmSet, a.AccountEmail);
+                                AlarmDatabase.InsertAlarm(a.Alarmtime, a.AlarmSet, a.AccountEmail);
                             }
                             else
                             {
-                                UpdateAlarm(a.Alarmtime, a.AccountEmail, a.Alarmtime, a.AlarmSet);
+                                AlarmDatabase.UpdateAlarm(a.Alarmtime, a.AccountEmail, a.Alarmtime, a.AlarmSet);
                             }
                         }
                         catch (Exception)
@@ -239,7 +206,7 @@ namespace CForm_Planner.AlarmSystem
                 if (alarm.AccountEmail == "")
                 {
                     alarm.Update(alarm.Alarmtime, alarm.AlarmSet, user.EmailAdress);
-                    InsertAlarm(alarm.Alarmtime, alarm.AlarmSet, user.EmailAdress);
+                    AlarmDatabase.InsertAlarm(alarm.Alarmtime, alarm.AlarmSet, user.EmailAdress);
                 }
             }
         }

@@ -34,23 +34,32 @@ namespace CForm_Planner
         {
             if (TaskTitel_textBox.Text != "" && TaskNotes_textBox.Text != "")
             {
-                bool completed;
-                if(Completed_radioButton.Checked == true){
-                    completed = true;
-                }
-                else{
-                    completed = false;
-                }
-                try
+                if (Min_numericUpDown.Value > 0 || Hour_numericUpDown.Value > 0)
                 {
-                    TaskAdministration.ChangeTask(Task, TaskTitel_textBox.Text, TaskNotes_textBox.Text, completed);
-                    this.DialogResult = DialogResult.OK;
-                    return;
+                    bool completed;
+                    if (Completed_radioButton.Checked == true)
+                    {
+                        completed = true;
+                    }
+                    else
+                    {
+                        completed = false;
+                    }
+                    try
+                    {
+                        TaskAdministration.ChangeTask(Task, TaskTitel_textBox.Text, TaskNotes_textBox.Text, Convert.ToInt32(Hour_numericUpDown.Value), Convert.ToInt32(Min_numericUpDown.Value), completed);
+                        this.DialogResult = DialogResult.OK;
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                    return;
+                    MessageBox.Show("You need to enter a duration greater then zero");
                 }
             }
             else
@@ -79,6 +88,8 @@ namespace CForm_Planner
             {
                 TaskTitel_textBox.Text = Task.Titel;
                 TaskNotes_textBox.Text = Task.Notes;
+                Hour_numericUpDown.Value = Task.HourDuration;
+                Min_numericUpDown.Value = Task.MinDuration;
                 if (Task.Completed == true)
                 {
                     Completed_radioButton.Checked = true;

@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using CForm_Planner.AccountSystem;
-using Oracle.ManagedDataAccess.Client;
 
 namespace CForm_Planner.NoteSystem
 {
     public class NoteAdministration
     {
         public List<Note> Notes = new List<Note>();
+        private NoteDatabase NoteDatabase { get; set; }
+
+        public NoteAdministration()
+        {
+            NoteDatabase = new NoteDatabase();
+        }
 
         public bool AddNote(string information, string accountemail)
         {
@@ -20,11 +25,11 @@ namespace CForm_Planner.NoteSystem
                 {
                     try
                     {
-                        if (GetNote(note))
+                        if (NoteDatabase.GetNote(note))
                         {
                             Notes.Add(note);
-                            InsertNote(information, accountemail);
-                            return true;
+                            bool insert = NoteDatabase.InsertNote(information, accountemail);
+                            return insert;
                         }
                         else
                         {
@@ -55,19 +60,7 @@ namespace CForm_Planner.NoteSystem
                 Notes.Remove(note);
                 if (note.Accountemail != "")
                 {
-                    try
-                    {
-                        OracleParameter[] deleteParameter =
-                        {
-                            new OracleParameter("iNOTE", note.Information),
-                            new OracleParameter("iMAIL", note.Accountemail)
-                        };
-                        DatabaseManager.ExecuteInsertQuery("DeleteNote", deleteParameter);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    NoteDatabase.DeleteNote(note);
                 }
                 return true;
             }
@@ -87,7 +80,7 @@ namespace CForm_Planner.NoteSystem
                     {
                         try
                         {
-                            UpdateNote(oldNote.Information, oldNote.Accountemail, information, oldNote.Accountemail);
+                            NoteDatabase.UpdateNote(oldNote.Information, oldNote.Accountemail, information, oldNote.Accountemail);
                         }
                         catch (Exception)
                         {
@@ -115,52 +108,9 @@ namespace CForm_Planner.NoteSystem
 
         }
 
-        public void InsertNote(string information, string accountemail)
-        {
-            OracleParameter[] insertParameter =
-                            {
-                                new OracleParameter("iNOTE", information),
-                                new OracleParameter("iMAIL", accountemail)
-                            };
-            DatabaseManager.ExecuteInsertQuery("InsertNote", insertParameter);
-        }
 
-        public void UpdateNote(string oldInformation, string oldAccountemail, string information, string accountemail)
-        {
-            OracleParameter[] updateParameter =
-                           {
-                            new OracleParameter("oNOTE", oldInformation),
-                            new OracleParameter("oMAIL", oldAccountemail),
-                            new OracleParameter("nNOTE", information)
-            };
-            DatabaseManager.ExecuteInsertQuery("UpdateNote", updateParameter);
-        }
 
-        public bool GetNote(Note note)
-        {
-            try
-            {
-                OracleParameter[] checkParameter =
-                            {
-                                new OracleParameter("NOTE", note.Information),
-                                new OracleParameter("MAIL", note.Accountemail)
-                            };
-                DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetNote"],
-                    checkParameter);
-                if (dt.Rows.Count == 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        
 
         public void MergeNotes(Account user)
         {
@@ -168,19 +118,7 @@ namespace CForm_Planner.NoteSystem
             {
                 try
                 {
-                    List<Note> loaded = new List<Note>();
-                    OracleParameter[] checkParameter =
-                    {
-                        new OracleParameter("mail", user.EmailAdress)
-                    };
-                    DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllNotes"],
-                        checkParameter);
-                    foreach (DataRow reader in dt.Rows)
-                    {
-                        string information = (String) reader["INFORMATION"];
-                        string email = (String) reader["EMAILADDRESS"];
-                        loaded.Add(new Note(information, email));
-                    }
+                    List<Note> loaded = NoteDatabase.GetNotes(user.EmailAdress);
                     this.Notes = Notes.Union(loaded).Distinct().ToList();
                 }
                 catch (Exception)
@@ -200,13 +138,13 @@ namespace CForm_Planner.NoteSystem
                     {
                         try
                         {
-                            if (GetNote(n))
+                            if (NoteDatabase.GetNote(n))
                             {
-                                InsertNote(n.Information, n.Accountemail);
+                                NoteDatabase.InsertNote(n.Information, n.Accountemail);
                             }
                             else
                             {
-                                UpdateNote(n.Information, n.Accountemail, n.Information, n.Accountemail);
+                                NoteDatabase.UpdateNote(n.Information, n.Accountemail, n.Information, n.Accountemail);
                             }
 
                         }
@@ -237,7 +175,7 @@ namespace CForm_Planner.NoteSystem
                 if (note.Accountemail == "")
                 {
                     note.Update(note.Information,user.EmailAdress);
-                    InsertNote(note.Information, user.EmailAdress);
+                    NoteDatabase.InsertNote(note.Information, user.EmailAdress);
                 }
             }
         }

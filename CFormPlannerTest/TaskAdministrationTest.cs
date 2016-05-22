@@ -3,6 +3,7 @@ using CForm_Planner;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CForm_Planner.AccountSystem;
 using CForm_Planner.TaskSystem;
+using CForm_Planner.TaskSystem.TaskForms;
 
 namespace CFormPlannerTest
 {
@@ -11,7 +12,7 @@ namespace CFormPlannerTest
     {
         private Administration Administration { get; set; }
         private TaskAdministration TaskAdministration { get; set; }
-        private Task test = new Task("ToDo test", "testing", false, "");
+        private Task test = new Task("ToDo test", "testing", 1, 1, false, "");
 
 
         [TestInitialize]
@@ -28,12 +29,12 @@ namespace CFormPlannerTest
             Task testTask = test;
             Task test2Task = testTask;
             Assert.AreEqual(testTask, test2Task);
-            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.Completed, testTask.Accountemail));
+            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail));
 
             //test for a dubbel
             try
             {
-                TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.Completed, testTask.Accountemail);
+                TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail);
             }
             catch (Exception exception)
             {
@@ -42,20 +43,20 @@ namespace CFormPlannerTest
             }
 
             //add local and database
-            Task test3Task = new Task(test.Titel + "testing", test.Notes+"Testing", false,  "Test@Unit.com");
+            Task test3Task = new Task(test.Titel + "testing", test.Notes+"Testing", testTask.HourDuration+1, testTask.MinDuration+1, false,  "Test@Unit.com");
             Assert.AreNotEqual(testTask, test3Task);
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "testing", test.Notes + "Testing", false, "Test@Unit.com"));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "testing", test.Notes + "Testing", testTask.HourDuration + 1, testTask.MinDuration + 1, false, "Test@Unit.com"));
 
             try
             {
-                TaskAdministration.AddTask(test.Titel + "testing", test.Notes + "Testing", false, "Test@Unit.com");
+                TaskAdministration.AddTask(test.Titel + "testing", test.Notes + "Testing", testTask.HourDuration + 1, testTask.MinDuration + 1, false, "Test@Unit.com");
             }
             catch (Exception exception)
             {
                 Assert.IsTrue(exception is PlannerExceptions);
                 Assert.AreEqual(exception.Message, "Task already exist in the ToDo list");
             }
-            Assert.IsTrue(TaskAdministration.RemoveTask(new Task(test.Titel + "testing", test.Notes + "Testing", false, "Test@Unit.com")));
+            Assert.IsTrue(TaskAdministration.RemoveTask(new Task(test.Titel + "testing", test.Notes + "Testing", testTask.HourDuration + 1, testTask.MinDuration + 1, false, "Test@Unit.com")));
 
             CollectionAssert.AllItemsAreUnique(TaskAdministration.Todo);
 
@@ -67,11 +68,11 @@ namespace CFormPlannerTest
             TaskAdministration.Todo.Clear();
 
             Task testTask = test;
-            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.Completed, testTask.Accountemail));
+            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail));
 
             try
             {
-                TaskAdministration.ChangeTask(test, "this is a test", "testing", true);
+                TaskAdministration.ChangeTask(test, "this is a test", "testing", 6, 6, true);
             }
             catch (Exception exception)
             {
@@ -79,15 +80,15 @@ namespace CFormPlannerTest
                 Assert.AreEqual(exception.Message, "The old Task doesn't exist in the ToDo list");
             }
 
-            Task TestDBTask = new Task(test.Titel + "testing", test.Notes + "Testing", false, "Test@Unit.com");
-            Assert.IsTrue(TaskAdministration.AddTask(TestDBTask.Titel , TestDBTask.Notes, false, "Test@Unit.com"));
+            Task TestDBTask = new Task(test.Titel + "testing", test.Notes + "Testing", 4, 4, false, "Test@Unit.com");
+            Assert.IsTrue(TaskAdministration.AddTask(TestDBTask.Titel , TestDBTask.Notes, 4, 4, false, "Test@Unit.com"));
 
-            Assert.IsTrue(TaskAdministration.ChangeTask(TestDBTask, "test 123", "456", true));
+            Assert.IsTrue(TaskAdministration.ChangeTask(TestDBTask, "test 123", "456", 9,9, true));
             Assert.AreEqual(TestDBTask.Titel, "test 123");
 
             try
             {
-                TaskAdministration.ChangeTask(TestDBTask, TestDBTask.Titel, TestDBTask.Notes, TestDBTask.Completed);
+                TaskAdministration.ChangeTask(TestDBTask, TestDBTask.Titel, TestDBTask.Notes, TestDBTask.HourDuration, TestDBTask.MinDuration, TestDBTask.Completed);
             }
             catch (Exception exception)
             {
@@ -103,7 +104,7 @@ namespace CFormPlannerTest
         {
             TaskAdministration.Todo.Clear();
             Task testTask = test;
-            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.Completed, testTask.Accountemail));
+            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail));
             Assert.IsTrue(TaskAdministration.RemoveTask(testTask));
 
             try
@@ -117,11 +118,12 @@ namespace CFormPlannerTest
             }
 
             //Database test 
-            Task TestDBTask = new Task(test.Titel + "db testing", test.Notes + "db Testing", false, "Test@Unit.com");
-            Assert.IsTrue(TaskAdministration.AddTask(TestDBTask.Titel, TestDBTask.Notes, false, "Test@Unit.com"));
+            Task TestDBTask = new Task(test.Titel + "db testing", test.Notes + "db Testing", 7, 7, false, "Test@Unit.com");
+            Assert.IsTrue(TaskAdministration.AddTask(TestDBTask.Titel, TestDBTask.Notes, 7, 7, false, "Test@Unit.com"));
 
             Assert.IsTrue(TaskAdministration.RemoveTask(TestDBTask));
-            Assert.IsTrue(TaskAdministration.GetTask(TestDBTask));
+            TaskDatabase taskDatabase = new TaskDatabase();
+            Assert.IsTrue(taskDatabase.GetTask(TestDBTask));
 
 
         }
@@ -130,10 +132,10 @@ namespace CFormPlannerTest
         public void Test_CleanTasks()
         {
             TaskAdministration.Todo.Clear();
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel, test.Notes, test.Completed, "Test@Unit.com"));
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "a", "notes", true, ""));
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "b", "something", false, ""));
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "c", "something something",false, "Test@Unit.com"));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel, test.Notes, 21, 21, test.Completed, "Test@Unit.com"));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "a", "notes", 22, 22, true, ""));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "b", "something", 23, 23, false, ""));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "c", "something something", 24, 24, false, "Test@Unit.com"));
 
             TaskAdministration.CleanTasks(new Account("Tester", "Unit", "Test@Unit.com"));
 
@@ -150,10 +152,10 @@ namespace CFormPlannerTest
         public void Test_EmptyTaskToUser()
         {
             TaskAdministration.Todo.Clear();
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel+"empty", test.Notes, test.Completed, "Test@Unit.com"));
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "a", "notes", true, ""));
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "b", "something", false, ""));
-            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "D", "something something", false, "Test@Unit.com"));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel+"empty", test.Notes, 31, 31, test.Completed, "Test@Unit.com"));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "a", "notes", 32, 32, true, ""));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "b", "something", 33, 33, false, ""));
+            Assert.IsTrue(TaskAdministration.AddTask(test.Titel + "D", "something something", 34, 34, false, "Test@Unit.com"));
 
             TaskAdministration.EmptyTasksToUser(new Account("Tester", "Unit", "Test@Unit.com"));
             foreach (Task Task in TaskAdministration.Todo)

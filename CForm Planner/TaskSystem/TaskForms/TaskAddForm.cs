@@ -33,17 +33,23 @@ namespace CForm_Planner
             }
             if (TaskTitel_textBox.Text != "" && TaskNotes_textBox.Text != "")
             {
-                try
+                if (Min_numericUpDown.Value > 0 || Hour_numericUpDown.Value > 0)
                 {
-                    TaskAdministration.AddTask(TaskTitel_textBox.Text, TaskNotes_textBox.Text, false, userEmail);
+                    try
+                    {
+                        TaskAdministration.AddTask(TaskTitel_textBox.Text, TaskNotes_textBox.Text, Convert.ToInt32(Hour_numericUpDown.Value), Convert.ToInt32(Min_numericUpDown.Value), false, userEmail);
+                        this.DialogResult = DialogResult.OK;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                    return;
+                    MessageBox.Show("You need to enter a duration greater then zero");
                 }
-                
-                this.DialogResult = DialogResult.OK;
             }
             else
             {
