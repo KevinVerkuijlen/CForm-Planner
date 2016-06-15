@@ -63,6 +63,16 @@ namespace CForm_Planner.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _38604 {
+            get {
+                object obj = ResourceManager.GetObject("38604", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap calen {
             get {
                 object obj = ResourceManager.GetObject("calen", resourceCulture);
@@ -86,6 +96,16 @@ namespace CForm_Planner.Properties {
         internal static System.Drawing.Bitmap edit_notes {
             get {
                 object obj = ResourceManager.GetObject("edit-notes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap friends_512 {
+            get {
+                object obj = ResourceManager.GetObject("friends-512", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

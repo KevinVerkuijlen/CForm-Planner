@@ -34,9 +34,8 @@ namespace CForm_Planner.NoteSystem
             {
                 OracleParameter[] deleteParameter =
                 {
-                            new OracleParameter("iNOTE", note.Information),
-                            new OracleParameter("iMAIL", note.Accountemail)
-                        };
+                            new OracleParameter("iID", note.ID)
+                };
                 DatabaseManager.ExecuteInsertQuery("DeleteNote", deleteParameter);
                 return true;
             }
@@ -46,14 +45,13 @@ namespace CForm_Planner.NoteSystem
             }
         }
 
-        public bool UpdateNote(string oldInformation, string oldAccountemail, string information, string accountemail)
+        public bool UpdateNote(int id, string information, string accountemail)
         {
             try
             {
                 OracleParameter[] updateParameter =
                            {
-                            new OracleParameter("oNOTE", oldInformation),
-                            new OracleParameter("oMAIL", oldAccountemail),
+                            new OracleParameter("iID", id),
                             new OracleParameter("nNOTE", information)
             };
                 DatabaseManager.ExecuteInsertQuery("UpdateNote", updateParameter);
@@ -66,30 +64,35 @@ namespace CForm_Planner.NoteSystem
             }         
         }
 
-        public bool GetNote(Note note)
+        public Note GetNote(Note note)
         {
+            Note found = null;
             try
             {
+                
                 OracleParameter[] checkParameter =
                             {
                                 new OracleParameter("NOTE", note.Information),
-                                new OracleParameter("MAIL", note.Accountemail)
+                                new OracleParameter("MAIL", note.AccountEmail)
                             };
                 DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetNote"],
                     checkParameter);
-                if (dt.Rows.Count == 0)
+                if (dt.Rows.Count > 0)
                 {
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    foreach (DataRow reader in dt.Rows)
+                    {
+                        int id = Convert.ToInt32(reader["ID"]);
+                        string information = (String)reader["INFORMATION"];
+                        string email = (String)reader["EMAILADDRESS"];
+                        found = new Note(id, information, email);
+                    }
                 }
             }
             catch (Exception)
             {
                 throw;
             }
+            return found;
         }
 
         public List<Note> GetNotes(string mail)
@@ -103,9 +106,10 @@ namespace CForm_Planner.NoteSystem
                 checkParameter);
             foreach (DataRow reader in dt.Rows)
             {
+                int id = Convert.ToInt32(reader["ID"]);
                 string information = (String)reader["INFORMATION"];
                 string email = (String)reader["EMAILADDRESS"];
-                loaded.Add(new Note(information, email));
+                loaded.Add(new Note(id, information, email));
             }
             return loaded;
         }

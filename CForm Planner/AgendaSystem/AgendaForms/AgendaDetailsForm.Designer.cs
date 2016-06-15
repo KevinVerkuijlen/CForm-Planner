@@ -33,7 +33,6 @@
             this.Assignment_label = new System.Windows.Forms.Label();
             this.Subject_textBox = new System.Windows.Forms.TextBox();
             this.Subject_label = new System.Windows.Forms.Label();
-            this.Game_textBox = new System.Windows.Forms.TextBox();
             this.Game_label = new System.Windows.Forms.Label();
             this.Note_label = new System.Windows.Forms.Label();
             this.Note_textBox = new System.Windows.Forms.TextBox();
@@ -48,6 +47,7 @@
             this.Start_datePicker = new System.Windows.Forms.DateTimePicker();
             this.Start_TimePicker = new System.Windows.Forms.DateTimePicker();
             this.Remove_button = new System.Windows.Forms.Button();
+            this.Game_comboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // Change_button
@@ -91,13 +91,6 @@
             this.Subject_label.Size = new System.Drawing.Size(90, 25);
             this.Subject_label.TabIndex = 34;
             this.Subject_label.Text = "Subject:";
-            // 
-            // Game_textBox
-            // 
-            this.Game_textBox.Location = new System.Drawing.Point(88, 121);
-            this.Game_textBox.Name = "Game_textBox";
-            this.Game_textBox.Size = new System.Drawing.Size(293, 31);
-            this.Game_textBox.TabIndex = 33;
             // 
             // Game_label
             // 
@@ -219,18 +212,27 @@
             this.Remove_button.UseVisualStyleBackColor = true;
             this.Remove_button.Click += new System.EventHandler(this.Remove_button_Click);
             // 
+            // Game_comboBox
+            // 
+            this.Game_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Game_comboBox.FormattingEnabled = true;
+            this.Game_comboBox.Location = new System.Drawing.Point(103, 124);
+            this.Game_comboBox.Name = "Game_comboBox";
+            this.Game_comboBox.Size = new System.Drawing.Size(192, 33);
+            this.Game_comboBox.TabIndex = 40;
+            // 
             // AgendaDetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 564);
+            this.Controls.Add(this.Game_comboBox);
             this.Controls.Add(this.Remove_button);
             this.Controls.Add(this.Change_button);
             this.Controls.Add(this.Assignment_textBox);
             this.Controls.Add(this.Assignment_label);
             this.Controls.Add(this.Subject_textBox);
             this.Controls.Add(this.Subject_label);
-            this.Controls.Add(this.Game_textBox);
             this.Controls.Add(this.Game_label);
             this.Controls.Add(this.Note_label);
             this.Controls.Add(this.Note_textBox);
@@ -259,7 +261,6 @@
         private System.Windows.Forms.Label Assignment_label;
         private System.Windows.Forms.TextBox Subject_textBox;
         private System.Windows.Forms.Label Subject_label;
-        private System.Windows.Forms.TextBox Game_textBox;
         private System.Windows.Forms.Label Game_label;
         private System.Windows.Forms.Label Note_label;
         private System.Windows.Forms.TextBox Note_textBox;
@@ -274,5 +275,6 @@
         private System.Windows.Forms.DateTimePicker Start_datePicker;
         private System.Windows.Forms.DateTimePicker Start_TimePicker;
         private System.Windows.Forms.Button Remove_button;
+        private System.Windows.Forms.ComboBox Game_comboBox;
     }
 }

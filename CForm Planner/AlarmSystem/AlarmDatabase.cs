@@ -35,9 +35,8 @@ namespace CForm_Planner.AlarmSystem
             {
                 OracleParameter[] deleteParameter =
                 {
-                            new OracleParameter("iTIME", alarm.Alarmtime),
-                            new OracleParameter("iMAIL", alarm.AccountEmail)
-                        };
+                            new OracleParameter("iID", alarm.ID)
+                };
                 DatabaseManager.ExecuteInsertQuery("DeleteAlarm", deleteParameter);
                 return true;
             }
@@ -47,14 +46,13 @@ namespace CForm_Planner.AlarmSystem
             }
         }
 
-        public bool UpdateAlarm(DateTime oldTime, string oldEmail, DateTime newTime, bool set)
+        public bool UpdateAlarm(int id, DateTime newTime, bool set)
         {
             try
             {
                 OracleParameter[] updateParameter =
             {
-                new OracleParameter("oTIME", oldTime),
-                new OracleParameter("oMAIL", oldEmail),
+                new OracleParameter("iID", id),
                 new OracleParameter("nTIME", newTime),
                 new OracleParameter("nALARMSET", Convert.ToInt32(set))
             };
@@ -68,8 +66,9 @@ namespace CForm_Planner.AlarmSystem
             }            
         }
 
-        public bool GetAlarm(Alarm alarm)
+        public Alarm GetAlarm(Alarm alarm)
         {
+            Alarm found = null;
             try
             {
                 OracleParameter[] checkParameter =
@@ -79,36 +78,48 @@ namespace CForm_Planner.AlarmSystem
                 };
                 DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAlarm"],
                     checkParameter);
-                if (dt.Rows.Count == 0)
+                if (dt.Rows.Count > 0)
                 {
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    foreach (DataRow reader in dt.Rows)
+                    {
+                        int id = Convert.ToInt32(reader["ID"]);
+                        DateTime time = (DateTime)reader["TIME"];
+                        bool alarmset = Convert.ToBoolean(reader["ALARMSET"]);
+                        string email = (String)reader["EMAILADDRESS"];
+                        found = new Alarm(id, time, alarmset, email);
+                    }
                 }
             }
             catch (Exception)
             {
                 throw;
             }
+            return found;
         }
 
         public List<Alarm> GetAlarms(string mail)
         {
             List<Alarm> loaded = new List<Alarm>();
-            OracleParameter[] checkParameter =
+            try
             {
-                        new OracleParameter("mail", mail)
-                    };
-            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllAlarms"],
-                checkParameter);
-            foreach (DataRow reader in dt.Rows)
+                OracleParameter[] checkParameter =
+                {
+                    new OracleParameter("mail", mail)
+                };
+                DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllAlarms"],
+                    checkParameter);
+                foreach (DataRow reader in dt.Rows)
+                {
+                    int id = Convert.ToInt32(reader["ID"]);
+                    DateTime time = (DateTime) reader["TIME"];
+                    bool alarmset = Convert.ToBoolean(reader["ALARMSET"]);
+                    string email = (String) reader["EMAILADDRESS"];
+                    loaded.Add(new Alarm(id, time, alarmset, email));
+                }
+            }
+            catch (Exception)
             {
-                DateTime time = (DateTime)reader["TIME"];
-                bool alarmset = Convert.ToBoolean(reader["ALARMSET"]);
-                string email = (String)reader["EMAILADDRESS"];
-                loaded.Add(new Alarm(time, alarmset, email));
+                throw;
             }
             return loaded;
         }

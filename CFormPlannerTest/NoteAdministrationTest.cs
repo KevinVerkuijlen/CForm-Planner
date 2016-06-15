@@ -10,12 +10,15 @@ namespace CFormPlannerTest
     public class NoteAdministrationTest
     {
         private NoteAdministration NoteAdministration { get; set; }
+        private NoteDatabase NoteDatabase { get; set; }
+
         Note test = new Note("testing", "Test@Unit.com");
 
         [TestInitialize]
         public void Setup()
         {
             NoteAdministration = new NoteAdministration();
+            NoteDatabase = new NoteDatabase();
         }
 
         [TestMethod]
@@ -25,12 +28,12 @@ namespace CFormPlannerTest
             Note testNote = test;
             Note test2Note = testNote;
             Assert.AreEqual(testNote, test2Note);
-            Assert.IsTrue(NoteAdministration.AddNote(testNote.Information, testNote.Accountemail));
+            Assert.IsTrue(NoteAdministration.AddNote(testNote.Information, testNote.AccountEmail));
 
             //test for a dubbel
             try
             {
-                NoteAdministration.AddNote(testNote.Information, testNote.Accountemail);
+                NoteAdministration.AddNote(testNote.Information, testNote.AccountEmail);
             }
             catch (Exception exception)
             {
@@ -41,18 +44,19 @@ namespace CFormPlannerTest
             //add local and database
             Note test3Note = new Note(test.Information + "testing", "Test@Unit.com");
             Assert.AreNotEqual(testNote, test3Note);
-            Assert.IsTrue(NoteAdministration.AddNote(test3Note.Information, test3Note.Accountemail));
+            Assert.IsTrue(NoteAdministration.AddNote(test3Note.Information, test3Note.AccountEmail));
 
             try
             {
-                NoteAdministration.AddNote(test3Note.Information, test3Note.Accountemail);
+                NoteAdministration.AddNote(test3Note.Information, test3Note.AccountEmail);
             }
             catch (Exception exception)
             {
                 Assert.IsTrue(exception is PlannerExceptions);
                 Assert.AreEqual(exception.Message, "Note already exist in the note list");
             }
-            Assert.IsTrue(NoteAdministration.RemoveNote(new Note(test.Information, "Test@Unit.com")));
+            Note note = NoteDatabase.GetNote(new Note(test.Information, "Test@Unit.com"));
+            Assert.IsTrue(NoteAdministration.RemoveNote(note));
 
             CollectionAssert.AllItemsAreUnique(NoteAdministration.Notes);
 
@@ -63,7 +67,7 @@ namespace CFormPlannerTest
         {
             NoteAdministration.Notes.Clear();
 
-            NoteAdministration.AddNote(test.Information, test.Accountemail);
+            NoteAdministration.AddNote(test.Information, test.AccountEmail);
             Assert.IsTrue(NoteAdministration.ChangeNote(test, "this is a test"));
             Assert.AreEqual(test.Information, "this is a test");
 
@@ -78,7 +82,7 @@ namespace CFormPlannerTest
             }
 
             Note TestDBNote = new Note("tester", "Test@Unit.com");
-            NoteAdministration.AddNote(TestDBNote.Information, TestDBNote.Accountemail);
+            NoteAdministration.AddNote(TestDBNote.Information, TestDBNote.AccountEmail);
             Assert.IsTrue(NoteAdministration.ChangeNote(TestDBNote, "test 123"));
             Assert.AreEqual(TestDBNote.Information, "test 123");
 
@@ -98,8 +102,9 @@ namespace CFormPlannerTest
         public void Test_DeleteNote()
         {
             NoteAdministration.Notes.Clear();
-            NoteAdministration.AddNote(test.Information, test.Accountemail);
-            Assert.IsTrue(NoteAdministration.RemoveNote(test));
+            NoteAdministration.AddNote(test.Information, test.AccountEmail);
+            Note note = NoteDatabase.GetNote(new Note(test.Information, test.AccountEmail));
+            Assert.IsTrue(NoteAdministration.RemoveNote(note));
 
             try
             {
@@ -113,9 +118,10 @@ namespace CFormPlannerTest
 
             //Database test 
             NoteAdministration.AddNote("tester", "Test@Unit.com");
+            Note not2 = NoteDatabase.GetNote(new Note("tester", "Test@Unit.com"));
             Assert.IsTrue(NoteAdministration.RemoveNote(new Note("tester", "Test@Unit.com")));
             NoteDatabase noteDatabase = new NoteDatabase();
-            Assert.IsTrue(noteDatabase.GetNote(new Note("tester", "Test@Unit.com")));
+            Assert.IsNotNull(noteDatabase.GetNote(new Note("tester", "Test@Unit.com")));
 
         }
 
@@ -132,7 +138,7 @@ namespace CFormPlannerTest
 
             foreach (Note note in NoteAdministration.Notes)
             {
-                Assert.IsTrue(note.Accountemail != "");
+                Assert.IsTrue(note.AccountEmail != "");
             }
             Assert.AreEqual(NoteAdministration.Notes.Count, 2);
 
@@ -150,7 +156,7 @@ namespace CFormPlannerTest
             NoteAdministration.EmptyNotesToUser(new Account("Tester", "Unit", "Test@Unit.com"));
             foreach (Note note in NoteAdministration.Notes)
             {
-                Assert.IsTrue(note.Accountemail != "");
+                Assert.IsTrue(note.AccountEmail != "");
             }
             Assert.AreEqual(NoteAdministration.Notes.Count, 4);
         }

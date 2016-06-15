@@ -9,6 +9,7 @@ namespace CForm_Planner.AlarmSystem
     [Serializable]
     public class Alarm : IComparable<Alarm>
     {
+        public int ID { get; private set; }
         public DateTime Alarmtime { get; private set; }
         public bool AlarmSet { get; private set; }
         public string AccountEmail { get; private set; }
@@ -19,6 +20,18 @@ namespace CForm_Planner.AlarmSystem
             {
                 throw new ArgumentNullException("alarmtime", "alarmtime is empty");
             }
+            Alarmtime = alarmtime;
+            AlarmSet = alarmSet;
+            AccountEmail = accountemail;
+        }
+
+        public Alarm(int id, DateTime alarmtime, bool alarmSet, string accountemail)
+        {
+            if (alarmtime == null)
+            {
+                throw new ArgumentNullException("alarmtime", "alarmtime is empty");
+            }
+            ID = id;
             Alarmtime = alarmtime;
             AlarmSet = alarmSet;
             AccountEmail = accountemail;

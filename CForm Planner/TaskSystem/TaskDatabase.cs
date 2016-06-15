@@ -10,18 +10,27 @@ namespace CForm_Planner.TaskSystem.TaskForms
 {
     public class TaskDatabase
     {
-        public void InsertTask(string titel, string notes, int hourDuration, int minDuration, bool completed, string email)
+        public bool InsertTask(string titel, string notes, int hourDuration, int minDuration, bool completed, string email)
         {
-            OracleParameter[] insertParameter =
+            try
+            {
+                OracleParameter[] insertParameter =
             {
                 new OracleParameter("iTITEL", titel),
                 new OracleParameter("iNOTE", notes),
-                new OracleParameter("iHOURDURATION", hourDuration), 
-                new OracleParameter("iMINDURATION", minDuration), 
+                new OracleParameter("iHOURDURATION", hourDuration),
+                new OracleParameter("iMINDURATION", minDuration),
                 new OracleParameter("iCOMPLETED", Convert.ToInt32(completed)),
                 new OracleParameter("iMAIL", email)
             };
-            DatabaseManager.ExecuteInsertQuery("InsertTask", insertParameter);
+                DatabaseManager.ExecuteInsertQuery("InsertTask", insertParameter);
+                return true; 
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }            
         }
 
         public bool DeleteTask(Task task)
@@ -30,9 +39,7 @@ namespace CForm_Planner.TaskSystem.TaskForms
             {
                 OracleParameter[] deleteParameter =
                 {
-                            new OracleParameter("iTITEL", task.Titel),
-                            new OracleParameter("iNOTE", task.Notes),
-                            new OracleParameter("iMAIL", task.Accountemail)
+                            new OracleParameter("iID", task.ID)
                         };
                 DatabaseManager.ExecuteDeleteQuery("DeleteTask", deleteParameter);
                 return true;
@@ -43,16 +50,14 @@ namespace CForm_Planner.TaskSystem.TaskForms
             }
         }
 
-        public bool UpdateTask(string oldTitel, string oldNotes, string oldEmail, string newTitel, string newNotes, int hourDuration, 
+        public bool UpdateTask(int id, string newTitel, string newNotes, int hourDuration, 
             int minDuration, bool completed)
         {
             try
             {
                 OracleParameter[] updateParameter =
             {
-                new OracleParameter("oTITEL", oldTitel),
-                new OracleParameter("oNOTE", oldNotes),
-                new OracleParameter("oMAIL", oldEmail),
+                new OracleParameter("iID", id),
                 new OracleParameter("nTITEL", newTitel),
                 new OracleParameter("nNOTE", newNotes),
                 new OracleParameter("nHOURDURATION", hourDuration),
@@ -70,24 +75,31 @@ namespace CForm_Planner.TaskSystem.TaskForms
             
         }
 
-        public bool GetTask(Task task)
+        public Task GetTask(Task task)
         {
+            Task found = null;
             OracleParameter[] checkParameter =
             {
                 new OracleParameter("TITEL", task.Titel),
-                new OracleParameter("NOTE", task.Notes),
-                new OracleParameter("EMAILADDRESS", task.Accountemail)
+                new OracleParameter("EMAILADDRESS", task.AccountEmail)
             };
             DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetTask"],
                 checkParameter);
-            if (dt.Rows.Count == 0)
+            if (dt.Rows.Count > 0)
             {
-                return true;
+                foreach (DataRow reader in dt.Rows)
+                {
+                    int id = Convert.ToInt32(reader["ID"]);
+                    string titel = (String) reader["TITEL"];
+                    string note = (String) reader["NOTE"];
+                    int hourDuration = Convert.ToInt32(reader["HOUR_DURATION"]);
+                    int minDuration = Convert.ToInt32(reader["MIN_DURATION"]);
+                    bool completed = Convert.ToBoolean(reader["COMPLETED"]);
+                    string email = (String) reader["EMAILADDRESS"];
+                    found = new Task(id, titel, note, hourDuration, minDuration, completed, email);
+                }
             }
-            else
-            {
-                return false;
-            }
+            return found;
         }
 
         public List<Task> GetTasks(string mail)
@@ -101,13 +113,14 @@ namespace CForm_Planner.TaskSystem.TaskForms
                 checkParameter);
             foreach (DataRow reader in dt.Rows)
             {
+                int id = Convert.ToInt32(reader["ID"]);
                 string titel = (String)reader["TITEL"];
                 string note = (String)reader["NOTE"];
                 int hourDuration = Convert.ToInt32(reader["HOUR_DURATION"]);
                 int minDuration = Convert.ToInt32(reader["MIN_DURATION"]);
                 bool completed = Convert.ToBoolean(reader["COMPLETED"]);
                 string email = (String)reader["EMAILADDRESS"];
-                loaded.Add(new Task(titel, note, hourDuration, minDuration, completed, email));
+                loaded.Add(new Task(id, titel, note, hourDuration, minDuration, completed, email));
             }
             return loaded;
         }

@@ -31,18 +31,30 @@ namespace CForm_Planner.AccountSystem.AccountForms
                     if(Email_textBox.Text != "")
                     {
                         if (Password_textBox.Text != "")
-                        {                  
-                            try
+                        {
+                            DialogResult result =
+                            MessageBox.Show(
+                                "Are you sure?",
+                                "Confirm",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                            if (result == DialogResult.Yes)
                             {
-                                Email = Email_textBox.Text;
-                                Password = Password_textBox.Text;
-                                Administration.Register(FirstName_textBox.Text, LastName_textBox.Text, Email, Password);
-                                this.DialogResult = DialogResult.OK;
+                                try
+                                {
+                                    Email = Email_textBox.Text;
+                                    Password = Password_textBox.Text;
+                                    Administration.Register(FirstName_textBox.Text, LastName_textBox.Text, Email, Password);
+                                    this.DialogResult = DialogResult.OK;
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message);
+                                }
                             }
-                            catch(Exception ex)
+                            else if (result == DialogResult.No)
                             {
-                                MessageBox.Show(ex.Message);
-                            }               
+                                return;
+                            }                                          
                         }
                         else
                         {

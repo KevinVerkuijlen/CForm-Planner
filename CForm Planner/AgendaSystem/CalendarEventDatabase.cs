@@ -4,70 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using CForm_Planner.AgendaSystem.Database;
+using CForm_Planner.GameSystem;
 using Oracle.ManagedDataAccess.Client;
 
 namespace CForm_Planner.AgendaSystem
 {
     public class CalendarEventDatabase
     {
-        public bool InsertCalendarEvent(string titel, string notes, DateTime startDate, DateTime endDate, string email)
+
+        private static List<I_CU_CalendarEvent> cuCalendarEvents = new List<I_CU_CalendarEvent>()
+        {
+            new CUCalendarDatabase(),
+        new CUSchoolEventDatabase(),
+        new CUGameEventDatabase()
+    };
+
+        public void InsertCalendarEvent(CalendarEvent calendarEvent)
         {
             try
             {
-                OracleParameter[] insertParameter =
-                                {
-                    new OracleParameter("iTITEL", titel),
-                    new OracleParameter("iNOTE", notes),
-                    new OracleParameter("iSTARTDATE", startDate),
-                    new OracleParameter("iENDDATE", endDate),
-                    new OracleParameter("iMAIL", email),
-                };
-                DatabaseManager.ExecuteInsertQuery("InsertCalendarEvent", insertParameter);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public bool InsertCalendarEvent(string titel, string notes, DateTime startDate, DateTime endDate, string subject,
-            string assignment, string email)
-        {
-            InsertCalendarEvent(titel, notes, startDate, endDate, email);
-
-            try
-            {
-                int id = CheckCalendarDatabase(titel, notes, startDate, endDate, email);
-                OracleParameter[] insertSchoolParameter =
+                foreach (I_CU_CalendarEvent i in cuCalendarEvents)
                 {
-                new OracleParameter("iSUBJECT", subject),
-                new OracleParameter("iASSIGNMENT", assignment),
-                new OracleParameter("iID", id)
-            };
-                DatabaseManager.ExecuteInsertQuery("InsertSchoolEvent", insertSchoolParameter);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public bool InsertCalendarEvent(string titel, string notes, DateTime startDate, DateTime endDate, string gamename, string email)
-        {
-            InsertCalendarEvent(titel, notes, startDate, endDate, email);
-
-            try
-            {
-                int id = CheckCalendarDatabase(titel, notes, startDate, endDate, email);
-                OracleParameter[] insertGameParameter =
-                {
-                    new OracleParameter("iGAMENAME", gamename),
-                    new OracleParameter("iId", id)
-                };
-                DatabaseManager.ExecuteInsertQuery("InsertGameEvent", insertGameParameter);
-                return true;
+                    i.InsertCalendarEvent(calendarEvent);
+                }
             }
             catch (Exception)
             {
@@ -80,9 +40,9 @@ namespace CForm_Planner.AgendaSystem
             try
             {
                 OracleParameter[] deleteParameter =
-                        {
-                            new OracleParameter("iID", id)
-                        };
+                {
+                    new OracleParameter("iID", id)
+                };
                 DatabaseManager.ExecuteDeleteQuery("DeleteCalendarEvent", deleteParameter);
                 return true;
             }
@@ -92,26 +52,14 @@ namespace CForm_Planner.AgendaSystem
             }
         }
 
-        public bool UpdateCalendarEvent(CalendarEvent oldCalendarEvent, string newTitel, string newNotes, DateTime newStartDate,
-            DateTime newEndDate, string newEmail)
+        public void UpdateCalendarEvent(CalendarEvent calendarEvent)
         {
-
             try
             {
-                int oldID = CheckCalendarDatabase(oldCalendarEvent.Titel, oldCalendarEvent.Notes,
-                        oldCalendarEvent.StartDate, oldCalendarEvent.EndDate,
-                        oldCalendarEvent.AccountEmail);
-
-                OracleParameter[] updateParameter =
+                foreach (I_CU_CalendarEvent i in cuCalendarEvents)
                 {
-                    new OracleParameter("oldID", oldID),
-                    new OracleParameter("nTITEL", newTitel),
-                    new OracleParameter("nNOTE", newNotes),
-                    new OracleParameter("nSTARTDATE", newStartDate),
-                    new OracleParameter("nENDDATE", newEndDate),
-                };
-                DatabaseManager.ExecuteInsertQuery("UpdateCalendarEvent", updateParameter);
-                return true;
+                    i.UpdateCalendarEvent(calendarEvent);
+                }
             }
             catch (Exception)
             {
@@ -119,122 +67,52 @@ namespace CForm_Planner.AgendaSystem
             }
         }
 
-        public bool UpdateCalendarEvent(SchoolEvent oldSchoolevent, string newTitel, string newNotes, DateTime newStartDate,
-            DateTime newEndDate, string newSubject, string newAssignment, string newEmail)
+        public CalendarEvent CheckCalendarDatabase(string titel, DateTime startdate, DateTime enddate, string email)
         {
-            UpdateCalendarEvent(oldSchoolevent, newTitel, newNotes, newStartDate, newEndDate, newEmail);
-
-            int oldID = CheckCalendarDatabase(newTitel, newNotes, newStartDate, newEndDate, newEmail);
-            try
-            {
-                OracleParameter[] updateSchoolParameter =
-                {
-
-                    new OracleParameter("oSUBJECT", oldSchoolevent.Subject),
-                    new OracleParameter("oASSIGNMENT", oldSchoolevent.Assignment),
-                    new OracleParameter("oldID", oldID),
-
-                    new OracleParameter("nSUBJECT", newSubject),
-                    new OracleParameter("nASSIGNMENT", newAssignment)
-                };
-                DatabaseManager.ExecuteInsertQuery("UpdateSchoolEvent", updateSchoolParameter);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public bool UpdateCalendarEvent(GameEvent oldGameEvent, string newTitel, string newNotes, DateTime newStartDate,
-            DateTime newEndDate, string newGamename, string newEmail)
-        {
-            UpdateCalendarEvent(oldGameEvent, newTitel, newNotes, newStartDate, newEndDate, newEmail);
-
-            int oldID = CheckCalendarDatabase(newTitel, newNotes, newStartDate, newEndDate, newEmail);
-            try
-            {
-                OracleParameter[] updateGameParameter =
-                {
-                    new OracleParameter("oGAMENAME", oldGameEvent.GameName),
-                    new OracleParameter("oldID", oldID),
-
-                    new OracleParameter("nGAMENAME", newGamename),
-                };
-                DatabaseManager.ExecuteInsertQuery("UpdateGameEvent", updateGameParameter);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public int CheckCalendarDatabase(string titel, string notes, DateTime startdate, DateTime enddate, string email)
-        {
-            int ID = 0;
+            CalendarEvent calendarEvent = null;
             try
             {
                 OracleParameter[] checkParameter =
                 {
                     new OracleParameter("titel", titel),
-                    new OracleParameter("note", notes),
                     new OracleParameter("startdate", startdate.ToString("dd/MM/yyyy HH:mm:ss")),
                     new OracleParameter("enddate", enddate.ToString("dd/MM/yyyy HH:mm:ss")),
                     new OracleParameter("mail", email)
                 };
                 DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetCalendarEvent"],
                     checkParameter);
-                foreach (DataRow reader in dt.Rows)
-                {
-                    ID = Convert.ToInt32(reader["ID"]);
-                }
+                if (dt.Rows.Count > 0)
+                    foreach (DataRow reader in dt.Rows)
+                    {
+                        int id = Convert.ToInt32(reader["ID"]);
+                        string Titel = (String) reader["TITEL"];
+                        string notes = (String) reader["NOTE"];
+                        DateTime startDate = (DateTime) reader["STARTDATE"];
+                        DateTime endDate = (DateTime) reader["ENDDATE"];
+                        string Email = (String) reader["EMAILADDRESS"];
+                        if (reader["SUBJECT"] != DBNull.Value && reader["ASSIGNMENT"] != DBNull.Value)
+                        {
+                            string subject = (String) reader["SUBJECT"];
+                            string assignment = (String) reader["ASSIGNMENT"];
+                            calendarEvent = new SchoolEvent(id, Titel, notes, startDate, endDate, subject, assignment,
+                                Email);
+                        }
+                        else if (reader["GAMENAME"] != DBNull.Value)
+                        {
+                            string gameName = (String) reader["GAMENAME"];
+                            calendarEvent = new GameEvent(id, Titel, notes, startDate, endDate, gameName, Email);
+                        }
+                        else
+                        {
+                            calendarEvent = new CalendarEvent(id, Titel, notes, startDate, endDate, Email);
+                        }
+                    }
             }
             catch (Exception)
             {
                 throw;
             }
-            return ID;
-        }
-
-        public CalendarEvent GetCalendarEvent(CalendarEvent calendarEvent)
-        {
-            CalendarEvent found = null;
-
-            OracleParameter[] checkParameter =
-                {
-                    new OracleParameter("TITEL", calendarEvent.Titel),
-                    new OracleParameter("NOTE", calendarEvent.Notes),
-                    new OracleParameter("STARTDATE", calendarEvent.StartDate.ToString("dd/MM/yyyy HH:mm:ss")),
-                    new OracleParameter("ENDDATE", calendarEvent.EndDate.ToString("dd/MM/yyyy HH:mm:ss")),
-                    new OracleParameter("EMAIL", calendarEvent.AccountEmail)
-                };
-                DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetCalendarEvent"],
-                    checkParameter);
-                foreach (DataRow reader in dt.Rows)
-                {
-                    string titel = (String) reader["TITEL"];
-                    string notes = (String) reader["NOTE"];
-                    DateTime startDate = (DateTime) reader["STARTDATE"];
-                    DateTime endDate = (DateTime) reader["ENDDATE"];
-                    string email = (String) reader["EMAILADDRESS"];
-                    if (reader["SUBJECT"] != DBNull.Value && reader["ASSIGNMENT"] != DBNull.Value)
-                    {
-                        string subject = (String) reader["SUBJECT"];
-                        string assignment = (String) reader["ASSIGNMENT"];
-                        found = new SchoolEvent(titel, notes, startDate, endDate, subject, assignment, email);
-                    }
-                    else if (reader["GAMENAME"] != DBNull.Value)
-                    {
-                        string gameName = (String) reader["GAMENAME"];
-                        found = new GameEvent(titel, notes, startDate, endDate, gameName, email);
-                    }
-                    else
-                    {
-                        found = new CalendarEvent(titel, notes, startDate, endDate, email);
-                    }                   
-                }
-            return found;
+            return calendarEvent;
         }
 
         public
@@ -243,36 +121,87 @@ namespace CForm_Planner.AgendaSystem
             List<CalendarEvent> loaded = new List<CalendarEvent>();
             OracleParameter[] checkParameter =
             {
-                        new OracleParameter("mail", mail)
-                    };
+                new OracleParameter("mail", mail)
+            };
             DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetAllCalendarEvent"],
                 checkParameter);
             foreach (DataRow reader in dt.Rows)
             {
                 CalendarEvent calendarEvent = null;
-                string titel = (String)reader["TITEL"];
-                string notes = (String)reader["NOTE"];
-                DateTime startDate = (DateTime)reader["STARTDATE"];
-                DateTime endDate = (DateTime)reader["ENDDATE"];
-                string email = (String)reader["EMAILADDRESS"];
+                int id = Convert.ToInt32(reader["ID"]);
+                string titel = (String) reader["TITEL"];
+                string notes = (String) reader["NOTE"];
+                DateTime startDate = (DateTime) reader["STARTDATE"];
+                DateTime endDate = (DateTime) reader["ENDDATE"];
+                string email = (String) reader["EMAILADDRESS"];
                 if (reader["SUBJECT"] != DBNull.Value && reader["ASSIGNMENT"] != DBNull.Value)
                 {
-                    string subject = (String)reader["SUBJECT"];
-                    string assignment = (String)reader["ASSIGNMENT"];
-                    calendarEvent = new SchoolEvent(titel, notes, startDate, endDate, subject, assignment, email);
+                    string subject = (String) reader["SUBJECT"];
+                    string assignment = (String) reader["ASSIGNMENT"];
+                    calendarEvent = new SchoolEvent(id, titel, notes, startDate, endDate, subject, assignment, email);
                 }
                 else if (reader["GAMENAME"] != DBNull.Value)
                 {
-                    string gameName = (String)reader["GAMENAME"];
-                    calendarEvent = new GameEvent(titel, notes, startDate, endDate, gameName, email);
+                    string gameName = (String) reader["GAMENAME"];
+                    calendarEvent = new GameEvent(id, titel, notes, startDate, endDate, gameName, email);
                 }
                 else
                 {
-                    calendarEvent = new CalendarEvent(titel, notes, startDate, endDate, email);
+                    calendarEvent = new CalendarEvent(id, titel, notes, startDate, endDate, email);
                 }
                 loaded.Add(calendarEvent);
             }
             return loaded;
+        }
+
+        public List<string> GamesList()
+        {
+            List<string> Games = new List<string>();
+
+            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetGames"],
+                null);
+            foreach (DataRow reader in dt.Rows)
+            {
+                Games.Add((string)reader["NAME"]);
+            }
+            return Games;
+        }
+
+        public List<string> RaidsList(string game)
+        {
+            List<string> Raids = new List<string>();
+            OracleParameter[] Parameter =
+            {
+                new OracleParameter(":Game", game)
+            };
+            DataTable dt = DatabaseManager.ExecuteReadQuery(DatabaseQuerys.Query["GetRaids"],
+                Parameter);
+            foreach (DataRow reader in dt.Rows)
+            {
+                Raids.Add((string)reader["NAME"]);
+            }
+            return Raids;
+        }
+
+        public List<Proposal> GameProposal(string players, string game, string raid, int days, int start, int end)
+        {
+            List<Proposal> proposals = new List<Proposal>();
+            OracleParameter[] Parameter =
+            {
+                new OracleParameter("iPLAYERS", players),
+                new OracleParameter("iGAME", game),
+                new OracleParameter("iRAID", raid),
+                new OracleParameter("iTODAY", DateTime.Now),
+                new OracleParameter("iDAYS", days),
+                new OracleParameter("iSTART", start),
+                new OracleParameter("iEND", end), 
+            };
+            DataTable dt = DatabaseManager.ExecuteFunction("GameProposal", Parameter);
+            foreach (DataRow reader in dt.Rows)
+            {
+                proposals.Add(new Proposal((DateTime)reader["LastEndTime"], (DateTime)reader["NextStartTime"], Convert.ToInt32(reader["TimeWindow"])));
+            }
+            return proposals;
         }
     }
 }

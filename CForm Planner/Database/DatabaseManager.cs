@@ -2,6 +2,8 @@
 using System.Data;
 using System.Diagnostics;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
+using System.Windows.Forms;
 
 namespace CForm_Planner
 {
@@ -24,7 +26,7 @@ namespace CForm_Planner
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    throw ;
                 }
                 return null;
             }
@@ -111,5 +113,38 @@ namespace CForm_Planner
                 return false;
             }
         }
+
+
+
+        public static DataTable ExecuteFunction(string sqlquery, OracleParameter[] parameters)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                using (Connection)
+                {
+                    OracleCommand cmd = new OracleCommand(sqlquery, Connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add(new OracleParameter("return", OracleDbType.RefCursor));
+                    cmd.Parameters["return"].Direction = ParameterDirection.ReturnValue;
+
+                    cmd.Parameters.AddRange(parameters);
+
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader reader = ((OracleRefCursor) cmd.Parameters["return"].Value).GetDataReader();
+
+                    dt.Load(reader);
+                }
+                return dt;
+            }                    
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

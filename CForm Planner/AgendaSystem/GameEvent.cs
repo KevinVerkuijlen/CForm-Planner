@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace CForm_Planner.AgendaSystem
 {
     [Serializable]
     public class GameEvent: CalendarEvent
     {
-        public string GameName { get; set; }
+        public string GameName { get; private set; }
 
         public GameEvent(string titel, string notes, DateTime startDate, DateTime endDate, string gameName, string accountemail)
             : base(titel,notes,startDate,endDate,accountemail)
@@ -37,13 +38,40 @@ namespace CForm_Planner.AgendaSystem
             this.GameName = gameName;
         }
 
-        public override bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string gamename, string accountemail)
+        public GameEvent(int id, string titel, string notes, DateTime startDate, DateTime endDate, string gameName, string accountemail)
+            : base(id, titel, notes, startDate, endDate, accountemail)
         {
-            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
-                GameName != gamename || AccountEmail != accountemail)
+            if (titel == null)
             {
-                GameName = gamename;
-                return base.Update(titel, notes, startDate, endDate, gamename, accountemail);
+                throw new ArgumentNullException("titel", "title is empty");
+            }
+            if (notes == null)
+            {
+                throw new ArgumentNullException("notes", "notes is empty");
+            }
+            if (startDate == null)
+            {
+                throw new ArgumentNullException("startdate", "startdate is empty");
+            }
+            if (endDate == null)
+            {
+                throw new ArgumentNullException("enddate", "enddate is empty");
+            }
+            if (gameName == null)
+            {
+                throw new ArgumentNullException("gameEvent", "gameEvent is empty");
+            }
+            this.GameName = gameName;
+        }
+
+        public override bool Update(CalendarEvent calendarEvent)
+        {
+            GameEvent gameEvent = (GameEvent) calendarEvent;
+            if (Titel != gameEvent.Titel || Notes != gameEvent.Notes || StartDate != gameEvent.StartDate || EndDate != gameEvent.EndDate ||
+                GameName != gameEvent.GameName || AccountEmail != gameEvent.AccountEmail)
+            {
+                GameName = gameEvent.GameName;
+                return base.Update(gameEvent);
             }
             else
             {

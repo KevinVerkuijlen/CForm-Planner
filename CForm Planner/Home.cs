@@ -18,6 +18,7 @@ using CForm_Planner.AlarmSystem;
 using CForm_Planner.NoteSystem;
 using CForm_Planner.TaskSystem;
 using CForm_Planner.AgendaSystem;
+using CForm_Planner.GameSystem;
 
 namespace CForm_Planner
 {
@@ -190,6 +191,7 @@ namespace CForm_Planner
                 UEmail_label.Text = Administration.User.EmailAdress;
                 download_button.Enabled = true;
                 upload_button.Enabled = true;
+                GamePropsal_button.Enabled = true;
                 try
                 {
                     if (CalendarEventAdministration.Agenda.Exists(x => x.AccountEmail == ""))
@@ -226,7 +228,7 @@ namespace CForm_Planner
                         }
                     }
                     AlarmAdministration.CleanAlarms(Administration.User);
-                    if (NoteAdministration.Notes.Exists(x => x.Accountemail == ""))
+                    if (NoteAdministration.Notes.Exists(x => x.AccountEmail == ""))
                     {
                         DialogResult result =
                             MessageBox.Show(
@@ -243,7 +245,7 @@ namespace CForm_Planner
                         }
                     }
                     NoteAdministration.CleanNotes(Administration.User);
-                    if (TaskAdministration.Todo.Exists(x => x.Accountemail == ""))
+                    if (TaskAdministration.Todo.Exists(x => x.AccountEmail == ""))
                     {
                         DialogResult result =
                             MessageBox.Show(
@@ -276,6 +278,7 @@ namespace CForm_Planner
                 UEmail_label.Visible = false;
                 download_button.Enabled = false;
                 upload_button.Enabled = false;
+                GamePropsal_button.Enabled = false;
             }
             int todayAppointment = 0;
             foreach (CalendarEvent appointment in CalendarEventAdministration.Agenda)
@@ -334,7 +337,33 @@ namespace CForm_Planner
             }
         }
 
+        private void Friend_button_Click(object sender, EventArgs e)
+        {
+            if (Administration.User != null)
+            {
+                FriendsForm form = new FriendsForm(Administration);
+                this.Visible = false;
+                var closing = form.ShowDialog();
+                if (closing == DialogResult.OK)
+                {
+                    Administration = form.Administration;
+                    UserRefresh();
+                    this.Visible = true;
+                }
+            }
+        }
 
+        private void GamePropsal_button_Click(object sender, EventArgs e)
+        {
+            GameProposalForm form = new GameProposalForm(Administration, CalendarEventAdministration);
+            this.Visible = false;
+            var closing = form.ShowDialog();
+            if (closing == DialogResult.OK)
+            {
+                UserRefresh();
+                this.Visible = true;
+            }
+        }
     }
 
 }

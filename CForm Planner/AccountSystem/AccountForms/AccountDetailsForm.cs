@@ -21,16 +21,28 @@ namespace CForm_Planner.AccountSystem.AccountForms
                 {
                     if (Password_textBox.Text != "")
                     {
-                        try
+                        DialogResult result =
+                            MessageBox.Show(
+                                "Are you sure?",
+                                "Confirm",
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
                         {
+                            try
+                            {
 
-                            Administration.UpdateAccount(FirstName_textBox.Text, LastName_textBox.Text,
-                                Password_textBox.Text);
-                            this.DialogResult = DialogResult.OK;
+                                Administration.UpdateAccount(FirstName_textBox.Text, LastName_textBox.Text,
+                                    Password_textBox.Text);
+                                this.DialogResult = DialogResult.OK;
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
                         }
-                        catch (Exception ex)
+                        else if (result == DialogResult.No)
                         {
-                            MessageBox.Show(ex.Message);
+                            return;
                         }
                     }
                     else

@@ -29,10 +29,10 @@ namespace CForm_Planner.AlarmSystem
 
                     try
                     {
-                        if (AlarmDatabase.GetAlarm(alarm))
+                        if (AlarmDatabase.GetAlarm(alarm)== null)
                         {
-                            Alarm_list.Add(alarm);
                             bool insert = AlarmDatabase.InsertAlarm(alarmtime, alarmset, email);
+                            Alarm_list.Add(AlarmDatabase.GetAlarm(alarm));
                             return insert;
                         }
                         else
@@ -85,7 +85,7 @@ namespace CForm_Planner.AlarmSystem
                     {
                         try
                         {
-                            AlarmDatabase.UpdateAlarm(oldAlarm.Alarmtime, oldAlarm.AccountEmail, alarmtime, alarmset);
+                            AlarmDatabase.UpdateAlarm(oldAlarm.ID, alarmtime, alarmset);
                         }
                         catch (Exception)
                         {
@@ -115,7 +115,7 @@ namespace CForm_Planner.AlarmSystem
                 alarm.On();
                 if (alarm.AccountEmail != "")
                 {
-                    AlarmDatabase.UpdateAlarm(alarm.Alarmtime, alarm.AccountEmail, alarm.Alarmtime, true);
+                    AlarmDatabase.UpdateAlarm(alarm.ID, alarm.Alarmtime, true);
                 }
                 return true;
             }
@@ -132,7 +132,7 @@ namespace CForm_Planner.AlarmSystem
                 alarm.Off();
                 if (alarm.AccountEmail != "")
                 {
-                    AlarmDatabase.UpdateAlarm(alarm.Alarmtime, alarm.AccountEmail, alarm.Alarmtime, false);
+                    AlarmDatabase.UpdateAlarm(alarm.ID, alarm.Alarmtime, false);
                 }
                 return true;
             }
@@ -170,13 +170,13 @@ namespace CForm_Planner.AlarmSystem
                     {
                         try
                         {
-                            if (AlarmDatabase.GetAlarm(a))
+                            if (AlarmDatabase.GetAlarm(a)== null)
                             {
                                 AlarmDatabase.InsertAlarm(a.Alarmtime, a.AlarmSet, a.AccountEmail);
                             }
                             else
                             {
-                                AlarmDatabase.UpdateAlarm(a.Alarmtime, a.AccountEmail, a.Alarmtime, a.AlarmSet);
+                                AlarmDatabase.UpdateAlarm(a.ID , a.Alarmtime, a.AlarmSet);
                             }
                         }
                         catch (Exception)
@@ -207,6 +207,8 @@ namespace CForm_Planner.AlarmSystem
                 {
                     alarm.Update(alarm.Alarmtime, alarm.AlarmSet, user.EmailAdress);
                     AlarmDatabase.InsertAlarm(alarm.Alarmtime, alarm.AlarmSet, user.EmailAdress);
+                    Alarm_list.Add(AlarmDatabase.GetAlarm(alarm));
+                    Alarm_list.Remove(alarm);
                 }
             }
         }

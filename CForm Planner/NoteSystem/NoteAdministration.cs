@@ -21,14 +21,14 @@ namespace CForm_Planner.NoteSystem
             Note note = new Note(information, accountemail);
             if (Notes.Contains(note) == false)
             {
-                if (note.Accountemail != "")
+                if (note.AccountEmail != "")
                 {
                     try
                     {
-                        if (NoteDatabase.GetNote(note))
+                        if (NoteDatabase.GetNote(note) == null)
                         {
-                            Notes.Add(note);
                             bool insert = NoteDatabase.InsertNote(information, accountemail);
+                            Notes.Add(NoteDatabase.GetNote(note));
                             return insert;
                         }
                         else
@@ -41,16 +41,13 @@ namespace CForm_Planner.NoteSystem
                         throw;
                     }
                 }
-                else
-                {
-                    Notes.Add(note);
-                    return true;
-                }
             }
             else
             {
                 throw new PlannerExceptions("Note already exist in the note list");
             }
+            Notes.Add(note);
+            return true;
         }
 
         public bool RemoveNote(Note note)
@@ -58,7 +55,7 @@ namespace CForm_Planner.NoteSystem
             if (Notes.Contains(note))
             {
                 Notes.Remove(note);
-                if (note.Accountemail != "")
+                if (note.AccountEmail != "")
                 {
                     NoteDatabase.DeleteNote(note);
                 }
@@ -74,20 +71,20 @@ namespace CForm_Planner.NoteSystem
         {
             if (Notes.Contains(oldNote))
             {
-                if (Notes.Contains(new Note(information, oldNote.Accountemail)) == false)
+                if (Notes.Contains(new Note(information, oldNote.AccountEmail)) == false)
                 {
-                    if (oldNote.Accountemail != "")
+                    if (oldNote.AccountEmail != "")
                     {
                         try
                         {
-                            NoteDatabase.UpdateNote(oldNote.Information, oldNote.Accountemail, information, oldNote.Accountemail);
+                            NoteDatabase.UpdateNote(oldNote.ID, information, oldNote.AccountEmail);
                         }
                         catch (Exception)
                         {
                             throw;
                         }
                     }
-                    oldNote.Update(information, oldNote.Accountemail);
+                    oldNote.Update(information, oldNote.AccountEmail);
                     return true;
                 }
                 else
@@ -103,14 +100,6 @@ namespace CForm_Planner.NoteSystem
             }
         }
 
-        public void LinkNote()
-        {
-
-        }
-
-
-
-        
 
         public void MergeNotes(Account user)
         {
@@ -134,17 +123,17 @@ namespace CForm_Planner.NoteSystem
             {
                 foreach (Note n in Notes)
                 {
-                    if (n.Accountemail != "")
+                    if (n.AccountEmail != "")
                     {
                         try
                         {
-                            if (NoteDatabase.GetNote(n))
+                            if (NoteDatabase.GetNote(n)== null)
                             {
-                                NoteDatabase.InsertNote(n.Information, n.Accountemail);
+                                NoteDatabase.InsertNote(n.Information, n.AccountEmail);
                             }
                             else
                             {
-                                NoteDatabase.UpdateNote(n.Information, n.Accountemail, n.Information, n.Accountemail);
+                                NoteDatabase.UpdateNote(n.ID, n.Information, n.AccountEmail);
                             }
 
                         }
@@ -161,7 +150,7 @@ namespace CForm_Planner.NoteSystem
         {
             foreach (Note note in Notes.ToList())
             {
-                if (note.Accountemail == "" || note.Accountemail != user.EmailAdress)
+                if (note.AccountEmail == "" || note.AccountEmail != user.EmailAdress)
                 {
                     RemoveNote(note);
                 }
@@ -172,10 +161,12 @@ namespace CForm_Planner.NoteSystem
         {
             foreach (Note note in Notes.ToList())
             {
-                if (note.Accountemail == "")
+                if (note.AccountEmail == "")
                 {
                     note.Update(note.Information,user.EmailAdress);
                     NoteDatabase.InsertNote(note.Information, user.EmailAdress);
+                    Notes.Add(NoteDatabase.GetNote(note));
+                    Notes.Remove(note);
                 }
             }
         }

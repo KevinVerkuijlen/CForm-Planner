@@ -9,6 +9,7 @@ namespace CForm_Planner.AgendaSystem
     [Serializable]
     public class CalendarEvent : IComparable<CalendarEvent>
     {
+        public int ID { get; private set; }
         public string Titel { get; private set; }
         public string Notes { get; private set; }
         public DateTime StartDate { get; private set; }
@@ -42,53 +43,44 @@ namespace CForm_Planner.AgendaSystem
             AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
         }
 
-        public virtual bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string accountemail)
+        public CalendarEvent(int id, string titel, string notes, DateTime startDate, DateTime endDate, string accountemail)
         {
-            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
-                AccountEmail != accountemail)
+            if (titel == null)
             {
-                Titel = titel;
-                Notes = notes;
-                StartDate = startDate;
-                EndDate = endDate;
-                AccountEmail = accountemail;
-                AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
-                return true;
+                throw new ArgumentNullException("titel", "title is empty");
             }
-            else
+            if (notes == null)
             {
-                return false;
+                throw new ArgumentNullException("notes", "notes is empty");
             }
+            if (startDate == null)
+            {
+                throw new ArgumentNullException("startdate", "startdate is empty");
+            }
+            if (endDate == null)
+            {
+                throw new ArgumentNullException("enddate", "enddate is empty");
+            }
+            ID = id;
+            Titel = titel;
+            Notes = notes;
+            StartDate = startDate;
+            EndDate = endDate;
+            AccountEmail = accountemail;
+            AgendaDisplay = titel + ", Start Date: " + startDate.ToString() + ", End Date: " + endDate.ToString();
         }
 
-        public virtual bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string gamename, string accountemail)
+        public virtual bool Update(CalendarEvent calendarEvent)
         {
-            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
-                AccountEmail != accountemail)
+            if (Titel != calendarEvent.Titel || Notes != calendarEvent.Notes || StartDate != calendarEvent.StartDate || EndDate != calendarEvent.EndDate ||
+                AccountEmail != calendarEvent.AccountEmail)
             {
-                Titel = titel;
-                Notes = notes;
-                StartDate = startDate;
-                EndDate = endDate;
-                AccountEmail = accountemail;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public virtual bool Update(string titel, string notes, DateTime startDate, DateTime endDate, string subject, string assignment, string accountemail)
-        {
-            if (Titel != titel || Notes != notes || StartDate != startDate || EndDate != endDate ||
-                AccountEmail != accountemail)
-            {
-                Titel = titel;
-                Notes = notes;
-                StartDate = startDate;
-                EndDate = endDate;
-                AccountEmail = accountemail;
+                Titel = calendarEvent.Titel;
+                Notes = calendarEvent.Notes;
+                StartDate = calendarEvent.StartDate;
+                EndDate = calendarEvent.EndDate;
+                AccountEmail = calendarEvent.AccountEmail;
+                AgendaDisplay = calendarEvent.Titel + ", Start Date: " + calendarEvent.StartDate.ToString() + ", End Date: " + calendarEvent.EndDate.ToString();
                 return true;
             }
             else

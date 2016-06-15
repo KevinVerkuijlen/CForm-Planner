@@ -25,6 +25,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             CalendarEvent = calendarEvent;
             InitializeComponent();
             Normal_radioButton.Checked = true;
+            Games_comboBox.Items.AddRange(calendarEventAdministration.GetGames().ToArray());
         }
 
         private void Normal_radioButton_CheckedChanged(object sender, EventArgs e)
@@ -59,15 +60,15 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                         {
                                             case "Normal_radioButton":
                                                 CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
-                                                    Note_textBox.Text, start, end, userEmail);
+                                                    Note_textBox.Text, start, end, null, null, null, userEmail);
                                                 break;
                                             case "School_radioButton":
                                                 CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
-                                                    Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
+                                                    Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, null, userEmail);
                                                 break;
                                             case "Game_radioButton":
                                                 CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
-                                                    Note_textBox.Text, start, end, Game_textBox.Text, userEmail);
+                                                    Note_textBox.Text, start, end, null, null, Games_comboBox.Text, userEmail);
                                                 break;
                                         }
                                     }
@@ -79,19 +80,19 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                     {
                                         CalendarEventAdministration.RepeatCalendarEventEachDay(Titel_textBox.Text,
                                             Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text,
-                                            Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                            Games_comboBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
                                     }
                                     else if (Repeat_comboBox.Text == "work days")
                                     {
                                         CalendarEventAdministration.RepeatCalendarEventEachWorkDay(Titel_textBox.Text,
                                             Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text,
-                                            Game_textBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
+                                            Games_comboBox.Text, userEmail, Convert.ToInt32(Repeat_numericUpDown.Value));
                                     }
                                     else if (Repeat_comboBox.Text == "weeks")
                                     {
                                         CalendarEventAdministration.RepeatCalendarEventEachDayInWeek(
                                             Titel_textBox.Text, Note_textBox.Text, start, end, Subject_textBox.Text,
-                                            Assignment_textBox.Text, Game_textBox.Text, userEmail,
+                                            Assignment_textBox.Text, Games_comboBox.Text, userEmail,
                                             Convert.ToInt32(Repeat_numericUpDown.Value));
                                     }
                                     AgendaAddForm_FormClosing(null, null);
@@ -109,15 +110,15 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                                     {
                                         case "Normal_radioButton":
                                             CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
-                                                Note_textBox.Text, start, end, userEmail);
+                                                Note_textBox.Text, start, end, null, null, null, userEmail);
                                             break;
                                         case "School_radioButton":
                                             CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
-                                                Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, userEmail);
+                                                Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, null, userEmail);
                                             break;
                                         case "Game_radioButton":
                                             CalendarEventAdministration.AddCalendarEvent(Titel_textBox.Text,
-                                                Note_textBox.Text, start, end, Game_textBox.Text, userEmail);
+                                                Note_textBox.Text, start, end, null, null, Games_comboBox.Text, userEmail);
                                             break;
                                     }
                                     AgendaAddForm_FormClosing(null, null);
@@ -156,7 +157,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             NormalAppointment();
             button = Game_radioButton;
             Game_label.Visible = true;
-            Game_textBox.Visible = true;
+            Games_comboBox.Visible = true;
         }
 
         private void NormalAppointment()
@@ -167,7 +168,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             Assignment_label.Visible = false;
             Assignment_textBox.Visible = false;
             Game_label.Visible = false;
-            Game_textBox.Visible = false;
+            Games_comboBox.Visible = false;
         }
 
         private void AgendaAddForm_FormClosing(object sender, FormClosingEventArgs e)

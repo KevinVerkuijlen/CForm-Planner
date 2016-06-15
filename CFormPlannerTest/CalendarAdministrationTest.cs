@@ -27,12 +27,12 @@ namespace CFormPlannerTest
             CalendarEvent testEvent = new CalendarEvent("testEvent", "t", TestTime, TestTime, "");
             CalendarEvent test2Event = testEvent;
             Assert.AreEqual(testEvent, test2Event);
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, null, null, null, ""));
             Assert.IsTrue(CalendarEventAdministration.Agenda.Contains(testEvent));
 
             try
             {
-                CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, "");
+                CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, null, null, null, "");
             }
             catch (Exception exception)
             {
@@ -42,13 +42,13 @@ namespace CFormPlannerTest
 
             CalendarEvent testDBEvent = new CalendarEvent("testDBEvent", "test", TestTime, TestTime, "Test@Unit.com");
             Assert.AreNotEqual(testEvent, testDBEvent);
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBEvent", "test", TestTime, TestTime, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBEvent", "test", TestTime, TestTime, null, null, null, "Test@Unit.com"));
             Assert.IsTrue(CalendarEventAdministration.Agenda.Contains(testDBEvent));
 
             try
             {
                 CalendarEventAdministration.AddCalendarEvent("testDBEvent", "tt", TestTime, TestTime,
-                    "Test@Unit.com");
+                     null, null, null, "Test@Unit.com");
             }
             catch (Exception exception)
             {
@@ -59,13 +59,13 @@ namespace CFormPlannerTest
             SchoolEvent testSchool = new SchoolEvent("testSchool", "t", TestTime, TestTime, "unit", "test", "");
             SchoolEvent test2School = testSchool;
             Assert.AreEqual(testSchool, test2School);
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit", "test", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit", "test", null, ""));
             Assert.IsTrue(CalendarEventAdministration.Agenda.Contains(testSchool));
 
             try
             {
                 CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit",
-                    "test", "");
+                    "test", null, "");
             }
             catch (Exception exception)
             {
@@ -76,13 +76,13 @@ namespace CFormPlannerTest
             SchoolEvent testDBSchool = new SchoolEvent("testDBSchool", "tt", TestTime, TestTime, "unit", "test", "Test@Unit.com");
             Assert.AreNotEqual(testSchool, testDBSchool);
             Assert.AreNotEqual(testEvent, testDBSchool);
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBSchool", "tt", TestTime, TestTime, "unit", "test", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBSchool", "tt", TestTime, TestTime, "unit", "test", null, "Test@Unit.com"));
             Assert.IsTrue(CalendarEventAdministration.Agenda.Contains(testDBSchool));
 
             try
             {
                 CalendarEventAdministration.AddCalendarEvent("testDBSchool", "tt", TestTime, TestTime, "unit",
-                    "test", "Test@Unit.com");
+                    "test", null, "Test@Unit.com");
             }
             catch (Exception exception)
             {
@@ -93,12 +93,12 @@ namespace CFormPlannerTest
             GameEvent testGame = new GameEvent("testGame", "t", TestTime, TestTime, "Game", "");
             GameEvent test2Game = testGame;
             Assert.AreEqual(testGame, test2Game);
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, "Game", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, null, null, "Game", ""));
             Assert.IsTrue(CalendarEventAdministration.Agenda.Contains(testGame));
 
             try
             {
-                CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, "Game", "");
+                CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, null, null, "Game", "");
             }
             catch (Exception exception)
             {
@@ -110,12 +110,12 @@ namespace CFormPlannerTest
             Assert.AreNotEqual(testGame, testDBGame);
             Assert.AreNotEqual(testSchool, testGame);
             Assert.AreNotEqual(testEvent, testGame);
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBGame", "tt", TestTime, TestTime, "Game", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBGame", "tt", TestTime, TestTime, null, null, "Game", "Test@Unit.com"));
             Assert.IsTrue(CalendarEventAdministration.Agenda.Contains(testDBGame));
 
             try
             {
-                CalendarEventAdministration.AddCalendarEvent("testDBGame", "t", TestTime, TestTime, "Game", "Test@Unit.com");
+                CalendarEventAdministration.AddCalendarEvent("testDBGame", "t", TestTime, TestTime, null, null, "Game", "Test@Unit.com");
             }
             catch (Exception exception)
             {
@@ -133,13 +133,13 @@ namespace CFormPlannerTest
             CalendarEventAdministration.Agenda.Clear();
 
             CalendarEvent testEvent = new CalendarEvent("testEvent", "t", TestTime, TestTime, "");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, null, null, null, ""));
 
-            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testEvent,"This is to test the update Event", "t t t t t ", TestTime, TestTime, ""));
+            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testEvent,"This is to test the update Event", "t t t t t ", TestTime, TestTime, null, null, null));
 
             try
             {
-                CalendarEventAdministration.ChangeCalendarEvent(testEvent, "This is to test the update Event", "t t t t t ", TestTime, TestTime, "");
+                CalendarEventAdministration.ChangeCalendarEvent(testEvent, "This is to test the update Event", "t t t t t ", TestTime, TestTime, null, null, null);
             }
             catch (Exception exception)
             {
@@ -148,15 +148,15 @@ namespace CFormPlannerTest
             }
 
             CalendarEvent testDBEvent = new CalendarEvent("testDBUpdateEvent", "tt", TestTime, TestTime, "Test@Unit.com");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBUpdateEvent", "tt", TestTime, TestTime, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBUpdateEvent", "tt", TestTime, TestTime, null, null, null, "Test@Unit.com"));
 
             Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testDBEvent, "This is to test the update database Event",
-                "t t t ", TestTime, TestTime, "Test@Unit.com"),"a");
+                "t t t ", TestTime, TestTime, null, null, null),"a");
 
             try
             {
                 CalendarEventAdministration.ChangeCalendarEvent(testDBEvent, "This is to test the update database Event",
-                               "t t t ", TestTime, TestTime, "Test@Unit.com");
+                               "t t t ", TestTime, TestTime, null, null, null);
             }
             catch (Exception exception)
             {
@@ -165,13 +165,13 @@ namespace CFormPlannerTest
             }
 
             SchoolEvent testSchool = new SchoolEvent("testSchool", "t", TestTime, TestTime, "unit", "test", "");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit", "test", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit", "test", null, ""));
 
-            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testSchool,"This is to test the update Event for school", "tt", TestTime, TestTime, "unit", "test", ""));
+            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testSchool,"This is to test the update Event for school", "tt", TestTime, TestTime, "unit", "test", null));
 
             try
             {
-                CalendarEventAdministration.ChangeCalendarEvent(testSchool, "This is to test the update Event for school", "tt", TestTime, TestTime, "unit", "test", "");
+                CalendarEventAdministration.ChangeCalendarEvent(testSchool, "This is to test the update Event for school", "tt", TestTime, TestTime, "unit", "test", null);
             }
             catch (Exception exception)
             {
@@ -180,15 +180,15 @@ namespace CFormPlannerTest
             }
             
             SchoolEvent testDBSchool = new SchoolEvent("testDBUpdateSchool", "tt", TestTime, TestTime, "unit", "test", "Test@Unit.com");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBUpdateSchool", "tt", TestTime, TestTime, "unit", "test", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBUpdateSchool", "tt", TestTime, TestTime, "unit", "test", null, "Test@Unit.com"));
 
             Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testDBSchool, "This is to test the update database school Event",
-                               "t t t ", TestTime, TestTime, "unit test", "unit test", "Test@Unit.com"),"b");
+                               "t t t ", TestTime, TestTime, "unit test", "unit test", null),"b");
 
             try
             {
                 CalendarEventAdministration.ChangeCalendarEvent(testDBSchool, "This is to test the update database school Event",
-                               "t t t ", TestTime, TestTime, "unit test", "unit test", "Test@Unit.com");
+                               "t t t ", TestTime, TestTime, "unit test", "unit test", null);
             }
             catch (Exception exception)
             {
@@ -197,13 +197,13 @@ namespace CFormPlannerTest
             }
 
             GameEvent testGame = new GameEvent("testGame", "t", TestTime, TestTime, "Game", "");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, "Game", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, null, null, "Game", ""));
 
-            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testGame, "This is to test the update Event for Game", "qwertyujnbvfrtyui", TestTime, TestTime, "Game", ""));
+            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testGame, "This is to test the update Event for Game", "qwertyujnbvfrtyui", TestTime, TestTime, null, null, "Game"));
 
             try
             {
-                CalendarEventAdministration.ChangeCalendarEvent(testGame, "This is to test the update Event for Game", "qwertyujnbvfrtyui", TestTime, TestTime, "Game", "");
+                CalendarEventAdministration.ChangeCalendarEvent(testGame, "This is to test the update Event for Game", "qwertyujnbvfrtyui", TestTime, TestTime, null, null, "Game");
             }
             catch (Exception exception)
             {
@@ -212,13 +212,13 @@ namespace CFormPlannerTest
             }
 
             GameEvent testDBGame = new GameEvent("testDBUpdateGame", "tt", TestTime, TestTime, "Game", "Test@Unit.com");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBUpdateGame", "tt", TestTime, TestTime, "Game", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBUpdateGame", "tt", TestTime, TestTime, null, null, "Game", "Test@Unit.com"));
 
-            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testDBGame, "This is to test the update Event for Game in database", "test", TestTime, TestTime, "Game", "Test@Unit.com"),"c");
+            Assert.IsTrue(CalendarEventAdministration.ChangeCalendarEvent(testDBGame, "This is to test the update Event for Game in database", "test", TestTime, TestTime, null, null, "Game"),"c");
 
             try
             {
-                CalendarEventAdministration.ChangeCalendarEvent(testDBGame, "This is to test the update Event for Game in database", "test", TestTime, TestTime, "Game", "Test@Unit.com");
+                CalendarEventAdministration.ChangeCalendarEvent(testDBGame, "This is to test the update Event for Game in database", "test", TestTime, TestTime, null, null, "Game");
             }
             catch (Exception exception)
             {
@@ -236,7 +236,7 @@ namespace CFormPlannerTest
         public void Test_DeleteCalenderEvent()
         {
             CalendarEvent testEvent = new CalendarEvent("testEvent", "t", TestTime, TestTime, "");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, null, null, null, ""));
 
             Assert.IsTrue(CalendarEventAdministration.RemoveCalendarEvent(testEvent));
 
@@ -251,7 +251,7 @@ namespace CFormPlannerTest
             }
 
             CalendarEvent testDBEvent = new CalendarEvent("testDBDeleteEvent", "tt", TestTime, TestTime, "Test@Unit.com");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBDeleteEvent", "tt", TestTime, TestTime, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBDeleteEvent", "tt", TestTime, TestTime, null, null, null, "Test@Unit.com"));
 
             Assert.IsTrue(CalendarEventAdministration.RemoveCalendarEvent(testDBEvent));
 
@@ -266,7 +266,7 @@ namespace CFormPlannerTest
             }
 
             SchoolEvent testSchool = new SchoolEvent("testSchool", "t", TestTime, TestTime, "unit", "test", "");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit", "test", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit", "test", null, ""));
 
             Assert.IsTrue(CalendarEventAdministration.RemoveCalendarEvent(testSchool));
 
@@ -281,7 +281,7 @@ namespace CFormPlannerTest
             }
 
             SchoolEvent testDBSchool = new SchoolEvent("testDBDeleteSchool", "tt", TestTime, TestTime, "unit", "test", "Test@Unit.com");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBDeleteSchool", "tt", TestTime, TestTime, "unit", "test", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBDeleteSchool", "tt", TestTime, TestTime, "unit", "test", null, "Test@Unit.com"));
 
             Assert.IsTrue(CalendarEventAdministration.RemoveCalendarEvent(testDBSchool));
 
@@ -296,7 +296,7 @@ namespace CFormPlannerTest
             }
 
             GameEvent testGame = new GameEvent("testGame", "t", TestTime, TestTime, "Game", "");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, "Game", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, null, null, "Game", ""));
 
             Assert.IsTrue(CalendarEventAdministration.RemoveCalendarEvent(testGame));
 
@@ -311,7 +311,7 @@ namespace CFormPlannerTest
             }
 
             GameEvent testDBGame = new GameEvent("testDBDeleteGame", "tt", TestTime, TestTime, "Game", "Test@Unit.com");
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBDeleteGame", "tt", TestTime, TestTime, "Game", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testDBDeleteGame", "tt", TestTime, TestTime, null, null, "Game", "Test@Unit.com"));
 
             Assert.IsTrue(CalendarEventAdministration.RemoveCalendarEvent(testDBGame));
 
@@ -363,12 +363,12 @@ namespace CFormPlannerTest
         public void Test_CleanCalenderEvent()
         {
             CalendarEventAdministration.Agenda.Clear();
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, ""));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testcleanEvent", "t", TestTime, TestTime, "Test@Unit.com"));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit test", "unit test", ""));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testcleanSchool", "t", TestTime, TestTime, "unit test", "unit test", "Test@Unit.com"));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, "unit test", ""));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testcleanGame", "t", TestTime, TestTime, "unit test", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, null, null, null, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testcleanEvent", "t", TestTime, TestTime, null, null, null, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit test", "unit test", null, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testcleanSchool", "t", TestTime, TestTime, "unit test", "unit test", null, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, null, null, "unit test", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testcleanGame", "t", TestTime, TestTime, null, null, "unit test", "Test@Unit.com"));
 
             CalendarEventAdministration.CleanCalendar(new Account("Tester", "Unit", "Test@Unit.com"));
 
@@ -383,12 +383,12 @@ namespace CFormPlannerTest
         public void Test_EmptyCalenderEventToUser()
         {
             CalendarEventAdministration.Agenda.Clear();
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, ""));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testemptyEvent", "t", TestTime, TestTime, "Test@Unit.com"));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit test", "unit test", ""));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testemptySchool", "t", TestTime, TestTime, "unit test", "unit test", "Test@Unit.com"));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, "unit test", ""));
-            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testemptyGame", "t", TestTime, TestTime, "unit test", "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testEvent", "t", TestTime, TestTime, null, null, null, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testemptyEvent", "t", TestTime, TestTime, null, null, null, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testSchool", "t", TestTime, TestTime, "unit test", "unit test", null, ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testemptySchool", "t", TestTime, TestTime, "unit test", "unit test", null, "Test@Unit.com"));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testGame", "t", TestTime, TestTime, null, null, "unit test", ""));
+            Assert.IsTrue(CalendarEventAdministration.AddCalendarEvent("testemptyGame", "t", TestTime, TestTime, null, null, "unit test", "Test@Unit.com"));
 
             CalendarEventAdministration.EmptyCalendarToUser(new Account("Tester", "Unit", "Test@Unit.com"));
             foreach (CalendarEvent calendarEvent in CalendarEventAdministration.Agenda)

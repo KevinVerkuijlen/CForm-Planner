@@ -22,6 +22,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             CalendarEventAdministration = calendarEventAdministration;
             InitializeComponent();
             NormalAppointment();
+            Game_comboBox.Items.AddRange(CalendarEventAdministration.GetGames().ToArray());
         }
 
         private void Change_button_Click(object sender, EventArgs e)
@@ -40,16 +41,15 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                             {
                                 case "CForm_Planner.AgendaSystem.SchoolEvent":
                                     CalendarEventAdministration.ChangeCalendarEvent((SchoolEvent)CalendarEvent, Titel_textBox.Text,
-                                        Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text,
-                                        CalendarEvent.AccountEmail);
+                                        Note_textBox.Text, start, end, Subject_textBox.Text, Assignment_textBox.Text, null);
                                     break;
                                 case "CForm_Planner.AgendaSystem.GameEvent":
                                     CalendarEventAdministration.ChangeCalendarEvent((GameEvent)CalendarEvent, Titel_textBox.Text,
-                                        Note_textBox.Text, start, end, Game_textBox.Text, CalendarEvent.AccountEmail);
+                                        Note_textBox.Text, start, end, null, null, Game_comboBox.Text);
                                     break;
                                 case "CForm_Planner.AgendaSystem.CalendarEvent":
                                     CalendarEventAdministration.ChangeCalendarEvent(CalendarEvent, Titel_textBox.Text,
-                                        Note_textBox.Text, start, end, CalendarEvent.AccountEmail);
+                                        Note_textBox.Text, start, end, null, null, null);
                                     break;
                             }
                             this.DialogResult = DialogResult.OK;
@@ -112,8 +112,8 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
                 {
                     GameEvent gameDetails = (GameEvent)CalendarEvent;
                     Game_label.Visible = true;
-                    Game_textBox.Visible = true;
-                    Game_textBox.Text = gameDetails.GameName;
+                    Game_comboBox.Visible = true;
+                    Game_comboBox.Text = gameDetails.GameName;
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace CForm_Planner.AgendaSystem.AgendaForms
             Assignment_label.Visible = false;
             Assignment_textBox.Visible = false;
             Game_label.Visible = false;
-            Game_textBox.Visible = false;
+            Game_comboBox.Visible = false;
         }
 
         private void AgendaDetailsForm_FormClosing(object sender, FormClosingEventArgs e)

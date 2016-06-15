@@ -45,7 +45,6 @@
             this.Note_textBox = new System.Windows.Forms.TextBox();
             this.Note_label = new System.Windows.Forms.Label();
             this.Game_label = new System.Windows.Forms.Label();
-            this.Game_textBox = new System.Windows.Forms.TextBox();
             this.Subject_label = new System.Windows.Forms.Label();
             this.Subject_textBox = new System.Windows.Forms.TextBox();
             this.Assignment_label = new System.Windows.Forms.Label();
@@ -55,6 +54,7 @@
             this.Repeat_label = new System.Windows.Forms.Label();
             this.Repeat_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.Repeat_checkBox = new System.Windows.Forms.CheckBox();
+            this.Games_comboBox = new System.Windows.Forms.ComboBox();
             this.TypeOfAppiontmentgroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Repeat_numericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -217,13 +217,6 @@
             this.Game_label.TabIndex = 13;
             this.Game_label.Text = "Game:";
             // 
-            // Game_textBox
-            // 
-            this.Game_textBox.Location = new System.Drawing.Point(95, 165);
-            this.Game_textBox.Name = "Game_textBox";
-            this.Game_textBox.Size = new System.Drawing.Size(293, 31);
-            this.Game_textBox.TabIndex = 14;
-            // 
             // Subject_label
             // 
             this.Subject_label.AutoSize = true;
@@ -304,11 +297,21 @@
             this.Repeat_checkBox.TabIndex = 23;
             this.Repeat_checkBox.UseVisualStyleBackColor = true;
             // 
+            // Games_comboBox
+            // 
+            this.Games_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Games_comboBox.FormattingEnabled = true;
+            this.Games_comboBox.Location = new System.Drawing.Point(110, 168);
+            this.Games_comboBox.Name = "Games_comboBox";
+            this.Games_comboBox.Size = new System.Drawing.Size(206, 33);
+            this.Games_comboBox.TabIndex = 24;
+            // 
             // AgendaAddForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(714, 733);
+            this.Controls.Add(this.Games_comboBox);
             this.Controls.Add(this.Repeat_checkBox);
             this.Controls.Add(this.Repeat_numericUpDown);
             this.Controls.Add(this.Repeat_label);
@@ -318,7 +321,6 @@
             this.Controls.Add(this.Assignment_label);
             this.Controls.Add(this.Subject_textBox);
             this.Controls.Add(this.Subject_label);
-            this.Controls.Add(this.Game_textBox);
             this.Controls.Add(this.Game_label);
             this.Controls.Add(this.Note_label);
             this.Controls.Add(this.Note_textBox);
@@ -363,7 +365,6 @@
         private System.Windows.Forms.TextBox Note_textBox;
         private System.Windows.Forms.Label Note_label;
         private System.Windows.Forms.Label Game_label;
-        private System.Windows.Forms.TextBox Game_textBox;
         private System.Windows.Forms.Label Subject_label;
         private System.Windows.Forms.TextBox Subject_textBox;
         private System.Windows.Forms.Label Assignment_label;
@@ -373,5 +374,6 @@
         private System.Windows.Forms.Label Repeat_label;
         private System.Windows.Forms.NumericUpDown Repeat_numericUpDown;
         private System.Windows.Forms.CheckBox Repeat_checkBox;
+        private System.Windows.Forms.ComboBox Games_comboBox;
     }
 }

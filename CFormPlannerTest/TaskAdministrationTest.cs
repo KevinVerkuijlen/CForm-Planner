@@ -29,12 +29,12 @@ namespace CFormPlannerTest
             Task testTask = test;
             Task test2Task = testTask;
             Assert.AreEqual(testTask, test2Task);
-            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail));
+            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.AccountEmail));
 
             //test for a dubbel
             try
             {
-                TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail);
+                TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.AccountEmail);
             }
             catch (Exception exception)
             {
@@ -68,7 +68,7 @@ namespace CFormPlannerTest
             TaskAdministration.Todo.Clear();
 
             Task testTask = test;
-            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail));
+            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.AccountEmail));
 
             try
             {
@@ -104,7 +104,7 @@ namespace CFormPlannerTest
         {
             TaskAdministration.Todo.Clear();
             Task testTask = test;
-            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.Accountemail));
+            Assert.IsTrue(TaskAdministration.AddTask(testTask.Titel, testTask.Notes, testTask.HourDuration, testTask.MinDuration, testTask.Completed, testTask.AccountEmail));
             Assert.IsTrue(TaskAdministration.RemoveTask(testTask));
 
             try
@@ -123,7 +123,7 @@ namespace CFormPlannerTest
 
             Assert.IsTrue(TaskAdministration.RemoveTask(TestDBTask));
             TaskDatabase taskDatabase = new TaskDatabase();
-            Assert.IsTrue(taskDatabase.GetTask(TestDBTask));
+            Assert.IsNotNull(taskDatabase.GetTask(TestDBTask));
 
 
         }
@@ -141,7 +141,7 @@ namespace CFormPlannerTest
 
             foreach (Task Task in TaskAdministration.Todo)
             {
-                Assert.IsTrue(Task.Accountemail != "");
+                Assert.IsTrue(Task.AccountEmail != "");
             }
             Assert.AreEqual(TaskAdministration.Todo.Count, 2);
 
@@ -160,7 +160,7 @@ namespace CFormPlannerTest
             TaskAdministration.EmptyTasksToUser(new Account("Tester", "Unit", "Test@Unit.com"));
             foreach (Task Task in TaskAdministration.Todo)
             {
-                Assert.IsTrue(Task.Accountemail != "");
+                Assert.IsTrue(Task.AccountEmail != "");
             }
             Assert.AreEqual(TaskAdministration.Todo.Count, 4);
 

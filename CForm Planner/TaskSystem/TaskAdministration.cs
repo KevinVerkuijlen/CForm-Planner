@@ -22,14 +22,14 @@ namespace CForm_Planner.TaskSystem
             Task task = new Task(titel, notes, hourDuration, minDuration, completed, email);
             if (Todo.Contains(task) == false)
             {
-                if (task.Accountemail != "")
+                if (task.AccountEmail != "")
                 {
                     try
                     {
-                        if (TaskDatabase.GetTask(task))
-                        {
-                            Todo.Add(task);
-                            TaskDatabase.InsertTask(titel, notes, hourDuration, minDuration, completed, email);
+                        if (TaskDatabase.GetTask(task) == null)
+                        {                            
+                            bool insert = TaskDatabase.InsertTask(titel, notes, hourDuration, minDuration, completed, email);
+                            Todo.Add(TaskDatabase.GetTask(task));
                             return true;
                         }
                         else
@@ -60,7 +60,7 @@ namespace CForm_Planner.TaskSystem
             if (Todo.Contains(task))
             {
                 Todo.Remove(task);
-                if (task.Accountemail != "")
+                if (task.AccountEmail != "")
                 {
                     TaskDatabase.DeleteTask(task);
                 }
@@ -76,20 +76,20 @@ namespace CForm_Planner.TaskSystem
         {
             if (Todo.Contains(oldTask))
             {
-                if (Todo.Contains(new Task(titel, notes, hourDuration, minDuration,  completed, oldTask.Accountemail)) == false)
+                if (Todo.Contains(new Task(titel, notes, hourDuration, minDuration,  completed, oldTask.AccountEmail)) == false)
                 {
-                    if (oldTask.Accountemail != "")
+                    if (oldTask.AccountEmail != "")
                     {
                         try
                         {
-                            TaskDatabase.UpdateTask(oldTask.Titel, oldTask.Notes, oldTask.Accountemail, titel, notes, hourDuration, minDuration, completed);
+                            TaskDatabase.UpdateTask(oldTask.ID, titel, notes, hourDuration, minDuration, completed);
                         }
                         catch (Exception)
                         {
                             throw;
                         }
                     }
-                    oldTask.Update(titel, notes, hourDuration, minDuration, completed, oldTask.Accountemail);
+                    oldTask.Update(titel, notes, hourDuration, minDuration, completed, oldTask.AccountEmail);
                     return true;
                 }
                 else
@@ -128,13 +128,18 @@ namespace CForm_Planner.TaskSystem
             {
                 foreach (Task t in Todo)
                 {
-                    if (t.Accountemail != "")
+                    if (t.AccountEmail != "")
                     {
                         try
                         {
-                            if (TaskDatabase.GetTask(t) == false)
+                            if (TaskDatabase.GetTask(t) == null)
                             {
-                                TaskDatabase.InsertTask(t.Titel, t.Notes, t.HourDuration, t.MinDuration, t.Completed, t.Accountemail);
+                                TaskDatabase.InsertTask(t.Titel, t.Notes, t.HourDuration, t.MinDuration, t.Completed, t.AccountEmail);
+                            }
+                            else
+                            {
+                                TaskDatabase.UpdateTask(t.ID, t.Titel, t.Notes, t.HourDuration, t.MinDuration,
+                                    t.Completed);
                             }
                         }
                         catch (Exception)
@@ -150,7 +155,7 @@ namespace CForm_Planner.TaskSystem
         {
             foreach (Task task in Todo.ToList())
             {
-                if (task.Accountemail == "" || task.Accountemail != user.EmailAdress)
+                if (task.AccountEmail == "" || task.AccountEmail != user.EmailAdress)
                 {
                     RemoveTask(task);
                 }
@@ -161,10 +166,12 @@ namespace CForm_Planner.TaskSystem
         {
             foreach (Task task in Todo.ToList())
             {
-                if (task.Accountemail == "")
+                if (task.AccountEmail == "")
                 {
                     task.Update(task.Titel, task.Notes, task.HourDuration, task.MinDuration, task.Completed, user.EmailAdress);
                     TaskDatabase.InsertTask(task.Titel, task.Notes, task.HourDuration, task.MinDuration, task.Completed, user.EmailAdress);
+                    Todo.Add(TaskDatabase.GetTask(task));
+                    Todo.Remove(task);
                 }
             }
         }

@@ -10,25 +10,37 @@ namespace CForm_Planner.NoteSystem
     [Serializable]
     public class Note
     {
+        public int ID { get; private set; }
         public string Information { get; private set; }
-        public string Accountemail { get; private set; }
+        public string AccountEmail { get; private set; }
 
-        public Note(string information, string accountemail)
+        public Note(string information, string accountEmail)
         {
             if (information == null)
             {
                 throw new ArgumentNullException("information", "information is empty");
             }
             Information = information;
-            Accountemail = accountemail;
+            AccountEmail = accountEmail;
+        }
+
+        public Note(int id, string information, string accountEmail)
+        {
+            if (information == null)
+            {
+                throw new ArgumentNullException("information", "information is empty");
+            }
+            ID = id;
+            Information = information;
+            AccountEmail = accountEmail;
         }
 
         public bool Update(string information, string accountemail)
         {
-            if (Information != information || Accountemail != accountemail)
+            if (Information != information || AccountEmail != accountemail)
             {
                 Information = information;
-                Accountemail = accountemail;
+                AccountEmail = accountemail;
                 return true;
             }
             else
@@ -43,7 +55,7 @@ namespace CForm_Planner.NoteSystem
             {
                 Note other = ((Note)obj);
                 return this.Information == other.Information
-                    && this.Accountemail == other.Accountemail;
+                    && this.AccountEmail == other.AccountEmail;
             }
             else
             {
@@ -53,7 +65,7 @@ namespace CForm_Planner.NoteSystem
 
         public override int GetHashCode()
         {
-            return Information.GetHashCode() ^ Accountemail.GetHashCode();
+            return Information.GetHashCode() ^ AccountEmail.GetHashCode();
         }
     }
 }

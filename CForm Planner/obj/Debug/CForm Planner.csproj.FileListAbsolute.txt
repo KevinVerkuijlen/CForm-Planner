@@ -25,3 +25,5 @@ C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\bin\Debug\Oracle.M
 C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AccountSystem.AccountForms.AccountDetailsForm.resources
 C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.Reminders.resources
 C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.AccountSystem.AccountForms.FriendsForm.resources
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\bin\Debug\Oracle.DataAccess.dll
+C:\Users\Kevin Verkuijlen\Desktop\CForm Planner\CForm Planner\obj\Debug\CForm_Planner.GameSystem.GameProposalForm.resources

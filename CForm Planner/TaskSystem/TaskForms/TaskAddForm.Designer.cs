@@ -106,6 +106,11 @@
             // Hour_numericUpDown
             // 
             this.Hour_numericUpDown.Location = new System.Drawing.Point(89, 125);
+            this.Hour_numericUpDown.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
             this.Hour_numericUpDown.Name = "Hour_numericUpDown";
             this.Hour_numericUpDown.Size = new System.Drawing.Size(70, 31);
             this.Hour_numericUpDown.TabIndex = 7;
@@ -128,7 +133,7 @@
             0,
             0});
             this.Min_numericUpDown.Name = "Min_numericUpDown";
-            this.Min_numericUpDown.Size = new System.Drawing.Size(120, 31);
+            this.Min_numericUpDown.Size = new System.Drawing.Size(72, 31);
             this.Min_numericUpDown.TabIndex = 9;
             // 
             // TaskAddForm

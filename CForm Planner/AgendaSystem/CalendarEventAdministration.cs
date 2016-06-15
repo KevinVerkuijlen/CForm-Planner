@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using CForm_Planner.AccountSystem;
 using CForm_Planner.AgendaSystem;
+using CForm_Planner.AgendaSystem.Database;
+using CForm_Planner.GameSystem;
 
 
 namespace CForm_Planner.AgendaSystem
 {
     public class CalendarEventAdministration
     {
-        public List<CalendarEvent> Agenda { get; set; }
+        public static List<CalendarEvent> Agenda { get; set; }
         private CalendarEventDatabase CalendarEventDatabase { get; set; }
 
         public CalendarEventAdministration()
@@ -20,21 +23,28 @@ namespace CForm_Planner.AgendaSystem
             CalendarEventDatabase = new CalendarEventDatabase();
         }
 
-        public bool AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string email)
+        public bool AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename, string email)
         {
             CalendarEvent calendarEvent = new CalendarEvent(titel, notes, startdate, enddate, email);
-            if (Agenda.Contains(calendarEvent) == false)
+            if (subject != null && assignment != null)
             {
-                Agenda.Add(calendarEvent);
+                calendarEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
+            }
+            else if (gamename != null)
+            {
+                calendarEvent = new GameEvent(titel, notes, startdate, enddate, gamename, email);
+            }
+            if (Agenda.Contains(calendarEvent) == false)
+            {             
                 if (calendarEvent.AccountEmail != "")
                 {
                     try
                     {
-                        int checkDB = CalendarEventDatabase.CheckCalendarDatabase(titel, notes, startdate, enddate, email);
-                        if (checkDB == 0)
+                        if (CalendarEventDatabase.CheckCalendarDatabase(titel, startdate, enddate, email) == null)
                         {
-                            bool insert = CalendarEventDatabase.InsertCalendarEvent(titel, notes, startdate, enddate, email);
-                            return insert;
+                            CalendarEventDatabase.InsertCalendarEvent(calendarEvent);
+                            Agenda.Add(CalendarEventDatabase.CheckCalendarDatabase(titel, startdate, enddate, email));
+                            return true;
                         }
                         else
                         {
@@ -48,82 +58,9 @@ namespace CForm_Planner.AgendaSystem
                 }
                 else
                 {
+                    Agenda.Add(calendarEvent);
                     return true;
                 }              
-            }
-            else
-            {
-                throw new PlannerExceptions("Appiontment already exist in agenda");
-            }
-        }
-
-        public bool AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string email)
-        {
-            SchoolEvent schoolEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
-            if (Agenda.Contains(schoolEvent) == false)
-            {
-                Agenda.Add(schoolEvent);
-                if (schoolEvent.AccountEmail != "")
-                {
-                    try
-                    {
-                        int checkDB = CalendarEventDatabase.CheckCalendarDatabase(titel, notes, startdate, enddate, email);
-                        if (checkDB == 0)
-                        {
-                            bool insert = CalendarEventDatabase.InsertCalendarEvent(titel, notes, startdate, enddate, subject, assignment, email);
-                            return insert;
-                        }
-                        else
-                        {
-                            throw new PlannerExceptions("Event already exist");
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                throw new PlannerExceptions("Appiontment already exist in agenda");
-            }
-        }
-
-        public bool AddCalendarEvent(string titel, string notes, DateTime startdate, DateTime enddate, string gamename, string email)
-        {
-            GameEvent calendarEvent = new GameEvent(titel, notes, startdate, enddate, gamename, email);
-            if (Agenda.Contains(calendarEvent) == false)
-            {
-                Agenda.Add(calendarEvent);
-                if (calendarEvent.AccountEmail != "")
-                {
-                    try
-                    {
-                        int checkDB = CalendarEventDatabase.CheckCalendarDatabase(titel, notes, startdate, enddate, email);
-                        if (checkDB == 0)
-                        {
-                            bool insert = CalendarEventDatabase.InsertCalendarEvent(titel, notes, startdate, enddate, gamename, email);
-                            return insert;
-                        }
-                        else
-                        {
-                            throw new PlannerExceptions("Event already exist");
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-                else
-                {
-                    return true;
-                }
             }
             else
             {
@@ -138,9 +75,12 @@ namespace CForm_Planner.AgendaSystem
                 Agenda.Remove(calendarEvent);
                 if (calendarEvent.AccountEmail != "")
                 {
-                    int id = CalendarEventDatabase.CheckCalendarDatabase(calendarEvent.Titel, calendarEvent.Notes, calendarEvent.StartDate,
+                    CalendarEvent deleteEvent = CalendarEventDatabase.CheckCalendarDatabase(calendarEvent.Titel, calendarEvent.StartDate,
                         calendarEvent.EndDate, calendarEvent.AccountEmail);
-                    CalendarEventDatabase.DeleteCalendarEvent(id);
+                    if (deleteEvent != null)
+                    {
+                        CalendarEventDatabase.DeleteCalendarEvent(deleteEvent.ID);
+                    }
                 }
                 return true;
             }
@@ -150,21 +90,27 @@ namespace CForm_Planner.AgendaSystem
             }
         }
 
-        public bool ChangeCalendarEvent(CalendarEvent oldCalendarEvent, string titel, string notes, DateTime startdate,
-            DateTime enddate, string email)
+        public bool ChangeCalendarEvent(CalendarEvent oldCalendarEvent, string titel, string notes, DateTime startdate, DateTime enddate, string subject, string assignment, string gamename)
         {
-            CalendarEvent newCalendarEvent = new CalendarEvent(titel, notes, startdate, enddate, email);
-
+            CalendarEvent calendarEvent = new CalendarEvent(oldCalendarEvent.ID, titel, notes, startdate, enddate, oldCalendarEvent.AccountEmail);
+            if (subject != null && assignment != null)
+            {
+                calendarEvent = new SchoolEvent(oldCalendarEvent.ID, titel, notes, startdate, enddate, subject, assignment, oldCalendarEvent.AccountEmail);
+            }
+            else if (gamename != null)
+            {
+                calendarEvent = new GameEvent(oldCalendarEvent.ID, titel, notes, startdate, enddate, gamename, oldCalendarEvent.AccountEmail);
+            }
             if (Agenda.Contains(oldCalendarEvent))
             {
-                if (Agenda.Contains(newCalendarEvent) == false)
+                if (Agenda.Contains(calendarEvent) == false)
                 {
 
-                    if (email != "")
+                    if (oldCalendarEvent.AccountEmail != "")
                     {
-                        CalendarEventDatabase.UpdateCalendarEvent(oldCalendarEvent, titel, notes, startdate, enddate, email);
+                        CalendarEventDatabase.UpdateCalendarEvent(calendarEvent);
                     }
-                    oldCalendarEvent.Update(titel, notes, startdate, enddate, email);
+                    oldCalendarEvent.Update(calendarEvent);
                     return true;
                 }
                 else
@@ -177,63 +123,6 @@ namespace CForm_Planner.AgendaSystem
                 throw new PlannerExceptions("The old appointment doesn't exist in the agenda");
             }
         }
-
-        public bool ChangeCalendarEvent(SchoolEvent oldSchoolEvent, string titel, string notes, DateTime startdate,
-            DateTime enddate, string subject, string assignment, string email)
-        {
-            SchoolEvent newSchoolEvent = new SchoolEvent(titel, notes, startdate, enddate, subject, assignment, email);
-
-            if (Agenda.Contains(oldSchoolEvent))
-            {
-                if (Agenda.Contains(newSchoolEvent) == false)
-                {
-
-                    if (email != "")
-                    {
-                        CalendarEventDatabase.UpdateCalendarEvent(oldSchoolEvent, titel, notes, startdate, enddate, subject,
-                            assignment, email);
-                    }
-                    oldSchoolEvent.Update(titel, notes, startdate, enddate, subject, assignment, email);
-                    return true;
-                }
-                else
-                {
-                    throw new PlannerExceptions("The new appiontment already exist in the agenda");
-                }
-            }
-            else
-            {
-                throw new PlannerExceptions("The old appointment doesn't exist in the agenda");
-            }
-        }
-
-        public bool ChangeCalendarEvent(GameEvent oldGameEvent, string titel, string notes, DateTime startdate, DateTime enddate, string gamename, string email)
-        {
-            GameEvent newGameEvent =  new GameEvent(titel, notes, startdate, enddate, gamename, email);
-            
-            if (Agenda.Contains(oldGameEvent))
-            {
-                if (Agenda.Contains(newGameEvent) == false)
-                {
-                    if (email != "")
-                    {
-                        CalendarEventDatabase.UpdateCalendarEvent(oldGameEvent, titel, notes, startdate, enddate, gamename, email);
-                    }
-                    oldGameEvent.Update(titel, notes, startdate, enddate, gamename, email);
-                    return true;
-                }
-                else
-                {
-                    throw new PlannerExceptions("The new appiontment already exist in the agenda");
-                }
-            }
-            else
-            {
-                throw new PlannerExceptions("The old appointment doesn't exist in the agenda");
-            }
-        }
-
-        
 
         public void MergeCalendar(Account user)
         {
@@ -242,7 +131,7 @@ namespace CForm_Planner.AgendaSystem
                 try
                 {
                     List<CalendarEvent> loaded = CalendarEventDatabase.GetCalendarEvents(user.EmailAdress);
-                    this.Agenda = Agenda.Union(loaded).Distinct().ToList();
+                    Agenda = Agenda.Union(loaded).Distinct().ToList();
                 }
                 catch (Exception)
                 {
@@ -259,26 +148,21 @@ namespace CForm_Planner.AgendaSystem
                 {
                     if (c.AccountEmail != "")
                     {
-                        CalendarEvent check = CalendarEventDatabase.GetCalendarEvent(c);
-                        if (check == null)
+                        if (CalendarEventDatabase.CheckCalendarDatabase(c.Titel, c.StartDate, c.EndDate, c.AccountEmail) == null)
                         {
                             if (c.GetType() == typeof(SchoolEvent))
                             {
                                 SchoolEvent schoolEvent = (SchoolEvent) c;
-                                CalendarEventDatabase.InsertCalendarEvent(schoolEvent.Titel, schoolEvent.Notes,
-                                    schoolEvent.StartDate, schoolEvent.EndDate, schoolEvent.Subject,
-                                    schoolEvent.Assignment, schoolEvent.AccountEmail);
+                                CalendarEventDatabase.InsertCalendarEvent(schoolEvent);
                             }
                             else if (c.GetType() == typeof(GameEvent))
                             {
                                 GameEvent gameEvent = (GameEvent) c;
-                                CalendarEventDatabase.InsertCalendarEvent(gameEvent.Titel, gameEvent.Notes,
-                                    gameEvent.StartDate, gameEvent.EndDate, gameEvent.GameName, gameEvent.AccountEmail);
+                                CalendarEventDatabase.InsertCalendarEvent(gameEvent);
                             }
                             else
                             {
-                                CalendarEventDatabase.InsertCalendarEvent(c.Titel, c.Notes, c.StartDate, c.EndDate,
-                                    c.AccountEmail);
+                                CalendarEventDatabase.InsertCalendarEvent(c);
                             }
                         }
                     }
@@ -306,23 +190,27 @@ namespace CForm_Planner.AgendaSystem
                     if (calendarEvent.GetType() == typeof(SchoolEvent))
                     {
                         SchoolEvent schoolEvent = (SchoolEvent) calendarEvent;
-                        CalendarEventDatabase.InsertCalendarEvent(schoolEvent.Titel, schoolEvent.Notes, schoolEvent.StartDate,
-                            schoolEvent.EndDate, schoolEvent.Subject, schoolEvent.Assignment, user.EmailAdress);
-                        schoolEvent.Update(schoolEvent.Titel, schoolEvent.Notes, schoolEvent.StartDate,
-                            schoolEvent.EndDate, schoolEvent.Subject, schoolEvent.Assignment, user.EmailAdress);
+                        CalendarEventDatabase.InsertCalendarEvent(new SchoolEvent(schoolEvent.Titel, schoolEvent.Notes, schoolEvent.StartDate,
+                            schoolEvent.EndDate, schoolEvent.Subject, schoolEvent.Assignment, user.EmailAdress));
+                        Agenda.Remove(schoolEvent);
+                        Agenda.Add(CalendarEventDatabase.CheckCalendarDatabase(schoolEvent.Titel, schoolEvent.StartDate,
+                            schoolEvent.EndDate, user.EmailAdress));
                     }
                     else if (calendarEvent.GetType() == typeof(GameEvent))
                     {
                         GameEvent GameEvent = (GameEvent) calendarEvent;
-                        CalendarEventDatabase.InsertCalendarEvent(GameEvent.Titel, GameEvent.Notes, GameEvent.StartDate,
-                            GameEvent.EndDate, GameEvent.GameName, user.EmailAdress);
-                        GameEvent.Update(GameEvent.Titel, GameEvent.Notes, GameEvent.StartDate,
-                            GameEvent.EndDate, GameEvent.GameName, user.EmailAdress);
+                        CalendarEventDatabase.InsertCalendarEvent(new GameEvent(GameEvent.Titel, GameEvent.Notes, GameEvent.StartDate,
+                            GameEvent.EndDate, GameEvent.GameName, user.EmailAdress));
+                        Agenda.Remove(GameEvent);
+                        Agenda.Add(CalendarEventDatabase.CheckCalendarDatabase(GameEvent.Titel, GameEvent.StartDate,
+                            GameEvent.EndDate, user.EmailAdress));
                     }
                     else
                     {
-                        CalendarEventDatabase.InsertCalendarEvent(calendarEvent.Titel, calendarEvent.Notes, calendarEvent.StartDate, calendarEvent.EndDate,  user.EmailAdress);
-                        calendarEvent.Update(calendarEvent.Titel, calendarEvent.Notes, calendarEvent.StartDate, calendarEvent.EndDate, user.EmailAdress);
+                        CalendarEventDatabase.InsertCalendarEvent(new CalendarEvent(calendarEvent.Titel, calendarEvent.Notes, calendarEvent.StartDate, calendarEvent.EndDate,  user.EmailAdress));
+                        Agenda.Remove(calendarEvent);
+                        Agenda.Add(CalendarEventDatabase.CheckCalendarDatabase(calendarEvent.Titel, calendarEvent.StartDate,
+                            calendarEvent.EndDate, user.EmailAdress));
                     }
                 }
             }
@@ -335,17 +223,17 @@ namespace CForm_Planner.AgendaSystem
             {
                 if (subject != "" && assignment != "")
                 {
-                    AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), subject, assignment,
+                    AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), subject, assignment, null,
                          email);
                 }
                 else if (gamename != "")
                 {
-                    AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i),
+                    AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), null, null,
                         gamename, email);
                 }
                 else
                 {
-                    AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), email);
+                    AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), null, null, null, email);
                 }
             }
         }
@@ -361,17 +249,17 @@ namespace CForm_Planner.AgendaSystem
                     {
                         if (subject != "" && assignment != "")
                         {
-                            AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), subject, assignment,
+                            AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), subject, assignment, null,
                                  email);
                         }
                         else if (gamename != "")
                         {
-                            AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i),
+                            AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), null, null,
                                 gamename, email);
                         }
                         else
                         {
-                            AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), email);
+                            AddCalendarEvent(titel, notes, startdate.AddDays(i), enddate.AddDays(i), null, null, null, email);
                         }
                     }
                 }
@@ -384,20 +272,34 @@ namespace CForm_Planner.AgendaSystem
             {
                 if (subject != "" && assignment != "")
                 {
-                    AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7), subject, assignment,
+                    AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7), subject, assignment, null,
                          email);
                 }
                 else if (gamename != "")
                 {
-                    AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7),
+                    AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7), null, null,
                         gamename, email);
                 }
                 else
                 {
-                    AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7), email);
+                    AddCalendarEvent(titel, notes, startdate.AddDays(i*7), enddate.AddDays(i*7), null, null, null, email);
                 }
             }
         }
 
+        public List<string> GetGames()
+        {
+            return CalendarEventDatabase.GamesList();
+        }
+        
+        public List<string> GetRaids(string game)
+        {
+            return CalendarEventDatabase.RaidsList(game);
+        }
+
+        public List<Proposal> GameProposal(string players, string game, string raid, int days, int start, int end)
+        {
+            return CalendarEventDatabase.GameProposal(players, game, raid, days, start, end);
+        }
     }   
 }

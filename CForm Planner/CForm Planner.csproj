@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Oracle.DataAccess, Version=4.112.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\oraclexe\app\oracle\product\11.2.0\server\odp.net\bin\4\Oracle.DataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.121.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.12.1.2400\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
       <Private>True</Private>
@@ -96,8 +100,12 @@
     <Compile Include="AgendaSystem\CalendarEvent.cs" />
     <Compile Include="AgendaSystem\CalendarEventAdministration.cs" />
     <Compile Include="AgendaSystem\CalendarEventDatabase.cs" />
+    <Compile Include="AgendaSystem\Database\CUCalendarDatabase.cs" />
+    <Compile Include="AgendaSystem\Database\CUGameEventDatabase.cs" />
     <Compile Include="AgendaSystem\GameEvent.cs" />
+    <Compile Include="AgendaSystem\Database\I_CU_CalendarEvent.cs" />
     <Compile Include="AgendaSystem\SchoolEvent.cs" />
+    <Compile Include="AgendaSystem\Database\CUSchoolEventDatabase.cs" />
     <Compile Include="AlarmSystem\Alarm.cs" />
     <Compile Include="AlarmSystem\AlarmAdministration.cs" />
     <Compile Include="AlarmSystem\AlarmDatabase.cs" />
@@ -119,9 +127,18 @@
     <Compile Include="AlarmSystem\AlarmForms\AlarmForm.Designer.cs">
       <DependentUpon>AlarmForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Database.cs" />
-    <Compile Include="DatabaseManager.cs" />
-    <Compile Include="DatabaseQuerys.cs" />
+    <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Database\DatabaseQuerys.cs" />
+    <Compile Include="GameSystem\Character.cs" />
+    <Compile Include="GameSystem\Game.cs" />
+    <Compile Include="GameSystem\GameProposalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameSystem\GameProposalForm.Designer.cs">
+      <DependentUpon>GameProposalForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameSystem\Guild.cs" />
+    <Compile Include="GameSystem\Proposal.cs" />
     <Compile Include="Home.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,6 +226,9 @@
     <EmbeddedResource Include="AlarmSystem\AlarmForms\AlarmForm.resx">
       <DependentUpon>AlarmForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GameSystem\GameProposalForm.resx">
+      <DependentUpon>GameProposalForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Home.resx">
       <DependentUpon>Home.cs</DependentUpon>
     </EmbeddedResource>
@@ -258,9 +278,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\38604.png" />
     <Content Include="Images\calen.png" />
     <Content Include="Images\download.png" />
     <Content Include="Images\edit-notes.png" />
+    <Content Include="Images\friends-512.png" />
     <Content Include="Images\MB__home.png" />
     <Content Include="Images\patient_cards-512.png" />
     <Content Include="Images\Times and Dates.png" />
